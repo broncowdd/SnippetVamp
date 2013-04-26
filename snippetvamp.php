@@ -51,7 +51,7 @@ $msg['fr']=array(
 	' prive '=>' privé ', 
 	'delete this snippet ? '=>'Supprimer ce Snippet ?', 
 	'by'=>'par', 
-	'search'=>'Chercher dans les snippets', 
+	'search'=>'Recherche', 
 	'no Snippet'=>'Snippet non public ou inexistant', 
 	'Save'=>'Sauvegarder', 
 	'separated with spaces'=>'séparés pas espaces', 
@@ -292,7 +292,7 @@ if ($_GET){
 	}
 	# Users commands (private filtering)
 	if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags');}
-	if (isset($_GET['search'])){$tag=$_GET['search'];$page=search($tag);}
+	if (isset($_GET['search'])){$tag=msg('search').':'.$_GET['search'];$page=search($tag);}
 	if ($admin&&isset($_GET['txt'])&&isset($snippets[$_GET['txt']])||isset($_GET['txt'])&&isset($snippets[$_GET['txt']])&&is_public($_GET['txt'])){$page='<pre>'.htmlspecialchars($snippets[$_GET['txt']]['#contenu']).'</pre>';$tag=$snippets[$_GET['txt']]['#titre'].' ('.msg('text only').')';}	
 	if (isset($_GET['embed'])){ 
 		if (isset($snippets[$_GET['embed']])&&is_public($_GET['embed'])){	
