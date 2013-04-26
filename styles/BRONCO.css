@@ -1,0 +1,162 @@
+/*
+
+Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
+
+*/
+.snippetcopyright{
+  display: block; padding: 10px;padding-left:40px;
+color:#444;text-shadow:0 -1px 1px #aaa;
+   background:url(../theme/favicon.png) 1px 1px no-repeat #C2C2C2 !important;
+  -moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;
+  -moz-box-shadow:  0px 0px 2px #000000;
+  -webkit-box-shadow:  0px 0px 2px #000000;
+  box-shadow:  0px 0px 2px #000000;
+}
+h3{font-style:italic;color:#FFA;text-shadow:0 -1px 1px #111;}
+.snippetcopyright a{font-style:italic;color:#333;text-shadow:0 -1px 1px #aaa;text-decoration:none;}
+.snippetcopyright a:hover{color:#555;text-shadow:0 0 2px white;}
+
+pre code {
+  
+  overflow-x:scroll;
+   background-color: transparent !important;
+ 
+}
+pre{
+background-color:#421;
+color:#EDD;
+border-radius:3px;
+margin-right:10px;padding:5px;margin-top:10px;margin-bottom:10px;overflow-x:scroll;text-shadow:0 1px 0 #aaa}
+pre code,
+pre .subst,
+pre .tag .title,
+pre .lisp .title,
+pre .clojure .built_in,
+pre .nginx .title {
+  color: #b9bdb6 !important;
+}
+
+pre .string,
+pre .parent,
+pre .tag .value,
+pre .rules .value,
+pre .rules .value .number,
+pre .preprocessor,
+pre .ruby .symbol,
+pre .ruby .symbol .string,
+pre .aggregate,
+pre .template_tag,
+pre .django .variable,
+pre .smalltalk .class,
+pre .addition,
+pre .flow,
+pre .stream,
+pre .bash .variable,
+pre .apache .tag,
+pre .apache .cbracket,
+pre .tex .command,
+pre .tex .special,
+pre .erlang_repl .function_or_atom,
+pre .markdown .header {
+  color: #ffdd3e !important;text-shadow:0 -1px 1px black;
+}
+
+pre .constant{color: #e0e8ff !important;}
+pre .function{color: #ffaa3e !important;font-weight: bold;text-shadow:0 1px 1px black;}
+pre .title{color:#B9BDB6 !important;font-weight: bold;font-style: italic;}
+
+
+
+pre .comment,
+pre .annotation,
+pre .template_comment,
+pre .diff .header,
+pre .chunk,
+pre .markdown .blockquote {
+  color: #878a85 !important;
+}
+
+pre .number,
+pre .date,
+pre .regexp,
+pre .literal,
+pre .smalltalk .symbol,
+pre .smalltalk .char,
+pre .go .constant,
+pre .change,
+pre .markdown .bullet,
+pre .markdown .link_url {
+  color: #009900 !important;
+}
+
+pre .label,
+pre .javadoc,
+pre .ruby .string,
+pre .decorator,
+pre .filter .argument,
+pre .localvars,
+pre .array,
+pre .attr_selector,
+pre .important,
+pre .pseudo,
+pre .pi,
+pre .doctype,
+pre .deletion,
+pre .envvar,
+pre .shebang,
+pre .apache .sqbracket,
+pre .nginx .built_in,
+pre .tex .formula,
+pre .erlang_repl .reserved,
+pre .prompt,
+pre .markdown .link_label,
+pre .vhdl .attribute,
+pre .clojure .attribute,
+pre .coffeescript .property {
+  color: #6928C1;
+}
+
+pre .keyword,
+pre .id,
+pre .phpdoc,
+pre .title,
+pre .built_in,
+pre .aggregate,
+pre .css .tag,
+pre .javadoctag,
+pre .phpdoc,
+pre .yardoctag,
+pre .smalltalk .class,
+pre .winutils,
+pre .bash .variable,
+pre .apache .tag,
+pre .go .typename,
+pre .tex .command,
+pre .markdown .strong,
+pre .request,
+pre .status {
+  font-weight: bold;
+}
+pre .keyword{color: #5ba1cf !important;}
+pre .markdown .emphasis {
+  font-style: italic;font-weight: bold;text-shadow:0 1px 1px black;
+}
+
+pre .nginx .built_in {
+  font-weight: normal;
+}
+
+pre .coffeescript .javascript,
+pre .javascript .xml,
+pre .tex .formula,
+pre .xml .javascript,
+pre .xml .vbscript,
+pre .xml .css,
+pre .xml .cdata {
+  opacity: 0.5;
+}
+.variable{color:#25FB00 !important;}
+.string{color:#A4009F;font-style: italic;}
+.deletion{  color: #6928C1!important;}
+
+
