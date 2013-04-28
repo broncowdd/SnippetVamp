@@ -224,7 +224,7 @@ function embed_height($string){return (substr_count($string, "\n")*18)+140; }
 $template=array();
 $template['deconnect_button']='<form action="" method="POST" class="deconnect"><input name="exit" type="hidden" value=""/><input type="submit" value="'.$config['login'].':'.msg('disconnect').'" class="exit"/></form>';
 $template['connect_form']='<form action="" method="POST" class="login"><input name="login" type="text" placeholder="'.msg('login').'"/><input name="pass" type="password" title="'.msg('password').'"/><input type="submit" value="ok"/></form>';
-$template['embed_code']='<object width="100%" height="#height" src="'.$config['url'].'?embed=#num" type="text/html"></object>';
+$template['embed_code']='<iframe width="100%" height="#height" src="'.$config['url'].'?embed=#num" type="text/html"></iframe>';
 $template['embeded_snippet']='<h3>#titre</h3><pre><code class="#nolink">#contenu</code></pre><p class="snippetcopyright">#adresse '.msg('embeded with SnippetVamp').'</p>';
 $template['buttons']='<div class="boutons nomobile "><button class="suppr" data="#num&vars=#origine" title="'.msg('Del').'"> </button><button class="#public toggle" data="#num&vars=#origine" title="'.msg('access: ').'#public '.msg('(click to change)').'"> </button><button class="edit" data="#num" title="'.msg('Edit').'"> </button></div>';
 $template['snippet']=loggedstring($template['buttons']).'<h1 class="snippet_title toggle_next #nolink #public" title="#nolink"> #titre </h1><div class="snippet_content hidden"><pre><code class="#nolink">#contenu</code></pre><hr/><p class="tags">#tags</p><p class="infos">#adresse</p><p class="embed" title="'.msg('embed code').'">#direct_link</p><p class="infos right">Snippet #public '.msg('post date').' #date</p></div>';

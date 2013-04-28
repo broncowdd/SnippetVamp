@@ -60,10 +60,9 @@ html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;overflow-y:scr
 hr{boxemboss 1 marl 5 mar 0}
 pre{
 lh 15 
-background-color:#421;
+
 color:#EDD;
 
-  roundc 3 boxshadow 0 2
   marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll; txtemboss
 
 }

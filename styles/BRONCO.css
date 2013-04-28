@@ -15,7 +15,10 @@ color:#444;text-shadow:0 -1px 1px #aaa;
 h3{font-style:italic;color:#FFA;text-shadow:0 -1px 1px #111;}
 .snippetcopyright a{font-style:italic;color:#333;text-shadow:0 -1px 1px #aaa;text-decoration:none;}
 .snippetcopyright a:hover{color:#555;text-shadow:0 0 2px white;}
-
+pre{
+  background-color:#421;
+  roundc 3 boxshadow 0 2
+}
 pre code {
   
   overflow-x:scroll;
@@ -26,7 +29,7 @@ pre{
 background-color:#421;
 color:#EDD;
 border-radius:3px;
-margin-right:10px;padding:5px;margin-top:10px;margin-bottom:10px;overflow-x:scroll;text-shadow:0 1px 0 #aaa}
+margin-right:10px;padding:5px;margin-top:10px;margin-bottom:10px;overflow-x:scroll;text-shadow:0 1px 1px #000}
 pre code,
 pre .subst,
 pre .tag .title,
