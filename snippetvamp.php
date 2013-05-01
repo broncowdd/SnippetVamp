@@ -11,8 +11,9 @@
 
 $start=temps();
 session_start();
-function aff($a){echo '<pre>';var_dump($a);exit();}
 
+function aff($a,$stop=true){echo '<pre>';var_dump($a);if ($stop){exit();}}
+if (file_exists('theme/auto_css.php')){include('theme/auto_css.php'); } // use auto_css if present 
 ######################################################################
 # Initialisations
 ######################################################################
@@ -117,9 +118,10 @@ if(!file_exists('pass.php')){
 	}
 }else{include('pass.php');}
 
+$contenu='';
 
 ######################################################################
-# POST
+# OTHER POST DATA 
 ######################################################################
 # admin login/deco
 ######################################################################
@@ -129,8 +131,10 @@ if (isset($_POST['exit'])){log_user("I'm","out");}
 # config change
 ######################################################################
 if ($admin&&isset($_POST['app_name'])){
+	if ($config['data_file']!=$_POST['data_file']){rename ($config['data_file'],$_POST['data_file']);}
 	$config=array_merge($config,$_POST);
 	store('config.dat',$config);
+
 }
 # add/edit snippets
 ######################################################################
@@ -170,32 +174,28 @@ function list_tags(){global $snippets;$tags=array();foreach($snippets as $snippe
 function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){global $snippets,$template;$tag_cloud='';if (!isset($snippets['tag_list'])){	return false;} if ($sortbynb){arsort($snippets['tag_list']);} foreach($snippets['tag_list'] as $tag=>$nb){$t=str_replace('#TAG',$tag,$template[$templ]);$t=str_replace('#NB',$nb,$t); if ($tags_checked&&stripos($tags_checked,$tag)!==false){$t=str_replace('#checked','checked',$t); }else{$t=str_replace('#checked','',$t);}$tag_cloud.= $t;}return $tag_cloud;}
 function make_rss($array,$titre){global $template,$config;if(isset($_POST['config'])){return false;}  echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); foreach($array as $a){	if (isset($a['#num'])&&is_public($a['#num'])){ 		array_map('map_entities',$a);echo str_replace(array_keys($a),array_values($a),$template['rss_item']); }} echo $template['rss_footer'];}
 function form($num=false){if (!is_ok()){return '';} global $config,$template,$snippets;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');if (!$num){$repl['#uniqid']=uniqid();	$repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value=""';$repl['value="#adresse"']='value=""';$repl['#contenu</textarea>']='</textarea>';$repl['#hidden']='hidden';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{if (isset($snippets[$num])){$repl['#uniqid']=$num;$repl['#formtitre']=msg('Edit a snippet');	$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb'],$snippets[$num]['#tags']);$repl['value="#titre"']='value="'.$snippets[$num]['#titre'].'"';$repl['value="#adresse"']='value="'.$snippets[$num]['#adresse'].'"';$repl['#contenu</textarea>']=$snippets[$num]['#contenu'].'</textarea>';$repl['#hidden']='';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{return false;}}}
-function form_config(){
-	global $config;$form='';
-	$form.=  '<form name="config" action="" method="post" class="">';
-	foreach ($config as $cle=>$val){
-		if ($cle!='login'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'){
-			$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';
-			if (is_bool($val)||$val=='true'||$val=='false'){
-				if ($val==true){
-					$val='true';
-				}
-				else{
-					$val='false';
-				}
-				$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.msg($val).'</option><option value="true">'.msg('true').'</option><option value="false">'.msg('false').'</option></select>';
+function form_config(){global $config;$form='';$form.=  '<form name="config" action="" method="post" class="">';foreach ($config as $cle=>$val){if ($cle!='login'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'){$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';if (is_bool($val)||$val=='true'||$val=='false'){if ($val==true){$val='true';}else{	$val='false';}$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.msg($val).'</option><option value="true">'.msg('true').'</option><option value="false">'.msg('false').'</option></select>';}else{$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';}}}	$form.='<input type="submit" value="'.msg('Save').'"/></form>';	return $form;}
+function feed_link(){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&stripos($_SERVER['QUERY_STRING'],'txt=')===false){global $config;echo '<p class="rss"><a href="'.$config['url'].'?rss=on&'.$_SERVER['QUERY_STRING'].'">'.msg("This page's Feed").'</a></p>';}}
+function config_link(){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&is_ok()){echo'<a class="config" href="?config=true">'.msg('Configuration').'</a> - ';}}
+function search($chaine,$cle=false){
+	$list='';$counter=0;$admin=is_ok();
+	global $snippets,$template;	
+	foreach($snippets as $snippet){	
+		if ($admin || isset($snippet['#num']) && is_public($snippet['#num'])){ // access allowed
+			if (!$cle){ // general search
+				$is_in=stripos(implode(' ',$snippet),$chaine);
 			}
-			else{
-				$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';
+			if (!$cle&&$is_in>-1 || $cle!==false && isset($snippet[$cle]) && stripos($snippet[$cle],$chaine)!==false){ 
+				$list.= templatise_snippet($snippet);$counter++;
 			}
 		}
 	}
-	$form.='<input type="submit" value="'.msg('Save').'"/></form>';
-	return $form;
+	if ($list!=''){
+		return $list;
+	}else{
+		return false;
+	}
 }
-function feed_link(){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&stripos($_SERVER['QUERY_STRING'],'txt=')===false){global $config;echo '<p class="rss"><a href="'.$config['url'].'?rss=on&'.$_SERVER['QUERY_STRING'].'">'.msg("This page's Feed").'</a></p>';}}
-function config_link(){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&is_ok()){echo'<a class="config" href="?config=true">'.msg('Configuration').'</a> - ';}}
-function search($chaine,$cle=false){$list='';$counter=0;$admin=is_ok();global $snippets,$template;	foreach($snippets as $snippet){	if ($admin||isset($snippet['#num'])&&is_public($snippet['#num'])){if (!$cle){$is_in=stripos(implode(' ',$snippet),$chaine);}if (!$cle&&$is_in>-1||$cle&&isset($snippet[$cle])&&stripos($snippet[$cle],$chaine)>-1){$list.= templatise_snippet($snippet);$counter++;}}}if ($list!=''){return $list;}else{return false;}}
 function return_if($return_value,$truefalse){if ($truefalse){return $return_value;}else{return '';}}
 function msg($m){global $msg,$config;if(isset($msg[$config['lang']][$m])){return $msg[$config['lang']][$m];}else{return $m;}}
 function alert($txt){return '<p class="alert">'.msg($txt).'</p>';}
@@ -218,6 +218,7 @@ function return_matching($chaine,$cle=false){$resultats=array();global $snippets
 function reload_page($query=''){if ($query==''){$query=$_SERVER['QUERY_STRING'];}header('Location: snippetvamp.php?'.$query);}
 function temps(){$t=microtime();$tt=explode(' ',$t);return $tt[0]+$tt[1];}
 function embed_height($string){return (substr_count($string, "\n")*18)+140; }
+
 ######################################################################
 # Templates
 ######################################################################
@@ -268,7 +269,7 @@ if ($admin||strpos($nom_page_cache,'toggle=')||strpos($nom_page_cache,'edit=')||
 
 
 ######################################################################
-# GET
+# GET DATA
 ######################################################################
 if ($_GET){
 	# RSS feeds
@@ -292,7 +293,7 @@ if ($_GET){
 	}
 	# Users commands (private filtering)
 	if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags');}
-	if (isset($_GET['search'])){$tag=msg('search').':'.$_GET['search'];$page=search($tag);}
+	if (isset($_GET['search'])){$page=search($_GET['search']);$tag=msg('search').':'.$_GET['search'];}
 	if ($admin&&isset($_GET['txt'])&&isset($snippets[$_GET['txt']])||isset($_GET['txt'])&&isset($snippets[$_GET['txt']])&&is_public($_GET['txt'])){$page='<pre>'.htmlspecialchars($snippets[$_GET['txt']]['#contenu']).'</pre>';$tag=$snippets[$_GET['txt']]['#titre'].' ('.msg('text only').')';}	
 	if (isset($_GET['embed'])){ 
 		if (isset($snippets[$_GET['embed']])&&is_public($_GET['embed'])){	
@@ -311,6 +312,7 @@ if ($_GET){
 	if ($admin&&isset($_GET['toggle'])&&isset($snippets[$_GET['toggle']])){toggle_public($_GET['toggle']);save();reload_page($_GET['vars']);}	
 	if ($admin&&isset($_GET['config'])){$tag=msg('Configuration');$page=form_config();}	
 }
+
 
 ######################################################################
 # if no tags or search query specified: last snippets
@@ -340,7 +342,6 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 	<meta charset="UTF-8">
 	<title><?php e('app_name').' '.$tag;?></title>
 	<link rel="shortcut icon" href="theme/favicon.png" />
-	<?php include('theme/auto_css.php');?>
 	<link rel="stylesheet" type="text/css" href="theme/computed_snippetvamp.css?lastupdate=1365701915"  media="screen" />
 	<!--[if IE]><script> document.createElement("article");document.createElement("aside");document.createElement("section");document.createElement("footer");</script> <![endif]-->
 </head>
@@ -352,9 +353,9 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 		
 		<h1><a href="snippetvamp.php" title="<?php echo msg('last'); ?>"><?php e('app_name'); ?> </a></h1>
 
-		<p class="description"><?php e('app_description'); ?></p><hr/>
+		<p class="description"><?php e('app_description'); ?></p>
+		<hr/>
 		<?php conn_deconn();?>
-		
 		<hr/>
 		<div class="recherche" ><form name="cherche" action="snippetvamp.php" method="get"><input type="text" placeholder="<?php echo msg('search');?>" name="search"/></form></div>
 		<div class="tag_cloud"><?php echo tag_cloud('tag_cloud_link',$config['sort_tags_by_nb']);?> </div>
@@ -370,6 +371,7 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 <?php 
 #*************************************************************
 #Cache: end (we keep the footer out of it to know the generation time)
+
 if (!$admin){$contenu=cache_end($nom_page_cache,0);}
 }
 echo $contenu;

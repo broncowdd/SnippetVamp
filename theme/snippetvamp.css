@@ -45,42 +45,44 @@
 
 */
 
-.hidden{hideme}
-.alert,.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 boxhalo couleur_alert roundc arrondi txtshadow}
-.success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 boxhalo couleur_success roundc arrondi txtshadow}
-.info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 boxhalo couleur_info roundc arrondi txtshadow}
-.warning{background-color:couleur_warning;color:couleur_text_warning;mart 10 pad 10 boxhalo couleur_warning roundc arrondi txtshadow}
-.toggle_next{txtemboss txtb curhand noselect}
-.toggle_next:before{content:" ▾";lh 20}
-.right{txtr!important}
 
+/* MISC ELEMENTS */
 * {borbox}
 *::selection { background:image_fond couleur_selection;color:couleur_text_selection!important;}  
 html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;overflow-y:scroll;}
 hr{boxemboss 1 marl 5 mar 0}
-pre{
-lh 15 
+pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll; txtemboss}
 
-color:#EDD;
+/* ICON ELEMENTS */ 
+/* set background */
+    h1.add,
+    a.adr,
+    .embed, 
+    nav form.login input, 
+    nav .logo[type="text"],
+    nav form.login input[type="password"],
+    .suppr, 
+    .txt, 
+    .edit,
+    button.public, 
+    button.prive,
+    nav .logo
+    {background:url(sprite.png) no-repeat!important;}
 
-  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll; txtemboss
 
-}
+/* LAYOUT */
 body{min-height:100%; position:relative;background-image:image_fond;background-color:couleur_fond; borbox min-width:320px;fs 16 marauto ff_georgia lh 1.5em  color: couleur_texte;}
 header,nav{noselect z-index:1;position:fixed;fs 18 }
 header{}
-footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
-  footer p.conf{}
+
 nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%;top:1px ;left:0;background:#888;height:100%;background-image:image_fond;boxshadow 1 5}
     nav hr{mart 10}
-    nav .logo{disbl marauto background:url(sprite.png) no-repeat 0 -286px;width:149px;height:128px;marb 20}
+    nav .logo{disbl marauto background-position: 0 -1111px!important;width:149px;height:128px;marb 20}
     nav .description{lh 12 fs 12 txtc txti txtemboss curarro noselect}
-    button.login{fs 12 pad 3 lh 12 width:100%;}
-    nav form.login input[type="text"]{padl 20 background:url(sprite.png) couleur_bouton no-repeat 2 -525px!important;width:45%;}
-    nav form.login input[type="password"]{padl 20 background:url(sprite.png) couleur_bouton no-repeat 2 -551px!important;width:45%;}
+    nav form.login input[type="text"]{padl 20 background-color: couleur_bouton; background-position: 2 -1826px!important; width:45%;}
+    nav form.login input[type="password"]{padl 20 background-color: couleur_bouton;background-position: 2 -1422px!important;width:45%;}
     nav form.login input[type="password"]:focus,nav form.login input[type="text"]:focus{background-color:couleur_active!important;}
-    nav form.login input[type="submit"]{width:9%;pad 0}
-    nav form.login input[type="submit"].exit{}
+    nav form.login input[type="submit"]{width:9%;pad 0;background:image_fond!important;}
     nav form.login{mar 5}
     nav form.deconnect {width:100%;disib padl 5 padr 5}
     nav form.deconnect input[type="submit"].exit{fs 12 pad 3 lh 12 width:100%; mart 7 }
@@ -92,68 +94,124 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%;top:1
     nav div.recherche input{width:100%; pad 10 fs 18 ff_georgia  }
 div.margin{width:25%;max-width:350px;min-width:200px;height:50px; flol mar 0 }
 aside{mart 0;width:100%;background-image:image_fond couleur_fond; fs 16  height:100%; }
+footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
+  footer p.conf{}
 
 .corps{flol pad 10 width:74%; mar 0 min-width:580px;  marb 30}
-
-
 .snippet_content{padb 10 width:100%;}
-
 .snippet_content .origine,.snippet_content p{marl 25 padl 5 padb 5;}
 .tag_cloud {padl 5}
 .add_snippet{ pad 10 background:image_fond couleur_bouton; insetshadow 1 4 roundbottom arrondi}
-
-
 .corps label{disib width:25%;}
-input[type=checkbox]+label,input[type=radio]+label{disib width:auto;}
-select{curhand}
-select, textarea,input[type=text],input[type=password]{width:100%;roundc arrondi boxemboss 1 pad 3 outline:none;}
-select:hover,input[type=text]:hover,input[type=password]:hover,textarea:hover{insethalo couleur_hover; outline:none;}
-select:focus,input[type=text]:focus,input[type=password]:focus, textarea:focus{background:image_fond couleur_focus;insetshadow 1 3 outline:none;}
-textarea{disib height: 500px; noresiz}
 
- .tags a, button, .add_snippet .tags label, nav .tag_cloud a,input[type="button"],input[type="reset"],input[type="submit"]{
-   *overflow: visible;  line-height: normal;noselect
-  mar 0  fs 16 vertical-align: middle;
-  mart 1
-  list-style:none;  disib  background-color:couleur_bouton;
-  background-image:image_fond; border:1px solid rgba(0, 0, 0, 0.4); roundc arrondi
-  box-shadow:rgba(255, 255, 255, 0.4) 0 1px 0 inset, rgba(255, 255, 255, 0.298039) 0 25px 30px -12px inset, rgba(0, 0, 0, 0.6) 0 1px 2px;
-  color:inherit; curhand  font:inherit;   padding:0.45em 0.6em;  underoff
-  white-space:nowrap;
-}
+
+/* FORMS & BUTTONS (INCLUDING ALL ELEMENTS WITH BUTTON ASPECT: A H1 etc) */
+/*  Normal */
+    input[type=checkbox]+label,input[type=radio]+label{disib width:auto;}
+    select{curhand}
+    textarea{disib height: 500px; noresiz}
+    select, 
+    textarea,
+    input[type=text],
+    input[type=password]
+    {width:100%;roundc arrondi boxemboss 1 pad 3 outline:none;}
+
+    .tags a, button, 
+    .add_snippet .tags label, 
+    nav .tag_cloud a,
+    input[type="button"],
+    input[type="reset"],
+    input[type="submit"]
+    {
+         *overflow: visible;  line-height: normal;noselect
+        mar 0 mart 1 fs 16 vertical-align: middle;
+        list-style:none;  disib  background-color:couleur_bouton;
+        background-image:image_fond; border:1px solid rgba(0, 0, 0, 0.4); roundc arrondi
+        box-shadow:rgba(255, 255, 255, 0.4) 0 1px 0 inset, rgba(255, 255, 255, 0.298039) 0 25px 30px -12px inset, rgba(0, 0, 0, 0.6) 0 1px 2px;
+        color:inherit; curhand  font:inherit;   padding:0.45em 0.6em;  underoff
+        white-space:nowrap;
+    }
+
+    h1.toggle_next{
+      mar 0  fs 18 vertical-align: middle;
+      list-style:none;  disbl  background-color:couleur_claire_bouton;
+      background-image:image_fond; border:1px solid rgba(0, 0, 0, 0.4); roundc 2
+      box-shadow:rgba(255, 255, 255, 0.4) 0 1px 0 inset, rgba(255, 255, 255, 0.298039) 0 25px 30px -12px inset, rgba(0, 0, 0, 0.6) 0 1px 2px;
+      color:inherit; curhand  font:inherit;  pad 5  underoff
+      txtemboss   white-space:normal;  background-color: couleur_bouton;
+    }
+    h1.add{background-position: 4px 9px!important; padl 25}
+
+    .suppr, 
+    .txt, 
+    .edit,
+    button.public, 
+    button.prive
+    {flor mart 6 height:22px;width:22px;pad 2 border:none; box-shadow: none;}
+    .suppr{background-position: 3px -502px!important;marr 5}
+    .edit{background-position: 2px -704px!important;}
+    .txt{background-position: 2px -421px!important;}
+    button.public{background-position: 2px -1523px!important;;}
+    button.prive{background-position: 2px 1422px!important;;}
+
+/*  Hover */
+    select:hover,
+    input[type=text]:hover,
+    input[type=password]:hover,
+    textarea:hover
+    {insethalo couleur_hover; outline:none;}
+    .tags a:hover, 
+    .add_snippet .tags label:hover, 
+    nav .tag_cloud a:hover,
+    input[type="button"]:hover,
+    input[type="reset"]:hover,
+    input[type="submit"]:hover,
+    .button:hover{  background-color:couleur_hover;}
+
+    .edit:hover,
+    footer a:hover,
+    button.prive:hover,
+    button.public:hover
+    {background-color:couleur_info!important;boxhalo couleur_info}
+    .suppr:hover{background-color:couleur_alert!important;boxhalo couleur_alert}
+    .txt:hover{background-color:couleur_success!important;boxhalo couleur_success}
+
+    button:hover,
+    h1.toggle_next:hover
+    {background-color: couleur_hover!important}
+
+/*  Focus */
+    select:focus,
+    input[type=text]:focus,
+    input[type=password]:focus, 
+    textarea:focus
+    {background:image_fond couleur_focus;insetshadow 1 3 outline:none;}
+
+/*  Clicked */
+     .tags a:active, 
+     button:active ,
+     .add_snippet .tags label:active, 
+     nav .tag_cloud a:active,
+     input[type="button"]:active,
+     input[type="reset"]:active,
+     input[type="submit"]:active,
+     .button:active{
+        boxemboss 1 box-shadow:none;box-shadow: rgba(0, 0, 0, 0.6) 0 1px 2px; 
+        background-color: couleur_foncee_bouton!important;
+        noselect 
+      }
+
+
+
 
 .snippet_content p a{ pad 3 fs 16!important smallcaps}
 .snippet_content p.infos{txti txtl fs 12 txtemboss pad 0 mar 0 padr 10}
 
-/* cliqué */
- .tags a:active, button:active ,.add_snippet .tags label:active, nav .tag_cloud a:active,input[type="button"]:active,input[type="reset"]:active,
- input[type="submit"]:active,.button:active{
-  boxemboss 1 box-shadow:none;box-shadow: rgba(0, 0, 0, 0.6) 0 1px 2px; 
-  background-color: couleur_foncee_bouton!important;
- noselect }
 
-/* hover */
-.tags a:hover, .add_snippet .tags label:hover, nav .tag_cloud a:hover,input[type="button"]:hover,input[type="reset"]:hover,input[type="submit"]:hover,.button:hover{  background-color:couleur_hover;}
 h1.titre{fs 28 roundc arrondi  marb 20 pad 5 insetshadow 1 4 txtc smallcaps}
-h1.toggle_next{
-  mar 0  fs 18 vertical-align: middle;
-  list-style:none;  disbl  background-color:couleur_claire_bouton;
-  background-image:image_fond; border:1px solid rgba(0, 0, 0, 0.4); roundc 2
-  box-shadow:rgba(255, 255, 255, 0.4) 0 1px 0 inset, rgba(255, 255, 255, 0.298039) 0 25px 30px -12px inset, rgba(0, 0, 0, 0.6) 0 1px 2px;
-  color:inherit; curhand  font:inherit;  pad 5  underoff
-  txtemboss   white-space:normal;  background-color: couleur_bouton;
-}
-button:hover,h1.toggle_next:hover{background-color: couleur_hover!important}
-.suppr, .txt, .edit,button.public, button.prive{flor mart 6 height:22px;width:22px;pad 2 background:url(sprite.png)  no-repeat; border:none; box-shadow: none;}
-.suppr{background-position: 2px -127px!important;marr 5}
-.edit{background-position: 2px -179px!important;}
-.txt{background-position: 2px -421px!important;}
-button.public{background-position: 2px -498px;}
-button.prive{background-position: 2px -550px;}
-.rss{disib background:url(sprite.png)  no-repeat;background-position: 4px -471px; padl 22 roundc arrondi}
-.edit:hover,footer a:hover,button.prive:hover,button.public:hover{background-color:couleur_info!important;boxhalo couleur_info}
-.suppr:hover{background-color:couleur_alert!important;boxhalo couleur_alert}
-.txt:hover{background-color:couleur_success!important;boxhalo couleur_success}
+
+
+
 .snippet_content{roundbottom arrondi insetshadow 1 3 boxemboss 1 background:image_fond #999;marr 10}
 .add_snippet li{list-style: none;noselect}
 .add_snippet .tags{pad 10 madb 10 }
@@ -167,9 +225,7 @@ button.prive{background-position: 2px -550px;}
 
  
 
-/* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-liens
-*/
+/* LINKS */
 a{color:couleur_lien; underoff txtemboss }
 a:focus { outline: thin dotted #333; outline: 5px auto; -webkit-focus-ring-color; outline-offset: -2px;}
 a:hover { outline: 0; color:black!important;}
@@ -178,16 +234,23 @@ a.warning {disib roundc arrondi padl 3 padr 3 color: couleur_text_warning}
 a.error {disib roundc arrondi padl 3 padr 3 color: couleur_text_alert}
 a.info {disib roundc arrondi padl 3 padr 3 color: couleur_text_info}
 a.success {disib roundc arrondi padl 3 padr 3 color: couleur_text_success}
-a.adr{background:url(sprite.png)  no-repeat!important ; background-position: 3px -252px!important; padl 30!important marl 20}
-.embed{background:url(sprite.png)  no-repeat!important ;  background-position: 3px -150px!important;color:couleur_foncee_bouton; txtemboss padl 30!important mart 5 marr 20 marl 20!important roundc arrondi boxemboss 1 fs 12}
-/* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼*/
+a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
+.embed{background-position: 9px -600px!important;color:couleur_foncee_bouton; txtemboss padl 30!important mart 5 marr 20 marl 20!important roundc arrondi boxemboss 1 fs 12}
 
-
+/* MISC CLASSES */
+.hidden{hideme}
+.alert,.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 boxhalo couleur_alert roundc arrondi txtshadow}
+.success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 boxhalo couleur_success roundc arrondi txtshadow}
+.info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 boxhalo couleur_info roundc arrondi txtshadow}
+.warning{background-color:couleur_warning;color:couleur_text_warning;mart 10 pad 10 boxhalo couleur_warning roundc arrondi txtshadow}
+.toggle_next{txtemboss txtb curhand noselect}
+.toggle_next:before{content:" ▾";lh 20}
+.right{txtr!important}
+.rss{disib background-position: 4px -471px; padl 22 roundc arrondi}
 
 /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-CSS stylant certains tags via leur ID : .bouton_tag{style};
+STYLE SPECIAL TAGS & H1 HERE : H1.tag / .button_tag{style};
 */
-/*boutons*/
 h1.php,.bouton_php{background-color:rgba(150,0,200,0.5)!important;}
 h1.php:hover,.bouton_php:hover{background-color:rgba(150,0,200,0.9)!important;}
 h1.python,.bouton_python{background-color:rgba(200,150,0,0.5)!important;}
@@ -203,58 +266,41 @@ h1.js:hover, h1.javascript:hover,.bouton_js:hover,.bouton_javascript:hover{backg
 .bouton_public{background-color:rgba(0,250,0,0.5)!important;}
 .bouton_public:hover{background-color:rgba(0,250,0,0.9)!important;}
 
-/* barre de titre de snippet */
-h1.jquery{}
-h1.js, h1.javascript{}
-h1.public{ }
-h1.prive{}
-h1.add{background:url(sprite.png) no-repeat!important; background-position: 4px 10px!important; padl 25}
-
 /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 */
 
-/* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-icones
-*/
+
+
+
 /*
-.icon{background:url(sprite.png) no-repeat; width: 16px; height: 16px;}
-.icon-add{ background-position: 0 0 } 
-.icon-arrow-down{ background-position: 0 -26px;} 
-.icon-arrow-left{ background-position: 0 -52px;} 
-.icon-arrow-right{ background-position: 0 -78px;} 
-.icon-arrow-up{ background-position: 0 -104px;} 
-.icon-bin{ background-position: 0 -130px;} 
-.icon-bulle-pleine{ background-position: 0 -156px;} 
-.icon-crayon{ background-position: 0 -182px;}
-.icon-cross{ background-position: 0 -208px;} 
-.icon-delete{ background-position: 0 -234px;} 
-.icon-link{ background-position: 0 -260px;} 
-.icon-menu{ background-position: 0 -424px;} 
-.icon-settings{ background-position: 0 -450px;} 
-.icon-tick{ background-position: 0 -476px;} 
-.icon-user-3{ background-position: 0 -502px;} 
-.icon-user-4{ background-position: 0 -528px;} 
-.icon-zoom-in{ background-position: 0 -554px;} */
-/* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼*/
+.sprite-add{ background-position: 0 0; width: 16px; height: 16px; } 
+.sprite-arrow-down{ background-position: 0 -101px; width: 16px; height: 16px; } 
+.sprite-arrow-left{ background-position: 0 -202px; width: 16px; height: 16px; } 
+.sprite-arrow-right{ background-position: 0 -303px; width: 16px; height: 16px; } 
+.sprite-arrow-up{ background-position: 0 -404px; width: 16px; height: 16px; } 
+.sprite-bin{ background-position: 0 -505px; width: 16px; height: 16px; } 
+.sprite-bulle-pleine{ background-position: 0 -606px; width: 16px; height: 16px; } 
+.sprite-crayon{ background-position: 0 -707px; width: 16px; height: 16px; } 
+.sprite-cross{ background-position: 0 -808px; width: 16px; height: 16px; } 
+.sprite-delete{ background-position: 0 -909px; width: 16px; height: 16px; } 
+.sprite-link{ background-position: 0 -1010px; width: 16px; height: 16px; } 
+.sprite-logosv{ background-position: 0 -1111px; width: 149px; height: 128px; } 
+.sprite-menu{ background-position: 0 -1324px; width: 16px; height: 16px; } 
+.sprite-private{ background-position: 0 -1425px; width: 16px; height: 16px; } 
+.sprite-public{ background-position: 0 -1526px; width: 16px; height: 16px; } 
+.sprite-rss{ background-position: 0 -1627px; width: 16px; height: 16px; } 
+.sprite-settings{ background-position: 0 -1728px; width: 16px; height: 16px; } 
+.sprite-user-4{ background-position: 0 -1829px; width: 16px; height: 16px; } 
 
 
-
-
-
-/* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-   Transitions 
-   fixees pour tous les objets survolables, activables ou focusables 
-   en une seule fois, au repos, au survol et au focus + active
 */
 
-button,label, input, textarea, a,h1{transitall delai}
-button:hover,label:hover, input:hover, textarea:hover,a:hover, h1:hover{transitall delai}
-label:focus, input:focus, textarea:focus,a:focus{transitall delai}
-button:active,label:active, input:active, textarea:active,a:active, h1:active{transitall delai}
-
-/* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-*/
-
+/* TRANSITIONS */
+/* fixed in one shot */
+    button,label, input, textarea, a,h1{transitall delai}
+    button:hover,label:hover, input:hover, textarea:hover,a:hover, h1:hover{transitall delai}
+    label:focus, input:focus, textarea:focus,a:focus{transitall delai}
+    button:active,label:active, input:active, textarea:active,a:active, h1:active{transitall delai}
 
 
 

@@ -44,7 +44,7 @@ Todo list:
 - a bookmarklet to store a new snippet whith as few clicks as possible
 - one click backup option
 - crypt the data file
-- some obvious things not implemented yet (rename data file when you change its name in the config, for example: obvious don't you think ?!)
+
 
 
 Bugs:
