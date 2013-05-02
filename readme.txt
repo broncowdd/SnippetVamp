@@ -49,7 +49,7 @@ Todo list:
 
 Bugs:
 -------------------------------------------------------------- 
-Nothing important yet (a sprite bug for example)
+Nothing yet 
 
 
 

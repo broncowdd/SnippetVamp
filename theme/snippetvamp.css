@@ -100,7 +100,7 @@ footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
 .corps{flol pad 10 width:74%; mar 0 min-width:580px;  marb 30}
 .snippet_content{padb 10 width:100%;}
 .snippet_content .origine,.snippet_content p{marl 25 padl 5 padb 5;}
-.tag_cloud {padl 5}
+.tag_cloud {padl 5 padr 5}
 .add_snippet{ pad 10 background:image_fond couleur_bouton; insetshadow 1 4 roundbottom arrondi}
 .corps label{disib width:25%;}
 
@@ -108,6 +108,12 @@ footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
 /* FORMS & BUTTONS (INCLUDING ALL ELEMENTS WITH BUTTON ASPECT: A H1 etc) */
 /*  Normal */
     input[type=checkbox]+label,input[type=radio]+label{disib width:auto;}
+    #multiselect{hideme}
+    #multiselect+label{ width:100%;}
+    .multiselect{background-color:rgba(100,100,100,0.5)!important;}
+    .multiselect:hover{background-color:rgba(100,100,100,0.9)!important;}
+
+    .filter{disbl width:100%;}
     select{curhand}
     textarea{disib height: 500px; noresiz}
     select, 
@@ -121,7 +127,8 @@ footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
     nav .tag_cloud a,
     input[type="button"],
     input[type="reset"],
-    input[type="submit"]
+    input[type="submit"],
+    .multiselect
     {
          *overflow: visible;  line-height: normal;noselect
         mar 0 mart 1 fs 16 vertical-align: middle;
@@ -151,8 +158,9 @@ footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
     .suppr{background-position: 3px -502px!important;marr 5}
     .edit{background-position: 2px -704px!important;}
     .txt{background-position: 2px -421px!important;}
-    button.public{background-position: 2px -1523px!important;;}
-    button.prive{background-position: 2px 1422px!important;;}
+    button.public{background-position: 2px -1523px!important;}
+    button.prive{background-position: 2px 1422px!important;}
+    .tag_cloud a.filter{width:100%;}
 
 /*  Hover */
     select:hover,
@@ -166,7 +174,8 @@ footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
     input[type="button"]:hover,
     input[type="reset"]:hover,
     input[type="submit"]:hover,
-    .button:hover{  background-color:couleur_hover;}
+    .button:hover,
+    .multiselect:hover{  background-color:couleur_hover;}
 
     .edit:hover,
     footer a:hover,
@@ -195,7 +204,8 @@ footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
      input[type="button"]:active,
      input[type="reset"]:active,
      input[type="submit"]:active,
-     .button:active{
+     .button:active,
+    .multiselect:active{
         boxemboss 1 box-shadow:none;box-shadow: rgba(0, 0, 0, 0.6) 0 1px 2px; 
         background-color: couleur_foncee_bouton!important;
         noselect 
@@ -238,7 +248,7 @@ a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
 .embed{background-position: 9px -600px!important;color:couleur_foncee_bouton; txtemboss padl 30!important mart 5 marr 20 marl 20!important roundc arrondi boxemboss 1 fs 12}
 
 /* MISC CLASSES */
-.hidden{hideme}
+.hidden,.tag_cloud a.hidden,.tag_cloud label.hidden {hideme}
 .alert,.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 boxhalo couleur_alert roundc arrondi txtshadow}
 .success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 boxhalo couleur_success roundc arrondi txtshadow}
 .info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 boxhalo couleur_info roundc arrondi txtshadow}
