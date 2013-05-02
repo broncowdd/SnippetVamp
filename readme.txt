@@ -33,7 +33,8 @@ Things already done:
 - highlight.js included (but not essential)
 - jquip (30ko) and not jquery 
 - a cache (cleared only if you add/edit/delete/change status) 
-
+- a multiselection tag option
+- search for more than one word
 
 
 Todo list:
