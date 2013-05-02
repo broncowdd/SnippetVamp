@@ -94,7 +94,7 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%;top:1
     nav div.recherche input{width:100%; pad 10 fs 18 ff_georgia  }
 div.margin{width:25%;max-width:350px;min-width:200px;height:50px; flol mar 0 }
 aside{mart 0;width:100%;background-image:image_fond couleur_fond; fs 16  height:100%; }
-footer{position:absolute;txtr  bottom:0; width:100%; height:20px;padr 10}
+footer{position:absolute;txtr  bottom:0; width:100%; height:60px;padr 10}
   footer p.conf{}
 
 .corps{flol pad 10 width:74%; mar 0 min-width:580px;  marb 30}

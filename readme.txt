@@ -27,7 +27,7 @@ Things already done:
 - private/public status
 - config page
 - english & french: very easy to add a new language 
-- all the app is in one php file (starting configuration, templates, function, core, post & get handling, rss etc.) less than 28ko...
+- all the app is in one php file (starting configuration, templates, function, core, post & get handling, rss etc.) less than 31ko...
 - filtered rss feeds: new snippets feeds, one feed for each tag or search rss feed
 - admin space (easily created when you first start the app) 
 - highlight.js included (but not essential)
