@@ -231,7 +231,7 @@ function BodyClasses(){$regex='#(msie)[/ ]([0-9])+|(firefox)/([0-9])+|(chrome)/(
 function cache_temp_folder(){if (!is_dir('temp/')){mkdir ('temp');}}
 function cache_read($fichier){cache_temp_folder();if (file_exists('temp/'.$fichier)&&!cache_is_obsolete($fichier)){$donnees=file_get_contents('temp/'.$fichier);if ($donnees2=@unserialize($donnees)){$donnees=$donnees2;}   return $donnees; }else{return false;}}
 function cache_write($fichier,$donnees,$duree){cache_temp_folder();file_put_contents('temp/'.$fichier,$donnees);if ($duree!=0){$duree=@date('U')+(60*$duree);}touch('temp/'.$fichier,$duree);}
-function cache_clear(){cache_temp_folder();$fs=glob('temp/*'); if(!empty($fs)){foreach ($fs as $file){unlink ($file);}}
+function cache_clear(){cache_temp_folder();$fs=glob('temp/*'); if(!empty($fs)){foreach ($fs as $file){unlink ($file);}}}
 function cache_is_obsolete($fichier){$dat=@filemtime('temp/'.$fichier);if (!file_exists('temp/'.$fichier)){return true;}if ($dat==0){return false;}if ($dat<@date('U')){cache_delete($fichier);return true;}return false;}
 function cache_delete($fichier){if (file_exists('temp/'.$fichier)){unlink ('temp/'.$fichier);}}
 function cache_start(){ob_start();}
