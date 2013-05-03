@@ -84,7 +84,7 @@ if (!file_exists('config.dat')){
 	$config=array(
 		'app_name'=>'SnippetVamp',
 		'app_description'=>'Because spending time searching snippets sucks.',
-		'version'=>'alpha 0.6', 
+		'version'=>'alpha 0.7', 
 		'sort_tags_by_nb'=>false,
 		'multiple_tag_selection'=>false,
 		'nb_snippets_homepage'=>30,
@@ -218,11 +218,7 @@ function search($chaine,$cle=false){
 			}
 		}
 	}
-	if ($list!=''){
-		return $list;
-	}else{
-		return false;
-	}
+	if ($list!=''){return $list;}else{return false;}
 }
 function return_if($return_value,$truefalse){if ($truefalse){return $return_value;}else{return '';}}
 function msg($m){global $msg,$config;if(isset($msg[$config['lang']][$m])){return $msg[$config['lang']][$m];}else{return $m;}}
@@ -235,7 +231,7 @@ function BodyClasses(){$regex='#(msie)[/ ]([0-9])+|(firefox)/([0-9])+|(chrome)/(
 function cache_temp_folder(){if (!is_dir('temp/')){mkdir ('temp');}}
 function cache_read($fichier){cache_temp_folder();if (file_exists('temp/'.$fichier)&&!cache_is_obsolete($fichier)){$donnees=file_get_contents('temp/'.$fichier);if ($donnees2=@unserialize($donnees)){$donnees=$donnees2;}   return $donnees; }else{return false;}}
 function cache_write($fichier,$donnees,$duree){cache_temp_folder();file_put_contents('temp/'.$fichier,$donnees);if ($duree!=0){$duree=@date('U')+(60*$duree);}touch('temp/'.$fichier,$duree);}
-function cache_clear(){cache_temp_folder();$fs=glob('temp/*');foreach ($fs as $file){unlink ($file);}}
+function cache_clear(){cache_temp_folder();$fs=glob('temp/*'); if(!empty($fs)){foreach ($fs as $file){unlink ($file);}}
 function cache_is_obsolete($fichier){$dat=@filemtime('temp/'.$fichier);if (!file_exists('temp/'.$fichier)){return true;}if ($dat==0){return false;}if ($dat<@date('U')){cache_delete($fichier);return true;}return false;}
 function cache_delete($fichier){if (file_exists('temp/'.$fichier)){unlink ('temp/'.$fichier);}}
 function cache_start(){ob_start();}
@@ -258,11 +254,11 @@ $template['deconnect_button']='<form action="" method="POST" class="deconnect"><
 $template['connect_form']='<form action="" method="POST" class="login"><input name="login" type="text" placeholder="'.msg('login').'"/><input name="pass" type="password" title="'.msg('password').'"/><input type="submit" value="ok"/></form>';
 $template['embed_code']='<iframe width="100%" height="#height" src="'.$config['url'].'?embed=#num" type="text/html"></iframe>';
 $template['embeded_snippet']='<h3>#titre</h3><pre><code class="#nolink">#contenu</code></pre><p class="snippetcopyright">#adresse '.msg('embeded with SnippetVamp').'</p>';
-$template['buttons']='<div class="boutons nomobile "><button class="suppr" data="#num&vars=#origine" title="'.msg('Del').'"> </button><button class="#public toggle" data="#num&vars=#origine" title="'.msg('access: ').'#public '.msg('(click to change)').'"> </button><button class="edit" data="#num" title="'.msg('Edit').'"> </button></div>';
+$template['buttons']='<div class="buttons nomobile "><button class="suppr" data="#num&vars=#origine" title="'.msg('Del').'"> </button><button class="#public toggle" data="#num&vars=#origine" title="'.msg('access: ').'#public '.msg('(click to change)').'"> </button><button class="edit" data="#num" title="'.msg('Edit').'"> </button></div>';
 $template['snippet']=loggedstring($template['buttons']).'<h1 class="snippet_title toggle_next #nolink #public" title="#nolink"> #titre </h1><div class="snippet_content hidden"><pre><code class="#nolink">#contenu</code></pre><hr/><p class="tags">#tags</p><p class="infos">#adresse</p><p class="embed" title="'.msg('embed code').'">#direct_link</p><p class="infos right">Snippet #public '.msg('post date').' #date</p></div>';
-$template['tag_btn']='<a class="bouton_$1" href="snippetvamp.php?tag=$1">$1</a> ';
-$template['tag_cloud_link']='<a href="snippetvamp.php?tag=#TAG" class="bouton_#TAG"><input type="checkbox" name="#TAG" class="'.$hidden.' tagcheck" #checked/>#TAG <em>#NB</em></a> ';
-$template['tag_cloud_checkbox']='<input type="checkbox" id="ID_#TAG" name="check#TAG" value="#TAG" #checked/><label class="bouton_#TAG" for="ID_#TAG">#TAG</label>  ';
+$template['tag_btn']='<a class="button_$1" href="snippetvamp.php?tag=$1">$1</a> ';
+$template['tag_cloud_link']='<a href="snippetvamp.php?tag=#TAG" class="button_#TAG"><input type="checkbox" name="#TAG" class="'.$hidden.' tagcheck" #checked/>#TAG <em>#NB</em></a> ';
+$template['tag_cloud_checkbox']='<input type="checkbox" id="ID_#TAG" name="check#TAG" value="#TAG" #checked/><label class="button_#TAG" for="ID_#TAG">#TAG</label>  ';
 if (isset($_GET['edit'])){$checkpublic=return_if('checked',$snippets[$_GET['edit']]['#public']==true);$checkprivate=return_if('checked',$snippets[$_GET['edit']]['#public']==true);}
 else{$checkpublic=return_if('checked',$config['default_status_private']==false);$checkprivate=return_if('checked',$config['default_status_private']==true);}
 $template['snippet_frm']='<br/>
@@ -276,8 +272,8 @@ $template['snippet_frm']='<br/>
 		<li><label for="tags">#labeltags</label><input type="text" name="#tags" id="#tags" title ="'.msg('separated with spaces').'"/></li>
 		<li class="tags">#tagcloud</li>
 		<li><p class="tags">
-				<input type="radio" id="public" name="#public" value="true" '.$checkpublic.'/><label class="bouton_public" for="public" title="'.msg('Acces allowed to rss and visitors').'">'.msg('Public').'</label>
-				<input type="radio" id="prive" name="#public" value="false" '.$checkprivate.' /><label class="bouton_prive" for="prive" title="'.msg('Only admin can access').'">'.msg('Private').'</label>
+				<input type="radio" id="public" name="#public" value="true" '.$checkpublic.'/><label class="button_public" for="public" title="'.msg('Acces allowed to rss and visitors').'">'.msg('Public').'</label>
+				<input type="radio" id="prive" name="#public" value="false" '.$checkprivate.' /><label class="button_prive" for="prive" title="'.msg('Only admin can access').'">'.msg('Private').'</label>
 			</p>
 			<input type="submit" value="'.msg('Save').'"/></li>
 	</form>
@@ -322,7 +318,7 @@ if ($_GET){
 		$contenu=cache_end($nom_page_cache,0);
 		exit($contenu);
 	}
-	# Users commands (private filtering)
+	# Users commands (with private filtering)
 	if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags');}
 	if (isset($_GET['search'])){$page=search($_GET['search']);$tag=msg('search').':'.$_GET['search'];}
 	if ($admin&&isset($_GET['txt'])&&isset($snippets[$_GET['txt']])||isset($_GET['txt'])&&isset($snippets[$_GET['txt']])&&is_public($_GET['txt'])){$page='<pre>'.htmlspecialchars($snippets[$_GET['txt']]['#contenu']).'</pre>';$tag=$snippets[$_GET['txt']]['#titre'].' ('.msg('text only').')';}	
@@ -405,10 +401,10 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 			<?php echo $page; ?>
 		</div>
 	</aside>
-	<div style="clear:both"> </div>
+	
 <?php 
 #*************************************************************
-#Cache: end (we keep the footer out of it to know the generation time)
+#Cache: end (we keep the the generation time out)
 
 if (!$admin){$contenu=cache_end($nom_page_cache,0);}
 }
@@ -417,8 +413,11 @@ if (isset($_GET['embed'])){exit();}// Don't add the footer to an embedded snippe
 
 #*************************************************************
 ?>
-	<footer><?php echo feed_link(); ?><hr/><?php echo config_link().'<em>'.$config['app_name'].' '.$config['version'].'</em> '.msg('by');?> <a href="http://warriordudimanche.net">Bronco</a> - <?php echo msg('generated in');echo ' ',round(temps()-$start,6);?> s</footer>
-</body>
+<div style="clear:both"> </div>
+		<footer><?php echo feed_link(); ?><hr/><?php echo config_link().'<em>'.$config['app_name'].' '.$config['version'].'</em> '.msg('by');?> <a href="http://warriordudimanche.net">Bronco</a> - <?php echo msg('generated in');echo ' ',round(temps()-$start,6);?> s</footer>
+
+
+	</body>
 <script type="text/javascript" src="jquip.min.js"></script>
 <?php if (file_exists('highlight.js')){ ?> <link rel="stylesheet" href="styles/<?php e('highlight_theme'); ?>.css"> <script type="text/javascript" src="highlight.js"></script><script>hljs.initHighlightingOnLoad();</script>  <?php } ?>
 <script>

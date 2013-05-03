@@ -49,7 +49,7 @@
 /* MISC ELEMENTS */
 * {borbox}
 *::selection { background:image_fond couleur_selection;color:couleur_text_selection!important;}  
-html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;overflow-y:scroll;}
+html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;overflow-y:scroll;height: 100%;}
 hr{boxemboss 1 marl 5 mar 0}
 pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll; txtemboss}
 
@@ -71,7 +71,7 @@ pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll;
 
 
 /* LAYOUT */
-body{min-height:100%; position:relative;background-image:image_fond;background-color:couleur_fond; borbox min-width:320px;fs 16 marauto ff_georgia lh 1.5em  color: couleur_texte;}
+body{min-height:100%;height: 100%; position:relative;background-image:image_fond;background-color:couleur_fond; borbox min-width:320px;fs 16 marauto ff_georgia lh 1.5em  color: couleur_texte;}
 header,nav{noselect z-index:1;position:fixed;fs 18 }
 header{}
 
@@ -93,11 +93,11 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%;top:1
     nav div.recherche {pad 5}
     nav div.recherche input{width:100%; pad 10 fs 18 ff_georgia  }
 div.margin{width:25%;max-width:350px;min-width:200px;height:50px; flol mar 0 }
-aside{mart 0;width:100%;background-image:image_fond couleur_fond; fs 16  height:100%; }
-footer{position:absolute;txtr  bottom:0; width:100%; height:60px;padr 10}
+aside{  position : relative; mart 0;width:100%;background-image:image_fond couleur_fond; fs 16  min-height: 87%;height:87%; }
+footer{txtr  width:100%; height:50px;padr 10}
   footer p.conf{}
 
-.corps{flol pad 10 width:74%; mar 0 min-width:580px;  marb 30}
+.corps{flol pad 10 width:74%; mar 0 min-width:580px;  marb 30  min-height: 100%; }
 .snippet_content{padb 10 width:100%;}
 .snippet_content .origine,.snippet_content p{marl 25 padl 5 padb 5;}
 .tag_cloud {padl 5 padr 5}
@@ -261,20 +261,20 @@ a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
 /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 STYLE SPECIAL TAGS & H1 HERE : H1.tag / .button_tag{style};
 */
-h1.php,.bouton_php{background-color:rgba(150,0,200,0.5)!important;}
-h1.php:hover,.bouton_php:hover{background-color:rgba(150,0,200,0.9)!important;}
-h1.python,.bouton_python{background-color:rgba(200,150,0,0.5)!important;}
-h1.python:hover,.bouton_python:hover{background-color:rgba(200,150,0,1)!important;}
-h1.jquery, .bouton_jquery{background-color:rgba(0,130,200,0.5)!important;}
-h1.jquery:hover, .bouton_jquery:hover{background-color:rgba(0,130,200,0.9)!important;}
-h1.css,h1.css3, h1.html, h1.html5,.bouton_css,.bouton_css3,.bouton_html,.bouton_html5{background-color:rgba(0,150,0,0.5)!important;}
-h1.css:hover,h1.css3:hover, h1.html:hover,h1.html5:hover, .bouton_css:hover,.bouton_css3:hover,.bouton_html:hover,.bouton_html5:hover{background-color:rgba(0,120,0,0.9)!important;}
-h1.js, h1.javascript,.bouton_js,.bouton_javascript{background-color:rgba(0,50,250,0.5)!important;}
-h1.js:hover, h1.javascript:hover,.bouton_js:hover,.bouton_javascript:hover{background-color:rgba(0,50,250,0.9)!important;}
-.bouton_prive{background-color:rgba(250,50,0,0.5)!important;}
-.bouton_prive:hover{background-color:rgba(250,50,0,0.9)!important;}
-.bouton_public{background-color:rgba(0,250,0,0.5)!important;}
-.bouton_public:hover{background-color:rgba(0,250,0,0.9)!important;}
+h1.php,.button_php{background-color:rgba(150,0,200,0.5)!important;}
+h1.php:hover,.button_php:hover{background-color:rgba(150,0,200,0.9)!important;}
+h1.python,.button_python{background-color:rgba(200,150,0,0.5)!important;}
+h1.python:hover,.button_python:hover{background-color:rgba(200,150,0,1)!important;}
+h1.jquery, .button_jquery{background-color:rgba(0,130,200,0.5)!important;}
+h1.jquery:hover, .button_jquery:hover{background-color:rgba(0,130,200,0.9)!important;}
+h1.css,h1.css3, h1.html, h1.html5,.button_css,.button_css3,.button_html,.button_html5{background-color:rgba(0,150,0,0.5)!important;}
+h1.css:hover,h1.css3:hover, h1.html:hover,h1.html5:hover, .button_css:hover,.button_css3:hover,.button_html:hover,.button_html5:hover{background-color:rgba(0,120,0,0.9)!important;}
+h1.js, h1.javascript,.button_js,.button_javascript{background-color:rgba(0,50,250,0.5)!important;}
+h1.js:hover, h1.javascript:hover,.button_js:hover,.button_javascript:hover{background-color:rgba(0,50,250,0.9)!important;}
+.button_prive{background-color:rgba(250,50,0,0.5)!important;}
+.button_prive:hover{background-color:rgba(250,50,0,0.9)!important;}
+.button_public{background-color:rgba(0,250,0,0.5)!important;}
+.button_public:hover{background-color:rgba(0,250,0,0.9)!important;}
 
 /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 */
