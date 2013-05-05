@@ -101,6 +101,7 @@ footer{txtr  width:100%; height:50px;padr 10}
 .snippet_content{padb 10 width:100%;}
 .snippet_content .origine,.snippet_content p{marl 25 padl 5 padb 5;}
 .tag_cloud {padl 5 padr 5}
+.tag_cloud a.checked{border:1px solid red;}
 .add_snippet{ pad 10 background:image_fond couleur_bouton; insetshadow 1 4 roundbottom arrondi}
 .corps label{disib width:25%;}
 

@@ -4,7 +4,7 @@
 @License: open source, free to download & fork ^^
 @languages: French/Spanish and English 
 @apoligizes: please forget about my english (learned from american & british series ;-) 
-@status: alpha
+@status: alpha 0.71
 
 what's that ?
 -------------------------------------------------------------- 
@@ -28,7 +28,7 @@ Things already done:
 - config page
 - english & french: very easy to add a new language 
 - all the app is in one php file (starting configuration, templates, function, core, post & get handling, rss etc.) less than 31ko...
-- filtered rss feeds: new snippets feeds, one feed for each tag or search rss feed
+- filtered rss feeds: new snippets feeds, one feed for each tag or search rss feed (multiple tags & search allowed)
 - admin space (easily created when you first start the app) 
 - highlight.js included (but not essential)
 - jquip (30ko) and not jquery 
@@ -43,14 +43,14 @@ Todo list:
 - an option to create a snippet package when you start a brand new project
 - optimize code & css (surely a big pain in the ass final task ^^)
 - a bookmarklet to store a new snippet whith as few clicks as possible
-- one click backup option
-- crypt the data file
+- one click backup option / import snippets / replace datafile
+- crypt the data file ?
 
 
 
 Bugs:
 -------------------------------------------------------------- 
-Nothing yet 
+Nothing yet (I'm searching ^^)
 
 
 
