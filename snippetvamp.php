@@ -104,7 +104,7 @@ if (!file_exists('config.dat')){
 	$config=unstore('config.dat');
 	if ($config['default_status_private']=='false'){$config['default_status_private']=false;}else{$config['default_status_private']=true;}
 }
-$config['version']='alpha 0.71';
+$config['version']='alpha 0.72';
 
 # data file 
 ######################################################################
@@ -174,7 +174,7 @@ function Decrypte($Texte,$Cle){$Texte = GenerationCle(base64_decode($Texte),$Cle
 function id_user(){$id=array();$id['REMOTE_ADDR']=$_SERVER['REMOTE_ADDR'];$id['HTTP_USER_AGENT']=$_SERVER['HTTP_USER_AGENT'];$id['session_id']=session_id();$id=serialize($id);return $id;}
 function is_ok(){global $config;$expired=false;if (!isset($_SESSION['id_user'])){return false;}if ($_SESSION['expire']<time()){$expired=true;}$sid=Decrypte($_SESSION['id_user'],$config['encryption_key']);$id=id_user();if ($sid!=$id || $expired==true){return false;}else{$_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;}	}
 function log_user($login_donne,$pass_donne){global $config;if ($config['login']==$login_donne && $config['pass']==hash('sha512', $config["salt"].$pass_donne)){	$_SESSION['id_user']=Crypte(id_user(),$config['encryption_key']);$_SESSION['login']=$config['login'];	$_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;}else{exit_redirect();return false;}}
-function exit_redirect(){@session_unset();@session_destroy();reload_page();}
+function exit_redirect(){@session_unset();@session_destroy();reload_page(false);}
 function is_public($id_nb,$returnbool=true){global $snippets;if ($snippets[$id_nb]['#public']=='true'||$snippets[$id_nb]['#public']===true){if ($returnbool==true){return true;}else{return ' public ';}}else{if ($returnbool==true){return false;}else{return ' prive ';}} }
 function loggedstring($tpl=''){if (is_ok()){return $tpl;}else{return '';}}
 function conn_deconn(){global $template; if (!is_ok()){echo $template['connect_form'];}else{echo $template['deconnect_button'];}}
@@ -182,7 +182,18 @@ function map_entities($chaine){return htmlentities($chaine, ENT_QUOTES, 'UTF-8')
 # Content
 function save(){cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
 function load(){global $config;return unstore($config['data_file']);}
-function toggle_public($nb){global $snippets;if (!isset($snippets[$nb])){return false;}if ($snippets[$nb]['#public']=='true'||$snippets[$nb]['#public']===true){$snippets[$nb]['#public']=false;}else{$snippets[$nb]['#public']=true;}}
+function toggle_public($nb){
+	global $snippets;
+	if (!isset($snippets[$nb])){
+		return false;
+	}
+	
+	if ($snippets[$nb]['#public']=='true'||$snippets[$nb]['#public']===true){
+		$snippets[$nb]['#public']=false;
+	}else{
+		$snippets[$nb]['#public']=true;
+	}
+}
 function templatise_snippet($snippet,$tpl='snippet'){global $template,$config;if (!isset($snippet['#tags'])||!isset($snippet['#num'])||!isset($snippet['#adresse'])){return false;}$snippet['#public']=is_public($snippet['#num'],false);if($snippet['#public']==' public '){$snippet['#direct_link']=str_replace(array('#num','#height'),array($snippet['#num'], embed_height($snippet['#contenu'])),$template['embed_code']);}else{$snippet['#direct_link']='';}$snippet=secure($snippet);$snippet['#nolink']=$snippet['#tags'];if ($snippet['#adresse']!=''){$snippet['#adresse']='<a class="adr" href="'.$snippet['#adresse'].'" >'.$snippet['#adresse'].'</a>';};$snippet['#tags']=preg_replace('#([^ ]+)#',$template['tag_btn'],$snippet['#tags']);$snippet['#origine']=$_SERVER['QUERY_STRING'];return str_replace(array_keys($snippet),array_values($snippet),$template[$tpl])."\n";}
 function list_tags(){global $snippets;$tags=array();foreach($snippets as $snippet){if (isset($snippet['#tags'])){$t=explode(' ',trim($snippet['#tags']));foreach ($t as $tag){$tag=trim($tag);if(!isset($tags[$tag])){$tags[$tag]=1;}else{$tags[$tag]++;}}}} ksort($tags);unset($tags['']);return $tags;}
 function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){
@@ -226,7 +237,7 @@ function search($chaine,$cle=false){
 	$chaine=explode('+',$chaine);
 	$nb_words=count($chaine);
 	$list='';$counter=0;$admin=is_ok();
-	
+	aff($admin);
 	foreach($snippets as $snippet){	
 		if ($admin || isset($snippet['#num']) && is_public($snippet['#num'])){ // access allowed
 			if (!$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ 
@@ -266,7 +277,8 @@ function return_matching($chaine,$cle=false){
 		}
 	} 
 	return $resultats;
-}function reload_page($query=''){if ($query==''){$query=$_SERVER['QUERY_STRING'];}header('Location: snippetvamp.php?'.$query);}
+}
+function reload_page($query=''){ if ($query===false){$query=$_SERVER['QUERY_STRING'];}header('Location: snippetvamp.php?'.$query);}
 function temps(){$t=microtime();$tt=explode(' ',$t);return $tt[0]+$tt[1];}
 function embed_height($string){return (substr_count($string, "\n")*18)+140; }
 
@@ -375,7 +387,7 @@ if (!isset($tag)){
 	$tag=msg('last');$counter=0;
 	$s=array_reverse($snippets);
 	foreach($s as $snippet){
-		if (isset($snippet['#num'])&&is_public($snippet['#num'])){
+		if (isset($snippet['#num'])&&$admin||isset($snippet['#num'])&&is_public($snippet['#num'])){
 			$page.=templatise_snippet($snippet);$counter++;
 		}
 		if ($counter==$config['nb_snippets_homepage']){break;}
