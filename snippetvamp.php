@@ -454,7 +454,7 @@ else{echo $contenu;}
 <?php if (file_exists('highlight.js')){ ?> <link rel="stylesheet" href="styles/<?php e('highlight_theme'); ?>.css"> <script type="text/javascript" src="highlight.js"></script><script>hljs.initHighlightingOnLoad();</script>  <?php } ?>
 <script>
 	$(function() {
-		$('.logo').click(function(){$(this).parent().hide();});
+		//$('.logo').click(function(){$(this).parent().hide();});
 		$(".toggle_next").click(function(){	$(this).next().toggle();return false;}); 
 		$(".edit").click(function(){document.location.href="snippetvamp.php?edit="+$(this).attr('data');return false;});
 		$(".suppr").click(function(){if(confirm('<?php echo msg("delete this snippet ? ");?>')){document.location.href="snippetvamp.php?suppr="+$(this).attr('data');}else{return false;}});
