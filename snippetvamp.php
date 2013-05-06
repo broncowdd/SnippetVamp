@@ -237,7 +237,6 @@ function search($chaine,$cle=false){
 	$chaine=explode('+',$chaine);
 	$nb_words=count($chaine);
 	$list='';$counter=0;$admin=is_ok();
-	aff($admin);
 	foreach($snippets as $snippet){	
 		if ($admin || isset($snippet['#num']) && is_public($snippet['#num'])){ // access allowed
 			if (!$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ 
