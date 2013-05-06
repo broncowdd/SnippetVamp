@@ -160,7 +160,7 @@ footer{txtr  width:100%; height:50px;padr 10}
     .edit{background-position: 2px -704px!important;}
     .txt{background-position: 2px -421px!important;}
     button.public{background-position: 2px -1523px!important;}
-    button.prive{background-position: 2px 1422px!important;}
+    button.prive{background-position: 2px -1422px!important;}
     .tag_cloud a.filter{width:100%;}
 
 /*  Hover */
