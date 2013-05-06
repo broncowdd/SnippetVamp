@@ -104,7 +104,7 @@ if (!file_exists('config.dat')){
 	$config=unstore('config.dat');
 	if ($config['default_status_private']=='false'){$config['default_status_private']=false;}else{$config['default_status_private']=true;}
 }
-$config['version']='alpha 0.72';
+$config['version']='alpha 0.73';
 
 # data file 
 ######################################################################
@@ -155,7 +155,7 @@ if ($admin&&isset($_POST['#num'])){
 	foreach($_POST as $cle=>$valeur){
 		if (substr($cle,0,5)!='check'){	$snippets[$_POST['#num']][$cle]=$valeur;}else {if (!stripos(' '.$snippets[$_POST['#num']]['#tags'],$valeur)){$snippets[$_POST['#num']]['#tags'].=' '.$valeur;}}
 	}
-	$snippets[$_POST['#num']]['#tags']=trim($snippets[$_POST['#num']]['#tags']);
+	$snippets[$_POST['#num']]['#tags']=htmlentities(tag_normalise(trim($snippets[$_POST['#num']]['#tags'])));
 	$snippets[$_POST['#num']]['#rss_date']=@date('r');// RSS compatible date format (important)
 	$snippets[$_POST['#num']]['#date']=@date('d/m/Y');// human friendly date format ^^
 	save();$page= success('saved');
@@ -179,6 +179,7 @@ function is_public($id_nb,$returnbool=true){global $snippets;if ($snippets[$id_n
 function loggedstring($tpl=''){if (is_ok()){return $tpl;}else{return '';}}
 function conn_deconn(){global $template; if (!is_ok()){echo $template['connect_form'];}else{echo $template['deconnect_button'];}}
 function map_entities($chaine){return htmlentities($chaine, ENT_QUOTES, 'UTF-8');}
+function tag_normalise($chaine){return str_ireplace(array('+','#','.'),array('p','sharp','dot'),$chaine);}
 # Content
 function save(){cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
 function load(){global $config;return unstore($config['data_file']);}
@@ -410,7 +411,24 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 	<link rel="shortcut icon" href="theme/favicon.png" />
 	<link rel="stylesheet" type="text/css" href="theme/computed_snippetvamp.css?lastupdate=1365701915"  media="screen" />
 	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?php feed_link(true); ?>" />
-
+	<style>
+		/* tags styles here */
+		/* H1.tag / .button_tag{style};*/
+		h1.php,.button_php{background-color:rgba(150,0,200,0.5)!important;}
+		h1.php:hover,.button_php:hover{background-color:rgba(150,0,200,0.9)!important;}
+		h1.cpp,.button_cpp{background-color:rgba(30,30,90,0.5)!important;}
+		h1.cpp:hover,.button_cpp:hover{background-color:rgba(30,30,90,0.8)!important;}
+		h1.csharp,.button_csharp{background-color:rgba(30,90,30,0.5)!important;}
+		h1.csharp:hover,.button_csharp:hover{background-color:rgba(30,90,30,0.9)!important;}
+		h1.python,.button_python{background-color:rgba(200,100,0,0.5)!important;}
+		h1.python:hover,.button_python:hover{background-color:rgba(200,100,0,1)!important;}
+		h1.jquery, .button_jquery{background-color:rgba(0,130,200,0.5)!important;}
+		h1.jquery:hover, .button_jquery:hover{background-color:rgba(0,130,200,0.9)!important;}
+		h1.css,h1.css3, h1.html, h1.html5,.button_css,.button_css3,.button_html,.button_html5{background-color:rgba(0,150,0,0.5)!important;}
+		h1.css:hover,h1.css3:hover, h1.html:hover,h1.html5:hover, .button_css:hover,.button_css3:hover,.button_html:hover,.button_html5:hover{background-color:rgba(0,120,0,0.9)!important;}
+		h1.js, h1.javascript,.button_js,.button_javascript{background-color:rgba(0,50,250,0.5)!important;}
+		h1.js:hover, h1.javascript:hover,.button_js:hover,.button_javascript:hover{background-color:rgba(0,50,250,0.9)!important;}
+	</style>
 	<!--[if IE]><script> document.createElement("article");document.createElement("aside");document.createElement("section");document.createElement("footer");</script> <![endif]-->
 </head>
 
@@ -438,7 +456,7 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 	<aside>
 		<div class="margin">.</div>
 		<div class="corps">
-			<h1 class="titre"><?php echo htmlentities($tag); ?></h1>
+			<h1 class="titre"><?php echo map_entities($tag); ?></h1>
 			<?php echo $page; ?>
 		</div>
 	</aside>
@@ -452,8 +470,6 @@ if (!$admin){$contenu=cache_end($nom_page_cache,0);}
 if (isset($_GET['embed'])){exit($contenu);}// Don't add the footer to an embedded snippet
 else if (isset($_GET['rss'])){header("Content-Type: application/rss+xml");exit($contenu);} // send correct header and don't add footer to rss feed
 else{echo $contenu;}
-
-
 #*************************************************************
 ?>
 <div style="clear:both"> </div>
