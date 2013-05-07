@@ -224,7 +224,7 @@ h1.titre{fs 28 roundc arrondi  marb 20 pad 5 insetshadow 1 4 txtc smallcaps}
 
 
 .snippet_content{roundbottom arrondi insetshadow 1 3 boxemboss 1 background:image_fond #999;marr 10}
-.add_snippet li{list-style: none;noselect}
+.add_snippet li{list-style: none;}
 .add_snippet .tags{pad 10 madb 10 }
 .add_snippet .tags label{ pad 5  curhand fs 16!important  }
 .add_snippet .tags input[type=checkbox],.add_snippet .tags input[type=radio]{hideme}
