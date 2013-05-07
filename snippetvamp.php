@@ -22,7 +22,8 @@ if (file_exists('theme/auto_css.php')){include('theme/auto_css.php'); } // use a
 ######################################################################
 $msg=array();
 $msg['fr']=array(
-	'embed code'=>'Code d\intégration',
+	'embed code'=>'Code d\'intégration',
+	'no embed code (private snippet)'=>'Pas de code d\'intégration (snippet privé)',
 	'generated in'=>'Page générée en',
 	'true'=>'Oui',
 	'false'=>'Non',
@@ -103,7 +104,7 @@ if (!file_exists('config.dat')){
 }else{
 	$config=unstore('config.dat');
 }
-$config['version']='alpha 0.74';
+$config['version']='alpha 0.75';
 
 # data file 
 ######################################################################
@@ -178,74 +179,22 @@ function is_public($id_nb,$returnbool=true){global $snippets;if ($snippets[$id_n
 function loggedstring($tpl=''){if (is_ok()){return $tpl;}else{return '';}}
 function conn_deconn(){global $template; if (!is_ok()){echo $template['connect_form'];}else{echo $template['deconnect_button'];}}
 function map_entities($chaine){return htmlentities($chaine, ENT_QUOTES, 'UTF-8');}
-function tag_normalise($chaine){return str_ireplace(array('+','#','.'),array('p','sharp','dot'),$chaine);}
+function tag_normalise($chaine){$chaine=remove_accents($chaine);$chaine=preg_replace('/[^\w#+.]/','',$chaine);return str_ireplace(array('+','#','.'),array('p','sharp','dot'),$chaine);}
+function remove_accents($str, $charset='utf-8'){ $str = htmlentities($str, ENT_NOQUOTES, $charset); $str = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str); $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str); $str = preg_replace('#&[^;]+;#', '', $str); return $str;} // via weirdog.com 
 # Content
 function save(){cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
 function load(){global $config;return unstore($config['data_file']);}
-function toggle_public($nb){
-	global $snippets;
-	if (!isset($snippets[$nb])){
-		return false;
-	}
-	
-	if ($snippets[$nb]['#public']=='true'||$snippets[$nb]['#public']===true){
-		$snippets[$nb]['#public']=false;
-	}else{
-		$snippets[$nb]['#public']=true;
-	}
-}
-function templatise_snippet($snippet,$tpl='snippet'){global $template,$config;if (!isset($snippet['#tags'])||!isset($snippet['#num'])||!isset($snippet['#adresse'])){return false;}$snippet['#public']=is_public($snippet['#num'],false);if($snippet['#public']==' public '){$snippet['#direct_link']=str_replace(array('#num','#height'),array($snippet['#num'], embed_height($snippet['#contenu'])),$template['embed_code']);}else{$snippet['#direct_link']='';}$snippet=secure($snippet);$snippet['#nolink']=$snippet['#tags'];if ($snippet['#adresse']!=''){$snippet['#adresse']='<a class="adr" href="'.$snippet['#adresse'].'" >'.$snippet['#adresse'].'</a>';};$snippet['#tags']=preg_replace('#([^ ]+)#',$template['tag_btn'],$snippet['#tags']);$snippet['#origine']=$_SERVER['QUERY_STRING'];return str_replace(array_keys($snippet),array_values($snippet),$template[$tpl])."\n";}
+function toggle_public($nb){global $snippets;if (!isset($snippets[$nb])){return false;}	if ($snippets[$nb]['#public']=='true'||$snippets[$nb]['#public']===true){$snippets[$nb]['#public']=false;}else{$snippets[$nb]['#public']=true;}}
+function templatise_snippet($snippet,$tpl='snippet'){global $template,$config;if (!isset($snippet['#tags'])||!isset($snippet['#num'])||!isset($snippet['#adresse'])){return false;}$snippet['#public']=is_public($snippet['#num'],false);if($snippet['#public']==' public '){$snippet['#direct_link']=str_replace(array('#num','#height'),array($snippet['#num'], embed_height($snippet['#contenu'])),$template['embed_code']);}else{$snippet['#direct_link']=msg('no embed code (private snippet)');}$snippet=secure($snippet);$snippet['#nolink']=$snippet['#tags'];if ($snippet['#adresse']!=''){$snippet['#adresse']='<a class="adr" href="'.$snippet['#adresse'].'" >'.$snippet['#adresse'].'</a>';}$snippet['#tags']=preg_replace('#([^ ]+)#',$template['tag_btn'],$snippet['#tags']);$snippet['#origine']=$_SERVER['QUERY_STRING'];return str_replace(array_keys($snippet),array_values($snippet),$template[$tpl])."\n";}
 function list_tags(){global $snippets;$tags=array();foreach($snippets as $snippet){if (isset($snippet['#tags'])){$t=explode(' ',trim($snippet['#tags']));foreach ($t as $tag){$tag=trim($tag);if(!isset($tags[$tag])){$tags[$tag]=1;}else{$tags[$tag]++;}}}} ksort($tags);unset($tags['']);return $tags;}
-function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){
-	global $snippets,$template;
-	$tag_cloud='';
-	if (!isset($snippets['tag_list'])){return false;} 
-	if ($sortbynb){arsort($snippets['tag_list']);} 
-	foreach($snippets['tag_list'] as $tag=>$nb){
-		$t=str_replace('#TAG',$tag,$template[$templ]);
-		$t=str_replace('#NB',$nb,$t); 
-		if ($tags_checked && stripos($tags_checked,$tag)!==false || !$tags_checked && stripos($_SERVER['QUERY_STRING'],$tag) ){
-			$t=str_replace('#checked','checked',$t); 
-		}else{
-			$t=str_replace('#checked','',$t);
-		}
-		$tag_cloud.= $t;
-	}
-	return $tag_cloud;
-}
-function make_rss($array,$titre){
-	global $template,$config;
-	if(isset($_POST['config'])){return false;}
-
-	echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); 
-	foreach($array as $a){
-		if (isset($a['#num']) && is_public($a['#num'])){ 		
-			$a=array_map('map_entities',$a);
-			echo str_replace(array_keys($a),array_values($a),$template['rss_item']);
-		}
-	} 
-	echo $template['rss_footer'];
-}
+function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){global $snippets,$template;$tag_cloud='';if (!isset($snippets['tag_list'])){return false;} if ($sortbynb){arsort($snippets['tag_list']);} foreach($snippets['tag_list'] as $tag=>$nb){	$t=str_replace('#TAG',$tag,$template[$templ]);	$t=str_replace('#NB',$nb,$t); 	if ($tags_checked && stripos($tags_checked,$tag)!==false || !$tags_checked && stripos($_SERVER['QUERY_STRING'],$tag) ){		$t=str_replace('#checked','checked',$t); }else{	$t=str_replace('#checked','',$t);}$tag_cloud.= $t;}return $tag_cloud;}
+function make_rss($array,$titre){global $template,$config;if(isset($_POST['config'])){return false;}	echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); foreach($array as $a){if (isset($a['#num']) && is_public($a['#num'])){ $a=array_map('map_entities',$a);echo str_replace(array_keys($a),array_values($a),$template['rss_item']);}} echo $template['rss_footer'];}
 function form($num=false){if (!is_ok()){return '';} global $config,$template,$snippets;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');if (!$num){$repl['#uniqid']=uniqid();	$repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value=""';$repl['value="#adresse"']='value=""';$repl['#contenu</textarea>']='</textarea>';$repl['#hidden']='hidden';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{if (isset($snippets[$num])){$repl['#uniqid']=$num;$repl['#formtitre']=msg('Edit a snippet');	$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb'],$snippets[$num]['#tags']);$repl['value="#titre"']='value="'.$snippets[$num]['#titre'].'"';$repl['value="#adresse"']='value="'.$snippets[$num]['#adresse'].'"';$repl['#contenu</textarea>']=$snippets[$num]['#contenu'].'</textarea>';$repl['#hidden']='';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{return false;}}}
 function form_config(){global $config;$form='';$form.=  '<form name="config" action="" method="post" class="">';foreach ($config as $cle=>$val){if ($cle!='login'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'&&$cle!='version'){$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';if (is_bool($val)||$val=='true'||$val=='false'){if ($val==true){$val='true';}else{	$val='false';}$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.msg($val).'</option><option value="true">'.msg('true').'</option><option value="false">'.msg('false').'</option></select>';}else{$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';}}}	$form.='<input type="submit" value="'.msg('Save').'"/></form>';	return $form;}
 function feed_link($url_only=false){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&stripos($_SERVER['QUERY_STRING'],'txt=')===false){global $config;$link=$config['url'].'?rss=on&'.$_SERVER['QUERY_STRING']; if ($url_only){echo $link;}else{echo '<p class="rss"><a href="'.$link.'">'.msg("This page's Feed").'</a></p>';}}}
 function config_link(){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&is_ok()){echo'<a class="config" href="?config=true">'.msg('Configuration').'</a> - ';}}
 function are_values_in_string($array,$string,$all=true){$found=0;foreach($array as $val){if (stripos($string, $val)!==false){$found++;}}if ($all && $found==count($array) || !$all && $found>0){return true;}else{return false;}}
-function search($chaine,$cle=false){
-	global $snippets,$template;	
-	$chaine=str_replace(' ','+',$chaine);
-	$chaine=explode('+',$chaine);
-	$nb_words=count($chaine);
-	$list='';$counter=0;$admin=is_ok();
-	foreach($snippets as $snippet){	
-		if ($admin || isset($snippet['#num']) && is_public($snippet['#num'])){ // access allowed
-			if (!$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ 
-				$list.= templatise_snippet($snippet);$counter++;
-			}
-		}
-	}
-	if ($list!=''){return $list;}else{return false;}
-}
+function search($chaine,$cle=false){global $snippets,$template;	$chaine=str_replace(' ','+',$chaine);$chaine=explode('+',$chaine);$nb_words=count($chaine);$list='';$counter=0;$admin=is_ok();foreach($snippets as $snippet){if ($admin || isset($snippet['#num']) && is_public($snippet['#num'])){ if (!$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ $list.= templatise_snippet($snippet);$counter++;}}}if ($list!=''){return $list;}else{return false;}}
 function return_if($return_value,$truefalse){if ($truefalse){return $return_value;}else{return '';}}
 function msg($m){global $msg,$config;if(isset($msg[$config['lang']][$m])){return $msg[$config['lang']][$m];}else{return $m;}}
 function alert($txt){return '<p class="alert">'.msg($txt).'</p>';}
@@ -261,22 +210,10 @@ function cache_clear(){cache_temp_folder();$fs=glob('temp/*'); if(!empty($fs)){f
 function cache_is_obsolete($fichier){$dat=@filemtime('temp/'.$fichier);if (!file_exists('temp/'.$fichier)){return true;}if ($dat==0){return false;}if ($dat<@date('U')){cache_delete($fichier);return true;}return false;}
 function cache_delete($fichier){if (file_exists('temp/'.$fichier)){unlink ('temp/'.$fichier);}}
 function cache_start(){ob_start();}
-function cache_end($fichier,$duree){$donnees=ob_get_clean();cache_write($fichier,$donnees,$duree);return $donnees;}
+function cache_end($fichier,$duree){$donnees=stripslashes(ob_get_clean());cache_write($fichier,$donnees,$duree);return $donnees;}
 # Misc
 function secure($array){return array_map('map_entities',$array);}
-function return_matching($chaine,$cle=false){
-	global $snippets;
-	$chaine=str_replace(' ','+',$chaine);
-	$chaine=explode('+',$chaine);
-	$nb_words=count($chaine);
-	$resultats=array();
-	foreach($snippets as $snippet){
-		if (isset($snippet['#num']) && !$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ 
-			$resultats[$snippet['#num']]= $snippet;
-		}
-	} 
-	return $resultats;
-}
+function return_matching($chaine,$cle=false){global $snippets;$chaine=str_replace(' ','+',$chaine);$chaine=explode('+',$chaine);$nb_words=count($chaine);$resultats=array();foreach($snippets as $snippet){if (isset($snippet['#num']) && !$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ $resultats[$snippet['#num']]= $snippet;}} return $resultats;}
 function reload_page($query=''){ if ($query===false){$query=$_SERVER['QUERY_STRING'];}header('Location: snippetvamp.php?'.$query);}
 function temps(){$t=microtime();$tt=explode(' ',$t);return $tt[0]+$tt[1];}
 function embed_height($string){return (substr_count($string, "\n")*18)+140; }
@@ -312,7 +249,7 @@ $template['snippet_frm']='<br/>
 		<input type="hidden" name="#num" value="#uniqid"/>
 		<li><label for="titre">#labeltitre</label> <input type="text" name="#titre" id="titre" required value="#titre"/></li>
 		<li><label for="adresse">#labeladr</label> <input type="text" name="#adresse" id="adresse"  value="#adresse"/></li>
-		<li><label for="contenu">#labelcontent</label><textarea type="text" name="#contenu" id="contenu" required>#contenu</textarea></li>
+		<li><label for="contenu">#labelcontent</label><textarea name="#contenu" id="contenu" required>#contenu</textarea></li>
 		<li><label for="tags">#labeltags</label><input type="text" name="#tags" id="#tags" title ="'.msg('separated with spaces').'"/></li>
 		<li class="tags">#tagcloud</li>
 		<li><p class="tags">
@@ -508,6 +445,3 @@ else{echo $contenu;}
 	});
 </script>
 </html>
-<?php
-
-?>
