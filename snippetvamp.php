@@ -102,9 +102,8 @@ if (!file_exists('config.dat')){
 	store('config.dat',$config);
 }else{
 	$config=unstore('config.dat');
-	if ($config['default_status_private']=='false'){$config['default_status_private']=false;}else{$config['default_status_private']=true;}
 }
-$config['version']='alpha 0.73';
+$config['version']='alpha 0.74';
 
 # data file 
 ######################################################################
@@ -298,8 +297,14 @@ $template['snippet']=loggedstring($template['buttons']).'<h1 class="snippet_titl
 $template['tag_btn']='<a class="button_$1" href="snippetvamp.php?tag=$1">$1</a> ';
 $template['tag_cloud_link']='<a href="snippetvamp.php?tag=#TAG" class="button_#TAG"><input type="checkbox" name="#TAG" class="'.$hidden.' tagcheck" #checked/>#TAG <em>#NB</em></a> ';
 $template['tag_cloud_checkbox']='<input type="checkbox" id="ID_#TAG" name="check#TAG" value="#TAG" #checked/><label class="button_#TAG" for="ID_#TAG">#TAG</label>  ';
-if (isset($_GET['edit'])){$checkpublic=return_if('checked',$snippets[$_GET['edit']]['#public']==true);$checkprivate=return_if('checked',$snippets[$_GET['edit']]['#public']==true);}
-else{$checkpublic=return_if('checked',$config['default_status_private']==false);$checkprivate=return_if('checked',$config['default_status_private']==true);}
+//set the private/public button status
+if (isset($_GET['edit'])){
+	if($snippets[$_GET['edit']]['#public']=='true'||$snippets[$_GET['edit']]['#public']===true){$checkpublic='checked';$checkprivate='';}
+	if($snippets[$_GET['edit']]['#public']=='false'||$snippets[$_GET['edit']]['#public']===false){$checkpublic='';$checkprivate='checked';}
+}else{ 
+	if($config['default_status_private']=='false'||$config['default_status_private']==false){$checkpublic='checked';$checkprivate='';}
+	if($config['default_status_private']=='true'||$config['default_status_private']==true){$checkpublic='';$checkprivate='checked';}
+}
 $template['snippet_frm']='<br/>
 <h1 class="toggle_next add">#formtitre</h1>
 <div class="add_snippet #hidden">
