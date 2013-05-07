@@ -4,7 +4,7 @@
 @License: open source, free to download & fork ^^
 @languages: French/Spanish and English 
 @apoligizes: please forget about my english (learned from american & british series ;-) 
-@status: alpha 0.71
+@status: alpha 
 
 what's that ?
 -------------------------------------------------------------- 
