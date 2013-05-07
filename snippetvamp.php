@@ -433,6 +433,8 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 		h1.css:hover,h1.css3:hover, h1.html:hover,h1.html5:hover, .button_css:hover,.button_css3:hover,.button_html:hover,.button_html5:hover{background-color:rgba(0,120,0,0.9)!important;}
 		h1.js, h1.javascript,.button_js,.button_javascript{background-color:rgba(0,50,250,0.5)!important;}
 		h1.js:hover, h1.javascript:hover,.button_js:hover,.button_javascript:hover{background-color:rgba(0,50,250,0.9)!important;}
+		h1.shell,.button_shell{background-color:rgba(0,193,145,0.5)!important;}
+		h1.shell:hover,.button_shell:hover{background-color:rgba(0,193,145,1)!important;}
 	</style>
 	<!--[if IE]><script> document.createElement("article");document.createElement("aside");document.createElement("section");document.createElement("footer");</script> <![endif]-->
 </head>
