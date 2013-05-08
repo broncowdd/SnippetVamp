@@ -11,7 +11,6 @@
 
 $start=temps();
 session_start();
-
 // Remove that form the final version
 function aff($a,$stop=true){echo 'Arret a la ligne '.__LINE__.' du fichier '.__FILE__.'<pre>';var_dump($a);if ($stop){exit();}}
 if (file_exists('theme/auto_css.php')){include('theme/auto_css.php'); } // use auto_css if present 
@@ -22,6 +21,20 @@ if (file_exists('theme/auto_css.php')){include('theme/auto_css.php'); } // use a
 ######################################################################
 $msg=array();
 $msg['fr']=array(
+	'multiple_tag_selection'=>'Sélection multiple de tags par défaut',
+	'Error loading file'=>'Erreur en chargeant le fichier',
+	'import successfull'=>'Importation réussie',
+	'Snippets successfully replaced'=>'Tous les snippets ont été remplacés',
+	'wrong filetype'=>'Type de fichier incorrect ',
+	'Error in the file format'=>'Erreur dans le format de données',
+	'snippet file'=>'Fichier de snippets',
+	'import'=>'Importer snippets',
+	'backup'=>'Télécharger fichier',
+	'replace'=>'Remplacer snippets',
+	'import a data file from your computer'=>'Importer des snippets depuis un fichier SnippetVamp de votre ordinateur',
+	'replace all your snippets with a data file from your computer (erase ALL YOUR CURRENT SNIPPETS)'=>'Remplacer tous vos snippets par ceux d\'un fichier dat de votre ordinateur (restauration) Tous vos snippets courants seront détruits !',
+	'backup your data file to your computer'=>'Sauvegarder sur votre ordinateur le fichier dat de SnippetVamp',
+	'save this configuration'=>'Sauver la configuration',
 	'embed code'=>'Code d\'intégration',
 	'no embed code (private snippet)'=>'Pas de code d\'intégration (snippet privé)',
 	'generated in'=>'Page générée en',
@@ -104,8 +117,7 @@ if (!file_exists('config.dat')){
 }else{
 	$config=unstore('config.dat');
 }
-$config['version']='alpha 0.75';
-
+$config['version']='alpha 0.76';
 # data file 
 ######################################################################
 if (!file_exists($config['data_file'])){$snippets=array();store($config['data_file'],$snippets);cache_clear();}
@@ -158,9 +170,43 @@ if ($admin&&isset($_POST['#num'])){
 	$snippets[$_POST['#num']]['#tags']=htmlentities(tag_normalise(trim($snippets[$_POST['#num']]['#tags'])));
 	$snippets[$_POST['#num']]['#rss_date']=@date('r');// RSS compatible date format (important)
 	$snippets[$_POST['#num']]['#date']=@date('d/m/Y');// human friendly date format ^^
-	save();$page= success('saved');
+	save();$page.= success('saved');
 }
-
+# import snippets
+######################################################################
+if ($admin&&isset($_FILES['import_file'])){
+	if($_FILES['import_file']['type']=='application/octet-stream'){
+		$new_snippets=unstore($_FILES['import_file']['tmp_name']);
+		if (isset($new_snippets['tag_list'])){
+			//merge tag array before (avoid tags loss)
+			if (!isset($snippets['tag_list'])){$snippets['tag_list']=array();}
+			$tags=$snippets['tag_list'];$new_tags=$new_snippets['tag_list'];
+			foreach ($tags as $tag=>$nb){
+				if (isset($new_tags[$tag])){
+					$new_tags[$tag]+=$nb;
+				}else{ $new_tags[$tag]=$nb;}
+			}
+			$new_snippets['tag_list']=$new_tags;
+			$snippets=array_merge($snippets,$new_snippets);
+			save();
+			$page= success('import successfull');
+		}else{$page.=alert(msg('Error in the file format'));}
+	}else{$page.=alert(msg('wrong filetype'));}
+	
+}
+# replace snippets
+######################################################################
+if ($admin&&isset($_FILES['replace_file'])){
+	if($_FILES['replace_file']['type']=='application/octet-stream'){
+		$new_snippets=unstore($_FILES['replace_file']['tmp_name']);
+		if (isset($new_snippets['tag_list'])){
+			if(rename($_FILES['replace_file']['tmp_name'], $config['data_file'])){
+				$page.= success(msg('Snippets successfully replaced'));
+				$snippets=load();
+			}else{$page.=alert(msg('Error loading file'));}
+		}else{$page.=alert(msg('Error in the file format'));}
+	}else{$page.=alert(msg('wrong filetype'));}
+}
 ######################################################################
 # core functions
 ######################################################################
@@ -190,7 +236,10 @@ function list_tags(){global $snippets;$tags=array();foreach($snippets as $snippe
 function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){global $snippets,$template;$tag_cloud='';if (!isset($snippets['tag_list'])){return false;} if ($sortbynb){arsort($snippets['tag_list']);} foreach($snippets['tag_list'] as $tag=>$nb){	$t=str_replace('#TAG',$tag,$template[$templ]);	$t=str_replace('#NB',$nb,$t); 	if ($tags_checked && stripos($tags_checked,$tag)!==false || !$tags_checked && stripos($_SERVER['QUERY_STRING'],$tag) ){		$t=str_replace('#checked','checked',$t); }else{	$t=str_replace('#checked','',$t);}$tag_cloud.= $t;}return $tag_cloud;}
 function make_rss($array,$titre){global $template,$config;if(isset($_POST['config'])){return false;}	echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); foreach($array as $a){if (isset($a['#num']) && is_public($a['#num'])){ $a=array_map('map_entities',$a);echo str_replace(array_keys($a),array_values($a),$template['rss_item']);}} echo $template['rss_footer'];}
 function form($num=false){if (!is_ok()){return '';} global $config,$template,$snippets;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');if (!$num){$repl['#uniqid']=uniqid();	$repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value=""';$repl['value="#adresse"']='value=""';$repl['#contenu</textarea>']='</textarea>';$repl['#hidden']='hidden';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{if (isset($snippets[$num])){$repl['#uniqid']=$num;$repl['#formtitre']=msg('Edit a snippet');	$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb'],$snippets[$num]['#tags']);$repl['value="#titre"']='value="'.$snippets[$num]['#titre'].'"';$repl['value="#adresse"']='value="'.$snippets[$num]['#adresse'].'"';$repl['#contenu</textarea>']=$snippets[$num]['#contenu'].'</textarea>';$repl['#hidden']='';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{return false;}}}
-function form_config(){global $config;$form='';$form.=  '<form name="config" action="" method="post" class="">';foreach ($config as $cle=>$val){if ($cle!='login'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'&&$cle!='version'){$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';if (is_bool($val)||$val=='true'||$val=='false'){if ($val==true){$val='true';}else{	$val='false';}$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.msg($val).'</option><option value="true">'.msg('true').'</option><option value="false">'.msg('false').'</option></select>';}else{$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';}}}	$form.='<input type="submit" value="'.msg('Save').'"/></form>';	return $form;}
+function form_config(){global $config;$form=  '<form name="config" action="" method="post">';foreach ($config as $cle=>$val){if ($cle!='login'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'&&$cle!='version'){$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';if (is_bool($val)||$val=='true'||$val=='false'){if ($val==true){$val='true';}else{	$val='false';}$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.msg($val).'</option><option value="true">'.msg('true').'</option><option value="false">'.msg('false').'</option></select>';}else{$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';}}}	$form.='<input type="submit" value="'.msg('Save').'" title="'.msg('save this configuration').'"/></form>';	return $form;}
+function form_import_file(){global $config;$form=  '<form name="import" action="" method="post" id="import"  enctype="multipart/form-data"><input type="file" id="import_file" name="import_file" class="hidden"/><label for="import_file" title="'.msg('import a data file from your computer').'">'.msg('import').' </label><input type="submit" class="ghost submit_import"/></form>';return $form;}
+function form_replace_file(){global $config;$form=  '<form name="replace" action="" method="post" id="replace" enctype="multipart/form-data"><input type="file" name="replace_file" id="replace_file" class="hidden"/><label for="replace_file" title="'.msg('replace all your snippets with a data file from your computer (erase ALL YOUR CURRENT SNIPPETS)').'">'.msg('replace').' </label><input type="submit" class="ghost submit_replace"/></form>';return $form;}
+function backup_link(){return '<input type="button" class="backup" value="'.msg('backup').'" title="'.msg('backup your data file to your computer').'"/>';}
 function feed_link($url_only=false){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&stripos($_SERVER['QUERY_STRING'],'txt=')===false){global $config;$link=$config['url'].'?rss=on&'.$_SERVER['QUERY_STRING']; if ($url_only){echo $link;}else{echo '<p class="rss"><a href="'.$link.'">'.msg("This page's Feed").'</a></p>';}}}
 function config_link(){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&is_ok()){echo'<a class="config" href="?config=true">'.msg('Configuration').'</a> - ';}}
 function are_values_in_string($array,$string,$all=true){$found=0;foreach($array as $val){if (stripos($string, $val)!==false){$found++;}}if ($all && $found==count($array) || !$all && $found>0){return true;}else{return false;}}
@@ -318,7 +367,7 @@ if ($_GET){
 	if ($admin&&isset($_GET['suppr'])&&isset($snippets[$_GET['suppr']])){unset($snippets[$_GET['suppr']]);save();reload_page($_GET['vars']);}	
 	if ($admin&&isset($_GET['edit'])&&isset($snippets[$_GET['edit']])){$form=form($_GET['edit']);}
 	if ($admin&&isset($_GET['toggle'])&&isset($snippets[$_GET['toggle']])){toggle_public($_GET['toggle']);save();reload_page($_GET['vars']);}	
-	if ($admin&&isset($_GET['config'])){$tag=msg('Configuration');$page=form_config();}	
+	if ($admin&&isset($_GET['config'])){$tag=msg('Configuration');$page.=form_config().'<br/><h1 class="titre">'.msg('snippet file').'</h1>'.backup_link().form_import_file().form_replace_file();}	
 }
 
 
@@ -419,7 +468,10 @@ else{echo $contenu;}
 #*************************************************************
 ?>
 <div style="clear:both"> </div>
-		<footer><?php feed_link(); ?><hr/><?php echo config_link().'<em><a href="https://github.com/broncowdd/SnippetVamp" title="'.msg('fork SnippetVamp on github').'">'.$config['app_name'].' '.$config['version'].'</a></em> '.msg('by');?> <a href="http://warriordudimanche.net">Bronco</a> - <?php echo msg('generated in');echo ' ',round(temps()-$start,6);?> s</footer>
+		<footer>
+			<?php feed_link(); ?><hr/><?php echo config_link().'<em><a href="https://github.com/broncowdd/SnippetVamp" title="'.msg('fork SnippetVamp on github').'">'.$config['app_name'].' '.$config['version'].'</a></em> '.msg('by');?> <a href="http://warriordudimanche.net">Bronco</a> - <?php echo msg('generated in');echo ' ',round(temps()-$start,6);?> s
+			<div class="maj hidden"></div>
+		</footer>
 
 
 	</body>
@@ -442,6 +494,9 @@ else{echo $contenu;}
 			document.location.href=tags;
 			return false;
 		});
+		$("#import_file").change(function(){$('.submit_import').click();});
+		$("#replace_file").change(function(){$('.submit_replace').click();});
+		$(".backup").click(function(){document.location.href="<?php echo $config['data_file'];?>";});
 	});
 </script>
 </html>
