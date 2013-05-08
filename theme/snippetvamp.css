@@ -66,7 +66,9 @@ pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll;
     .edit,
     button.public, 
     button.prive,
-    nav .logo
+    nav .logo,
+    input[type=file] + label,
+    .backup   
     {background:url(sprite.png) no-repeat!important;}
 
 
@@ -107,6 +109,8 @@ footer{txtr  width:100%; height:50px;padr 10}
 
 
 /* FORMS & BUTTONS (INCLUDING ALL ELEMENTS WITH BUTTON ASPECT: A H1 etc) */
+#import,#replace{disib }
+
 /*  Normal */
     input[type=checkbox]+label,input[type=radio]+label{disib width:auto;}
     #multiselect{hideme}
@@ -129,7 +133,8 @@ footer{txtr  width:100%; height:50px;padr 10}
     input[type="button"],
     input[type="reset"],
     input[type="submit"],
-    .multiselect
+    .multiselect,
+    input[type=file] + label
     {
          *overflow: visible;  line-height: normal;noselect
         mar 0 mart 1 fs 16 vertical-align: middle;
@@ -162,6 +167,15 @@ footer{txtr  width:100%; height:50px;padr 10}
     button.public{background-position: 2px -1523px!important;}
     button.prive{background-position: 2px -1422px!important;}
     .tag_cloud a.filter{width:100%;}
+
+    input[type=file] + label{width:auto;}
+    #import_file + label{background-position: 5px 12px!important;background-color:rgba(50,250,50,0.5)!important;padl 25 }
+    #import_file + label:hover{background-color:rgba(50,200,100,0.9)!important;}
+    #replace_file + label{background-position: 5px -392px!important;background-color:rgba(250,30,30,0.5)!important;padl 25 }
+    #replace_file + label:hover{background-color:rgba(250,30,30,0.9)!important;}
+    .backup{background-position: 5px -89px!important;background-color:rgba(50,250,50,0.5)!important; padl 25!important }
+    .backup:hover{background-color:rgba(50,200,100,0.9)!important;}
+    
 
 /*  Hover */
     select:hover,
@@ -206,7 +220,8 @@ footer{txtr  width:100%; height:50px;padr 10}
      input[type="reset"]:active,
      input[type="submit"]:active,
      .button:active,
-    .multiselect:active{
+      .multiselect:active,
+      input[type=file] + label:active{
         boxemboss 1 box-shadow:none;box-shadow: rgba(0, 0, 0, 0.6) 0 1px 2px; 
         background-color: couleur_foncee_bouton!important;
         noselect 
@@ -250,6 +265,7 @@ a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
 
 /* MISC CLASSES */
 .hidden,.tag_cloud a.hidden,.tag_cloud label.hidden {hideme}
+.ghost{hideme!important width:0;height:0;}
 .alert,.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 boxhalo couleur_alert roundc arrondi txtshadow}
 .success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 boxhalo couleur_success roundc arrondi txtshadow}
 .info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 boxhalo couleur_info roundc arrondi txtshadow}
@@ -305,21 +321,35 @@ a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
     changer les tailles de polices et virer les floats sur les col
     changer les formats des first et last of type pour supprimer les coins spéciaux toolbar 
     small tablet landscape */
+@all  max 800 {
+  html{fs 50%}
+  .nomobile, .margin{hideme}
+  nav{width:100%!important; position:relative!important;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
+  aside{ clear:both; width:100%;mar 0 min-width:320px;}
+  .corps{width:100%;min-width:320px;}
+}
+@all  max 320 {
+  html{fs 50%}
+  .nomobile, .margin{hideme}
+  nav{width:100%!important; position:relative!important;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
+  nav a{fs 20px}
+  aside{ clear:both; width:100%;mar 0 min-width:320px;}
+  .corps{width:100%;min-width:320px;}
+}
 @all  dmax 800 {
   html{fs 50%}
   .nomobile, .margin{hideme}
-  nav{width:100%; position:relative;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
+  nav{width:100%!important; position:relative!important;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
   aside{ clear:both; width:100%;mar 0 min-width:320px;}
   .corps{width:100%;min-width:320px;}
 }
 @all  dmax 320 {
   html{fs 50%}
   .nomobile, .margin{hideme}
-  nav{width:100%; position:relative;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
+  nav{width:100%!important; position:relative!important;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
   nav a{fs 20px}
   aside{ clear:both; width:100%;mar 0 min-width:320px;}
   .corps{width:100%;min-width:320px;}
 }
-
 /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
 */
