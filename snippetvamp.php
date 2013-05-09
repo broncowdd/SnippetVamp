@@ -410,6 +410,7 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 
 # End ################################################################
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" charset="UTF-8">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -489,7 +490,7 @@ else{echo $contenu;}
 			<?php feed_link(); ?><hr/><?php echo config_link().'<em><a href="https://github.com/broncowdd/SnippetVamp" title="'.msg('fork SnippetVamp on github').'">'.$config['app_name'].' '.$config['version'].'</a></em> '.msg('by');?> <a href="http://warriordudimanche.net">Bronco</a> - <?php echo msg('generated in');echo ' ',round(temps()-$start,3);?> s
 			<br/><?php echo alert_last_version_if_necessary() ; ?>
 		</footer>
-	</body>
+
 <script type="text/javascript" src="jquip.min.js"></script>
 <?php if (file_exists('highlight.js')){ ?> <link rel="stylesheet" href="styles/<?php e('highlight_theme'); ?>.css"> <script type="text/javascript" src="highlight.js"></script><script>hljs.initHighlightingOnLoad();</script>  <?php } ?>
 <script>
@@ -514,4 +515,5 @@ else{echo $contenu;}
 		$(".backup").click(function(){document.location.href="<?php echo $config['data_file'];?>";});
 	});
 </script>
+</body>	
 </html>
