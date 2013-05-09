@@ -73,7 +73,7 @@ pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll;
 
 
 /* LAYOUT */
-body{min-height:100%;height: 100%; position:relative;background-image:image_fond;background-color:couleur_fond; borbox min-width:320px;fs 16 marauto ff_georgia lh 1.5em  color: couleur_texte;}
+body{min-height:100%;height: 100%; position:relative;background-image:image_fond;background-color:couleur_fond; borbox min-width:320px;fs 16 marauto ff_georgia lh 1.5em  color: couleur_texte_normal;}
 header,nav{noselect z-index:1;position:fixed;fs 18 }
 header{}
 
@@ -202,7 +202,7 @@ footer{txtr  width:100%; height:50px;padr 10}
 
     button:hover,
     h1.toggle_next:hover
-    {background-color: couleur_hover!important}
+    {background-color: couleur_hover!important;}
 
 /*  Focus */
     select:focus,
@@ -240,7 +240,7 @@ h1.titre{fs 28 roundc arrondi  marb 20 pad 5 insetshadow 1 4 txtc smallcaps}
 
 .snippet_content{roundbottom arrondi insetshadow 1 3 boxemboss 1 background:image_fond #999;marr 10}
 .add_snippet li{list-style: none;}
-.add_snippet .tags{pad 10 madb 10 }
+.add_snippet .tags{pad 10 marb 10 }
 .add_snippet .tags label{ pad 5  curhand fs 16!important  }
 .add_snippet .tags input[type=checkbox],.add_snippet .tags input[type=radio]{hideme}
 .add_snippet .tags input[type=checkbox]:hover, .add_snippet .tags input[type=radio]:hover{border-color:couleur_hover; }
@@ -256,10 +256,10 @@ a{color:couleur_lien; underoff txtemboss }
 a:focus { outline: thin dotted #333; outline: 5px auto; -webkit-focus-ring-color; outline-offset: -2px;}
 a:hover { outline: 0; color:black!important;}
 a:active { outline: 0;color:white;}
-a.warning {disib roundc arrondi padl 3 padr 3 color: couleur_text_warning}
-a.error {disib roundc arrondi padl 3 padr 3 color: couleur_text_alert}
-a.info {disib roundc arrondi padl 3 padr 3 color: couleur_text_info}
-a.success {disib roundc arrondi padl 3 padr 3 color: couleur_text_success}
+a.warning {disib roundc arrondi padl 3 padr 3 color: couleur_text_warning;}
+a.error {disib roundc arrondi padl 3 padr 3 color: couleur_text_alert;}
+a.info {disib roundc arrondi padl 3 padr 3 color: couleur_text_info;}
+a.success {disib roundc arrondi padl 3 padr 3 color: couleur_text_success;}
 a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
 .embed{background-position: 9px -600px!important;color:couleur_foncee_bouton; txtemboss padl 30!important mart 5 marr 20 marl 20!important roundc arrondi boxemboss 1 fs 12}
 
@@ -273,7 +273,7 @@ a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
 .toggle_next{txtemboss txtb curhand noselect}
 .toggle_next:before{content:" ▾";lh 20}
 .right{txtr!important}
-.rss{disib background-position: 4px -471px; padl 22 roundc arrondi}
+.rss{disib background-position: 4px -1627px; padl 22 roundc arrondi}
 
 .button_prive{background-color:rgba(250,50,0,0.5)!important;}
 .button_prive:hover{background-color:rgba(250,50,0,0.9)!important;}
