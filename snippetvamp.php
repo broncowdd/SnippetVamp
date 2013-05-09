@@ -225,7 +225,7 @@ function is_public($id_nb,$returnbool=true){global $snippets;if ($snippets[$id_n
 function loggedstring($tpl=''){if (is_ok()){return $tpl;}else{return '';}}
 function conn_deconn(){global $template; if (!is_ok()){echo $template['connect_form'];}else{echo $template['deconnect_button'];}}
 function map_entities($chaine){return htmlentities($chaine, ENT_QUOTES, 'UTF-8');}
-function tag_normalise($chaine){$chaine=remove_accents($chaine);$chaine=preg_replace('/[^\w#+.]/','',$chaine);return str_ireplace(array('+','#','.'),array('p','sharp','dot'),$chaine);}
+function tag_normalise($chaine){$chaine=remove_accents($chaine);$chaine=preg_replace('/[^\w#+. ]/','',$chaine);return str_ireplace(array('+','#','.'),array('p','sharp','dot'),$chaine);}
 function remove_accents($str, $charset='utf-8'){ $str = htmlentities($str, ENT_NOQUOTES, $charset); $str = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str); $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str); $str = preg_replace('#&[^;]+;#', '', $str); return $str;} // via weirdog.com 
 # Content
 function save(){cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
