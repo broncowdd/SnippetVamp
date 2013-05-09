@@ -21,6 +21,10 @@ if (file_exists('theme/auto_css.php')){include('theme/auto_css.php'); } // use a
 ######################################################################
 $msg=array();
 $msg['fr']=array(
+	'The public access is locked'=>'L\'accès public est désactivé',
+	'There\'s a new version : '=>'Une mise à jour est disponible : ',
+	'allow_public_access'=>'Autoriser l\'accès public à l\'application',
+	'new_version_alert'=>'Alerter si une nouvelle version existe',
 	'multiple_tag_selection'=>'Sélection multiple de tags par défaut',
 	'Error loading file'=>'Erreur en chargeant le fichier',
 	'import successfull'=>'Importation réussie',
@@ -117,7 +121,11 @@ if (!file_exists('config.dat')){
 }else{
 	$config=unstore('config.dat');
 }
-$config['version']='alpha 0.76b';
+$config['version']='alpha 0.77';
+
+//I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
+if(!isset($config['new_version_alert'])){$config['new_version_alert']=true;store('config.dat',$config);} 
+if(!isset($config['allow_public_access'])){$config['allow_public_access']=true;store('config.dat',$config);} 
 # data file 
 ######################################################################
 if (!file_exists($config['data_file'])){$snippets=array();store($config['data_file'],$snippets);cache_clear();}
@@ -160,6 +168,7 @@ if ($admin&&isset($_POST['app_name'])){
 		else {$config[$key]=htmlentities($_POST[$key]);}
 	}
 	store('config.dat',$config);
+	cache_clear();
 }
 # add/edit snippets
 ######################################################################
@@ -266,7 +275,14 @@ function return_matching($chaine,$cle=false){global $snippets;$chaine=str_replac
 function reload_page($query=''){ if ($query===false){$query=$_SERVER['QUERY_STRING'];}header('Location: snippetvamp.php?'.$query);}
 function temps(){$t=microtime();$tt=explode(' ',$t);return $tt[0]+$tt[1];}
 function embed_height($string){return (substr_count($string, "\n")*18)+140; }
-
+function alert_last_version_if_necessary() {
+	global $config;
+	if (!$config['new_version_alert']){return false;}
+	$seconds_before_update_file=@date('U')-@date('U',filemtime('last_version.txt'));
+	if (!is_file('last_version.txt') || $seconds_before_update_file>18000){$c=file_get_contents('http://snippetvamp.warriordudimanche.net/last_version.txt');file_put_contents('last_version.txt',$c);}
+	$v=file_get_contents('last_version.txt');
+	if ($v!=$config['version']){return '<a href="https://github.com/broncowdd/SnippetVamp/archive/master.zip">'.msg('There\'s a new version : ').$v.'</a>';}
+}
 ######################################################################
 # Templates
 ######################################################################
@@ -348,6 +364,7 @@ if ($_GET){
 		$contenu=cache_end($nom_page_cache,0);
 		exit($contenu);
 	}
+
 	# Users commands (with private filtering)
 	if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags');}
 	if (isset($_GET['search'])){$page=search($_GET['search']);$tag=msg('search').':'.$_GET['search'];}
@@ -452,7 +469,7 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 		<div class="margin">.</div>
 		<div class="corps">
 			<h1 class="titre"><?php echo map_entities($tag); ?></h1>
-			<?php echo $page; ?>
+			<?php if ($config['allow_public_access']||$admin){echo $page;}else{echo msg('The public access is locked');} ?>
 		</div>
 	</aside>
 	
@@ -469,11 +486,9 @@ else{echo $contenu;}
 ?>
 <div style="clear:both"> </div>
 		<footer>
-			<?php feed_link(); ?><hr/><?php echo config_link().'<em><a href="https://github.com/broncowdd/SnippetVamp" title="'.msg('fork SnippetVamp on github').'">'.$config['app_name'].' '.$config['version'].'</a></em> '.msg('by');?> <a href="http://warriordudimanche.net">Bronco</a> - <?php echo msg('generated in');echo ' ',round(temps()-$start,6);?> s
-			<div class="maj hidden"></div>
+			<?php feed_link(); ?><hr/><?php echo config_link().'<em><a href="https://github.com/broncowdd/SnippetVamp" title="'.msg('fork SnippetVamp on github').'">'.$config['app_name'].' '.$config['version'].'</a></em> '.msg('by');?> <a href="http://warriordudimanche.net">Bronco</a> - <?php echo msg('generated in');echo ' ',round(temps()-$start,3);?> s
+			<br/><?php echo alert_last_version_if_necessary() ; ?>
 		</footer>
-
-
 	</body>
 <script type="text/javascript" src="jquip.min.js"></script>
 <?php if (file_exists('highlight.js')){ ?> <link rel="stylesheet" href="styles/<?php e('highlight_theme'); ?>.css"> <script type="text/javascript" src="highlight.js"></script><script>hljs.initHighlightingOnLoad();</script>  <?php } ?>
