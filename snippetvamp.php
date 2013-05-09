@@ -117,7 +117,7 @@ if (!file_exists('config.dat')){
 }else{
 	$config=unstore('config.dat');
 }
-$config['version']='alpha 0.76';
+$config['version']='alpha 0.76b';
 # data file 
 ######################################################################
 if (!file_exists($config['data_file'])){$snippets=array();store($config['data_file'],$snippets);cache_clear();}
