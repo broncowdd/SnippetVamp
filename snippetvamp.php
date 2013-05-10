@@ -518,7 +518,7 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 			
 		</div>
 		<hr/>
-		<div class="bookmarklet_link"><?php echo $template['bookmarklet']; ?></div>
+		<?php if ($admin){echo '<div class="bookmarklet_link"> '.$template['bookmarklet'].'</div>';} ?>
 	</nav>
 	<aside>
 		<div class="margin">.</div>
