@@ -311,14 +311,7 @@ function return_matching($chaine,$cle=false){global $snippets;$chaine=str_replac
 function reload_page($query=''){ if ($query===false){$query=$_SERVER['QUERY_STRING'];}header('Location: snippetvamp.php?'.$query);}
 function temps(){$t=microtime();$tt=explode(' ',$t);return $tt[0]+$tt[1];}
 function embed_height($string){return (substr_count($string, "\n")*18)+140; }
-function alert_last_version_if_necessary() {
-	global $config;
-	if (!$config['new_version_alert']){return false;}
-	$seconds_before_update_file=@date('U')-@date('U',filemtime('last_version.txt'));
-	if (!is_file('last_version.txt') || $seconds_before_update_file>18000){$c=file_get_contents('http://snippetvamp.warriordudimanche.net/last_version.txt');file_put_contents('last_version.txt',$c);}
-	$v=file_get_contents('last_version.txt');
-	if ($v!=$config['version']){return '<a href="https://github.com/broncowdd/SnippetVamp/archive/master.zip">'.msg('There\'s a new version : ').$v.'</a>';}
-}
+function alert_last_version_if_necessary() {global $config;if (!$config['new_version_alert']){return false;}$seconds_before_update_file=@date('U')-@date('U',filemtime('last_version.txt'));if (!is_file('last_version.txt') || $seconds_before_update_file>18000){$c=file_get_contents('http://snippetvamp.warriordudimanche.net/last_version.txt');file_put_contents('last_version.txt',$c);}$v=file_get_contents('last_version.txt');if ($v!=$config['version']){return '<a href="https://github.com/broncowdd/SnippetVamp/archive/master.zip">'.msg('There\'s a new version : ').$v.'</a>';}}
 ######################################################################
 # Templates
 ######################################################################
@@ -424,13 +417,11 @@ if ($_GET){
 		$_GET['bookmarklet']=urldecode($_GET['bookmarklet']);
 		$url=add_protocol($_GET['bookmarklet']);
 		$code_blocs=parse_for_snippet($url);$snippet='';
-		if ($code_blocs!==false){
-			if (!isset($code_blocs[0])){$placeholder=msg('Copy/paste the snippet here (snippetvamp was unable to find a snippet: no code or pre tag)');}else{$placeholder='Snippet';}
-			if($admin){$passwordform='';}else{$passwordform='<li><input type="password" title="'.msg('password').'" name="pass" required/>';}
-			foreach($code_blocs as $key=>$code){if ($key!=='title'){$snippet.=$code."\n\n";}}
-			$form=form_bookmarklet($code_blocs['title'],$url,$snippet,$placeholder,$passwordform);
-			exit($template['bookmarklet_header'].$form.'</body></html>');
-		}else{$page=alert(msg('Error loading file'));}
+		if($admin){$passwordform='';}else{$passwordform='<li><input type="password" title="'.msg('password').'" name="pass" required/>';}
+		if (!isset($code_blocs[0])){$placeholder=msg('Copy/paste the snippet here (snippetvamp was unable to find a snippet: no code or pre tag)');}else{$placeholder='Snippet';}
+		if ($code_blocs!==false){foreach($code_blocs as $key=>$code){if ($key!=='title'){$snippet.=$code."\n\n";}}}
+		$form=form_bookmarklet($code_blocs['title'],$url,$snippet,$placeholder,$passwordform);
+		exit($template['bookmarklet_header'].$form.'</body></html>');
 	}
 	# Admin commands
 	if ($admin&&isset($_GET['suppr'])&&isset($snippets[$_GET['suppr']])){unset($snippets[$_GET['suppr']]);save();reload_page($_GET['vars']);}	
