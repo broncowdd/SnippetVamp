@@ -57,19 +57,19 @@ pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x: auto; 
 /* set background */
     h1.add,
     a.adr,
-    .embed, 
+    p.embed, 
     nav form.login input, 
     nav .logo[type="text"],
     nav form.login input[type="password"],
-    .suppr, 
-    .txt, 
-    .edit,
+    button.suppr, 
+    button.txt, 
+    button.edit,
     button.public, 
     button.prive,
     nav .logo,
     input[type=file] + label,
-    .backup,
-    .rss  
+    input[type=button].backup,
+    p.rss  
     {background:url(sprite.png) no-repeat!important;}
 
 
@@ -122,6 +122,7 @@ footer{txtr  width:100%; height:50px;padr 10}
     .filter{disbl width:100%;}
     select{curhand}
     textarea{disib height: 500px; noresiz}
+    .bookmarklet textarea{height:200px;}
     select, 
     textarea,
     input[type=text],
@@ -135,7 +136,8 @@ footer{txtr  width:100%; height:50px;padr 10}
     input[type="reset"],
     input[type="submit"],
     .multiselect,
-    input[type=file] + label
+    input[type=file] + label,
+    .bookmarklet_link a
     {
          *overflow: visible;  line-height: normal;noselect
         mar 0 mart 1 fs 16 vertical-align: middle;
@@ -156,15 +158,15 @@ footer{txtr  width:100%; height:50px;padr 10}
     }
     h1.add{background-position: 4px 9px!important; padl 25}
 
-    .suppr, 
-    .txt, 
-    .edit,
+    button.suppr, 
+    button.txt, 
+    button.edit,
     button.public, 
     button.prive
     {flor mart 6 height:22px;width:22px;pad 2 border:none; box-shadow: none;}
-    .suppr{background-position: 3px -502px!important;marr 5}
-    .edit{background-position: 2px -704px!important;}
-    .txt{background-position: 2px -421px!important;}
+    button.suppr{background-position: 3px -502px!important;marr 5}
+    button.edit{background-position: 2px -704px!important;}
+    button.txt{background-position: 2px -421px!important;}
     button.public{background-position: 2px -1523px!important;}
     button.prive{background-position: 2px -1422px!important;}
     .tag_cloud a.filter{width:100%;}
@@ -174,8 +176,8 @@ footer{txtr  width:100%; height:50px;padr 10}
     #import_file + label:hover{background-color:rgba(50,200,100,0.9)!important;}
     #replace_file + label{background-position: 5px -392px!important;background-color:rgba(250,30,30,0.5)!important;padl 25 }
     #replace_file + label:hover{background-color:rgba(250,30,30,0.9)!important;}
-    .backup{background-position: 5px -89px!important;background-color:rgba(50,250,50,0.5)!important; padl 25px!important }
-    .backup:hover{background-color:rgba(50,200,100,0.9)!important;}
+    input[type=button].backup{background-position: 5px -89px!important;background-color:rgba(50,250,50,0.5)!important; padl 25px!important }
+    input[type=button].backup:hover{background-color:rgba(50,200,100,0.9)!important;}
     
 
 /*  Hover */
@@ -193,7 +195,7 @@ footer{txtr  width:100%; height:50px;padr 10}
     .button:hover,
     .multiselect:hover{  background-color:couleur_hover;}
 
-    .edit:hover,
+    button.edit:hover,
     footer a:hover,
     button.prive:hover,
     button.public:hover
@@ -262,24 +264,31 @@ a.error {disib roundc arrondi padl 3 padr 3 color: couleur_text_alert;}
 a.info {disib roundc arrondi padl 3 padr 3 color: couleur_text_info;}
 a.success {disib roundc arrondi padl 3 padr 3 color: couleur_text_success;}
 a.adr{background-position: 10px -1007px!important; padl 30px!important marl 20}
-.embed{background-position: 9px -600px!important;color:couleur_foncee_bouton; txtemboss padl 30px!important mart 5 marr 20 marl 20px!important roundc arrondi boxemboss 1 fs 12}
+p.embed{background-position: 9px -600px!important;color:couleur_foncee_bouton; txtemboss padl 30px!important mart 5 marr 20 marl 20px!important roundc arrondi boxemboss 1 fs 12}
 
 /* MISC CLASSES */
 .hidden,.tag_cloud a.hidden,.tag_cloud label.hidden {hideme}
 .ghost{hideme!important width:0;height:0;}
-.alert,.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 boxhalo couleur_alert roundc arrondi txtshadow}
-.success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 boxhalo couleur_success roundc arrondi txtshadow}
-.info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 boxhalo couleur_info roundc arrondi txtshadow}
-.warning{background-color:couleur_warning;color:couleur_text_warning;mart 10 pad 10 boxhalo couleur_warning roundc arrondi txtshadow}
+p.alert,p.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 boxhalo couleur_alert roundc arrondi txtshadow}
+p.success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 boxhalo couleur_success roundc arrondi txtshadow}
+p.info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 boxhalo couleur_info roundc arrondi txtshadow}
+p.warning{background-color:couleur_warning;color:couleur_text_warning;mart 10 pad 10 boxhalo couleur_warning roundc arrondi txtshadow}
 .toggle_next{txtemboss txtb curhand noselect}
 .toggle_next:before{content:" ▾";lh 20}
 .right{txtr!important}
-.rss{disib background-position: 4px -1624px!important; padl 22 roundc arrondi}
+p.rss{disib background-position: 4px -1624px!important; padl 22 roundc arrondi}
 
 .button_prive{background-color:rgba(250,50,0,0.5)!important;}
 .button_prive:hover{background-color:rgba(250,50,0,0.9)!important;}
 .button_public{background-color:rgba(0,250,0,0.5)!important;}
 .button_public:hover{background-color:rgba(0,250,0,0.9)!important;}
+
+.bookmarklet_link{txtc fs 12 txti}
+.bookmarklet_link a {padding:0 2px 0 2px;}
+
+
+
+
 
 
 
