@@ -68,7 +68,8 @@ pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll;
     button.prive,
     nav .logo,
     input[type=file] + label,
-    .backup   
+    .backup,
+    .rss  
     {background:url(sprite.png) no-repeat!important;}
 
 
@@ -81,8 +82,8 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%;top:1
     nav hr{mart 10}
     nav .logo{disbl marauto background-position: 0 -1111px!important;width:149px;height:128px;marb 20}
     nav .description{lh 12 fs 12 txtc txti txtemboss curarro noselect}
-    nav form.login input[type="text"]{padl 20 background-color: couleur_bouton; background-position: 2 -1826px!important; width:45%;}
-    nav form.login input[type="password"]{padl 20 background-color: couleur_bouton;background-position: 2 -1422px!important;width:45%;}
+    nav form.login input[type="text"]{padl 20 background-color: couleur_bouton; background-position: 2px -1826px!important; width:45%;}
+    nav form.login input[type="password"]{padl 20 background-color: couleur_bouton;background-position: 2px -1422px!important;width:45%;}
     nav form.login input[type="password"]:focus,nav form.login input[type="text"]:focus{background-color:couleur_active!important;}
     nav form.login input[type="submit"]{width:9%;pad 0;background:image_fond!important;}
     nav form.login{mar 5}
@@ -173,7 +174,7 @@ footer{txtr  width:100%; height:50px;padr 10}
     #import_file + label:hover{background-color:rgba(50,200,100,0.9)!important;}
     #replace_file + label{background-position: 5px -392px!important;background-color:rgba(250,30,30,0.5)!important;padl 25 }
     #replace_file + label:hover{background-color:rgba(250,30,30,0.9)!important;}
-    .backup{background-position: 5px -89px!important;background-color:rgba(50,250,50,0.5)!important; padl 25!important }
+    .backup{background-position: 5px -89px!important;background-color:rgba(50,250,50,0.5)!important; padl 25px!important }
     .backup:hover{background-color:rgba(50,200,100,0.9)!important;}
     
 
@@ -260,8 +261,8 @@ a.warning {disib roundc arrondi padl 3 padr 3 color: couleur_text_warning;}
 a.error {disib roundc arrondi padl 3 padr 3 color: couleur_text_alert;}
 a.info {disib roundc arrondi padl 3 padr 3 color: couleur_text_info;}
 a.success {disib roundc arrondi padl 3 padr 3 color: couleur_text_success;}
-a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
-.embed{background-position: 9px -600px!important;color:couleur_foncee_bouton; txtemboss padl 30!important mart 5 marr 20 marl 20!important roundc arrondi boxemboss 1 fs 12}
+a.adr{background-position: 10px -1007px!important; padl 30px!important marl 20}
+.embed{background-position: 9px -600px!important;color:couleur_foncee_bouton; txtemboss padl 30px!important mart 5 marr 20 marl 20px!important roundc arrondi boxemboss 1 fs 12}
 
 /* MISC CLASSES */
 .hidden,.tag_cloud a.hidden,.tag_cloud label.hidden {hideme}
@@ -273,7 +274,7 @@ a.adr{background-position: 10px -1003px!important; padl 30!important marl 20}
 .toggle_next{txtemboss txtb curhand noselect}
 .toggle_next:before{content:" ▾";lh 20}
 .right{txtr!important}
-.rss{disib background-position: 4px -1627px; padl 22 roundc arrondi}
+.rss{disib background-position: 4px -1624px!important; padl 22 roundc arrondi}
 
 .button_prive{background-color:rgba(250,50,0,0.5)!important;}
 .button_prive:hover{background-color:rgba(250,50,0,0.9)!important;}
