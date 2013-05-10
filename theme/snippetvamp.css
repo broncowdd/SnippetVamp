@@ -51,7 +51,7 @@
 *::selection { background:image_fond couleur_selection;color:couleur_text_selection!important;}  
 html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;overflow-y:scroll;height: 100%;}
 hr{boxemboss 1 marl 5 mar 0}
-pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x:scroll; txtemboss}
+pre{lh 15 color:#EDD;  marl 25 marr 10 pad 5  mart 10 marb 10 overflow-x: auto; txtemboss}
 
 /* ICON ELEMENTS */ 
 /* set background */
