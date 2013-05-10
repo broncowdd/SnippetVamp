@@ -64,7 +64,7 @@
     $auto_css['version']='1.2';
     $auto_css['merge_css_files']=false; // merge all files in one computed_merged.css
     $auto_css['merged_css_filename']='merged.css'; // to avoid overwriting on other versions
-    $auto_css['minifie']=true;// mimifies all the computed css files / the computed_merged.Css
+    $auto_css['minifie']=false;// mimifies all the computed css files / the computed_merged.Css
     $auto_css['auto_add_PIE']=false;// to auto add pie behaviour to round corners/box shadow and gradiens
     $auto_css['pie_path']='PIE.php';// important: the path to pie.htc or pie.php (see css3pie doc at css3pie.com)
     $auto_css['media']='screen';
