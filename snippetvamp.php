@@ -270,12 +270,12 @@ function add_protocol($url,$protocol='http://'){preg_match('#^([ftphs]+://)([^ ]
 function parse_for_snippet($url){	
 	$page=@file_get_contents(trim($url));
 	if ($page===false){return false;}
-	if (preg_match('#<title>([^<]+)</title>#', $page , $title)){$title=$title[1];}else{$title='';}
+	if (preg_match('#<title>([^<]+)</title>#', $page , $title)){$title=trim($title[1]);}else{$title='';}
 	if (preg_match_all('#<code[^>]*>([^<]+)</code>#', $page , $code_blocs)){$code_blocs[1]['title']=trim($title);return $code_blocs[1];}
 	if (preg_match_all('#<pre[^>]*>([^<]+)</pre>#', $page , $code_blocs)){$code_blocs[1]['title']=trim($title);return $code_blocs[1];}
 	// scan for embeded snippets and load each snippet
 	if (preg_match_all('#(http[s]*://[^ ]*snippetvamp.php\?embed=[0-9a-z]+)#', $page , $code_blocs)){
-		$code=array();$code['title']='';
+		$code['title']=$title;
 		foreach($code_blocs[0] as $link){$code[]=file_get_contents(str_replace('?embed=','?txt=',$link));}
 		return $code;
 	}
