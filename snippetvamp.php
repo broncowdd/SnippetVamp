@@ -6,7 +6,7 @@
 	@License: open source, free to download & fork ^^
 	@languages: French/Spanish and English 
 	@apoligizes: please forget about my english (learned from american & british series ;-) 
-	@status: alpha
+	@status: beta
 */
 
 $start=temps();
