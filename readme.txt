@@ -1,10 +1,10 @@
-﻿SnippetVamp
+SnippetVamp
 @author: bronco@warriordudimanche.net
 @web : http://warriordudimanche.net (FR)
 @License: open source, free to download & fork ^^
 @languages: French/Spanish and English 
 @apoligizes: please forget about my english (learned from american & british series ;-) 
-@status: alpha 
+@status: beta 
 
 what's that ?
 -------------------------------------------------------------- 
@@ -35,6 +35,8 @@ Things already done:
 - a cache (cleared only if you add/edit/delete/change status) 
 - a multiselection tag option
 - search for more than one word
+- bookmarklet to get snippets from a web page
+- backup/retore/import from/to a snippet.dat file
 
 
 Todo list:
@@ -42,8 +44,6 @@ Todo list:
 - help & doc ;-)
 - an option to create a snippet package when you start a brand new project
 - optimize code & css (surely a big pain in the ass final task ^^)
-- a bookmarklet to store a new snippet whith as few clicks as possible
-- one click backup option / import snippets / replace datafile
 - crypt the data file ?
 
 
