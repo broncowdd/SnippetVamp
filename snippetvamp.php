@@ -123,7 +123,7 @@ if (!file_exists('config.dat')){
 }else{
 	$config=unstore('config.dat');
 }
-$config['version']='alpha 0.8';
+$config['version']='alpha 0.8b';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
 if(!isset($config['new_version_alert'])){$config['new_version_alert']=true;store('config.dat',$config);} 
@@ -183,7 +183,9 @@ if ($admin&&isset($_POST['#num'])){
 	$snippets[$_POST['#num']]['#tags']=htmlentities(tag_normalise(trim($snippets[$_POST['#num']]['#tags'])));
 	$snippets[$_POST['#num']]['#rss_date']=@date('r');// RSS compatible date format (important)
 	$snippets[$_POST['#num']]['#date']=@date('d/m/Y');// human friendly date format ^^
-	save();$page.= success('saved');
+	save();
+	if ($_POST['from_bookmarklet']=='no'){$page.= success('saved');}else{echo '<script>window.close("_blank");</script>';}
+
 }
 # import snippets
 ######################################################################
@@ -249,25 +251,7 @@ function list_tags(){global $snippets;$tags=array();foreach($snippets as $snippe
 function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){global $snippets,$template;$tag_cloud='';if (!isset($snippets['tag_list'])){return false;} if ($sortbynb){arsort($snippets['tag_list']);} foreach($snippets['tag_list'] as $tag=>$nb){	$t=str_replace('#TAG',$tag,$template[$templ]);	$t=str_replace('#NB',$nb,$t); 	if ($tags_checked && stripos($tags_checked,$tag)!==false || !$tags_checked && stripos($_SERVER['QUERY_STRING'],$tag) ){		$t=str_replace('#checked','checked',$t); }else{	$t=str_replace('#checked','',$t);}$tag_cloud.= $t;}return $tag_cloud;}
 function make_rss($array,$titre){global $template,$config;if(isset($_POST['config'])){return false;}	echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); foreach($array as $a){if (isset($a['#num']) && is_public($a['#num'])){ $a=array_map('map_entities',$a);echo str_replace(array_keys($a),array_values($a),$template['rss_item']);}} echo $template['rss_footer'];}
 function form($num=false){if (!is_ok()){return '';} global $config,$template,$snippets;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');if (!$num){$repl['#uniqid']=uniqid();	$repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value=""';$repl['value="#adresse"']='value=""';$repl['#contenu</textarea>']='</textarea>';$repl['#hidden']='hidden';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{if (isset($snippets[$num])){$repl['#uniqid']=$num;$repl['#formtitre']=msg('Edit a snippet');	$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb'],$snippets[$num]['#tags']);$repl['value="#titre"']='value="'.$snippets[$num]['#titre'].'"';$repl['value="#adresse"']='value="'.$snippets[$num]['#adresse'].'"';$repl['#contenu</textarea>']=$snippets[$num]['#contenu'].'</textarea>';$repl['#hidden']='';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{return false;}}}
-function form_bookmarklet($title='', $url='',$content='',$placeholder='Snippet',$passwordform=''){
-	global $config,$template;
-	$repl=array();
-	$repl['#labeltags']=msg('Tags');
-	$repl['#labeltitre']=msg('Title');
-	$repl['#labeladr']=msg('Website');
-	$repl['#labelcontent']=msg('Content');
-	$repl['#placeholder']=$placeholder;
-	$repl['#passwordform']=$passwordform;
-	$repl['#uniqid']=uniqid();	
-	$repl['#formtitre']=msg('Add a snippet');
-	$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);
-	$repl['value="#titre"']='value="'.$title.'"';
-	$repl['value="#adresse"']='value="'.$url.'"';
-	$repl['#contenu</textarea>']=$content.'</textarea>';
-	$repl['#hidden']='';
-	return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);
-}
-
+function form_bookmarklet($title='', $url='',$content='',$placeholder='Snippet',$passwordform=''){global $config,$template;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');$repl['#placeholder']=$placeholder;$repl['#passwordform']=$passwordform;$repl['#uniqid']=uniqid();	$repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value="'.$title.'"';$repl['value="#adresse"']='value="'.$url.'"';$repl['#contenu</textarea>']=$content.'</textarea>';$repl['#hidden']='';$repl[' name="from_bookmarklet" value="no"']=' name="from_bookmarklet" value="yes"';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}
 function form_config(){global $config;$form=  '<form name="config" action="" method="post">';foreach ($config as $cle=>$val){if ($cle!='login'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'&&$cle!='version'){$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';if (is_bool($val)||$val=='true'||$val=='false'){if ($val==true){$val='true';}else{	$val='false';}$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.msg($val).'</option><option value="true">'.msg('true').'</option><option value="false">'.msg('false').'</option></select>';}else{$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';}}}	$form.='<input type="submit" value="'.msg('Save').'" title="'.msg('save this configuration').'"/></form>';	return $form;}
 function form_import_file(){global $config;$form=  '<form name="import" action="" method="post" id="import"  enctype="multipart/form-data"><input type="file" id="import_file" name="import_file" class="hidden"/><label for="import_file" title="'.msg('import a data file from your computer').'">'.msg('import').' </label><input type="submit" class="ghost submit_import"/></form>';return $form;}
 function form_replace_file(){global $config;$form=  '<form name="replace" action="" method="post" id="replace" enctype="multipart/form-data"><input type="file" name="replace_file" id="replace_file" class="hidden"/><label for="replace_file" title="'.msg('replace all your snippets with a data file from your computer (erase ALL YOUR CURRENT SNIPPETS)').'">'.msg('replace').' </label><input type="submit" class="ghost submit_replace"/></form>';return $form;}
@@ -285,14 +269,14 @@ function e($conf_index){global $config;	if (isset($config[$conf_index])){echo $c
 function BodyClasses($add=''){$regex='#(msie)[/ ]([0-9])+|(firefox)/([0-9])+|(chrome)/([0-9])+|(opera)/([0-9]+)|(safari)/([0-9]+)|(android)|(iphone)|(ipad)|(blackberry)|(Windows Phone)|(symbian)|(mobile)|(bada])#i';preg_match($regex,$_SERVER['HTTP_USER_AGENT'],$resultat);return ' class="'.$add.' '.preg_replace('#([a-zA-Z ]+)[ /]([0-9]+)#','$1 $1$2',$resultat[0]).' '.basename($_SERVER['PHP_SELF'],'.php').'" ';}
 function add_protocol($url,$protocol='http://'){preg_match('#^([ftphs]+://)([^ ]+)#',$url,$results);if (count($results)>0){return $url;}else{return $protocol.$url;}}
 function parse_for_snippet($url){	
-	$page=@file_get_contents($url);
+	$page=@file_get_contents(trim($url));
 	if ($page===false){return false;}
 	preg_match('#<title>([^<]+)</title>#', $page , $title);
 	if (isset($title[1])){$title=$title[1];}else{$title='';}
 	preg_match_all('#<code[^>]*>([^<]+)</code>#', $page , $code_blocs);
-	if (count($code_blocs[1])>0){$code_blocs[1]['title']=$title;return $code_blocs[1];}
+	if (count($code_blocs[1])>0){$code_blocs[1]['title']=trim($title);return $code_blocs[1];}
 	preg_match_all('#<pre[^>]*>([^<]+)</pre>#', $page , $code_blocs);
-	if (count($code_blocs[1])>0){$code_blocs[1]['title']=$title;return $code_blocs[1];}
+	if (count($code_blocs[1])>0){$code_blocs[1]['title']=trim($title);return $code_blocs[1];}
 	return false;
 }
 
@@ -342,6 +326,7 @@ $template['snippet_frm']='<br/>
 <div class="add_snippet #hidden">
 	<form id="add_snippet_form" method="post" action="snippetvamp.php"  accept-charset="UTF-8">
 		<input type="hidden" name="#num" value="#uniqid"/>
+		<input type="hidden" name="from_bookmarklet" value="no"/>
 		#passwordform
 		<li><label for="titre">#labeltitre</label> <input type="text" name="#titre" id="titre" required value="#titre"/></li>
 		<li><label for="adresse">#labeladr</label> <input type="text" name="#adresse" id="adresse"  value="#adresse"/></li>
