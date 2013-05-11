@@ -123,7 +123,7 @@ if (!file_exists('config.dat')){
 }else{
 	$config=unstore('config.dat');
 }
-$config['version']='alpha 0.8b';
+$config['version']='beta 1.0';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
 if(!isset($config['new_version_alert'])){$config['new_version_alert']=true;store('config.dat',$config);} 
@@ -132,7 +132,6 @@ if(!isset($config['allow_public_access'])){$config['allow_public_access']=true;s
 ######################################################################
 if (!file_exists($config['data_file'])){$snippets=array();store($config['data_file'],$snippets);cache_clear();}
 $snippets=load();$page='';
-
 # pass file
 ######################################################################
 if(!file_exists('pass.php')){
@@ -157,7 +156,7 @@ $contenu='';
 ######################################################################
 # admin login/deco
 ######################################################################
-if (isset($_POST['login'])&&isset($_POST['pass'])){log_user($_POST['login'],$_POST['pass']);}
+if (isset($_POST['login'])&&isset($_POST['pass'])){cache_clear();log_user($_POST['login'],$_POST['pass']);}
 else if (isset($_POST['pass'])){log_user($config['login'],$_POST['pass']);} // logme with the bookmarklet form
 
 $admin=is_ok();
@@ -266,17 +265,20 @@ function alert($txt){return '<p class="alert">'.msg($txt).'</p>';}
 function info($txt){return '<p class="info">'.msg($txt).'</p>';}
 function success($txt){return '<p class="success">'.msg($txt).'</p>';}
 function e($conf_index){global $config;	if (isset($config[$conf_index])){echo $config[$conf_index];}else{return false;}}
-function BodyClasses($add=''){$regex='#(msie)[/ ]([0-9])+|(firefox)/([0-9])+|(chrome)/([0-9])+|(opera)/([0-9]+)|(safari)/([0-9]+)|(android)|(iphone)|(ipad)|(blackberry)|(Windows Phone)|(symbian)|(mobile)|(bada])#i';preg_match($regex,$_SERVER['HTTP_USER_AGENT'],$resultat);return ' class="'.$add.' '.preg_replace('#([a-zA-Z ]+)[ /]([0-9]+)#','$1 $1$2',$resultat[0]).' '.basename($_SERVER['PHP_SELF'],'.php').'" ';}
+function BodyClasses($add=''){$regex='#(msie)[/ ]([0-9])+|(firefox)/([0-9])+|(chrome)/([0-9])+|(opera)/([0-9]+)|(safari)/([0-9]+)|(android)|(iphone)|(ipad)|(blackberry)|(Windows Phone)|(symbian)|(mobile)|(bada])#i';@preg_match($regex,$_SERVER['HTTP_USER_AGENT'],$resultat);return ' class="'.$add.' '.@preg_replace('#([a-zA-Z ]+)[ /]([0-9]+)#','$1 $1$2',$resultat[0]).' '.basename($_SERVER['PHP_SELF'],'.php').'" ';}
 function add_protocol($url,$protocol='http://'){preg_match('#^([ftphs]+://)([^ ]+)#',$url,$results);if (count($results)>0){return $url;}else{return $protocol.$url;}}
 function parse_for_snippet($url){	
 	$page=@file_get_contents(trim($url));
 	if ($page===false){return false;}
-	preg_match('#<title>([^<]+)</title>#', $page , $title);
-	if (isset($title[1])){$title=$title[1];}else{$title='';}
-	preg_match_all('#<code[^>]*>([^<]+)</code>#', $page , $code_blocs);
-	if (count($code_blocs[1])>0){$code_blocs[1]['title']=trim($title);return $code_blocs[1];}
-	preg_match_all('#<pre[^>]*>([^<]+)</pre>#', $page , $code_blocs);
-	if (count($code_blocs[1])>0){$code_blocs[1]['title']=trim($title);return $code_blocs[1];}
+	if (preg_match('#<title>([^<]+)</title>#', $page , $title)){$title=$title[1];}else{$title='';}
+	if (preg_match_all('#<code[^>]*>([^<]+)</code>#', $page , $code_blocs)){$code_blocs[1]['title']=trim($title);return $code_blocs[1];}
+	if (preg_match_all('#<pre[^>]*>([^<]+)</pre>#', $page , $code_blocs)){$code_blocs[1]['title']=trim($title);return $code_blocs[1];}
+	// scan for embeded snippets and load each snippet
+	if (preg_match_all('#(http[s]*://[^ ]*snippetvamp.php\?embed=[0-9a-z]+)#', $page , $code_blocs)){
+		$code=array();$code['title']='';
+		foreach($code_blocs[0] as $link){$code[]=file_get_contents(str_replace('?embed=','?txt=',$link));}
+		return $code;
+	}
 	return false;
 }
 
@@ -294,7 +296,7 @@ function secure($array){return array_map('map_entities',$array);}
 function return_matching($chaine,$cle=false){global $snippets;$chaine=str_replace(' ','+',$chaine);$chaine=explode('+',$chaine);$nb_words=count($chaine);$resultats=array();foreach($snippets as $snippet){if (isset($snippet['#num']) && !$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ $resultats[$snippet['#num']]= $snippet;}} return $resultats;}
 function reload_page($query=''){ if ($query===false){$query=$_SERVER['QUERY_STRING'];}header('Location: snippetvamp.php?'.$query);}
 function temps(){$t=microtime();$tt=explode(' ',$t);return $tt[0]+$tt[1];}
-function embed_height($string){return (substr_count($string, "\n")*18)+140; }
+function embed_height($string){return (substr_count($string, "\n")*18)+200; }
 function alert_last_version_if_necessary() {global $config;if (!$config['new_version_alert']){return false;}$seconds_before_update_file=@date('U')-@date('U',filemtime('last_version.txt'));if (!is_file('last_version.txt') || $seconds_before_update_file>18000){$c=file_get_contents('http://snippetvamp.warriordudimanche.net/last_version.txt');file_put_contents('last_version.txt',$c);}$v=file_get_contents('last_version.txt');if ($v!=$config['version']){return '<a href="https://github.com/broncowdd/SnippetVamp/archive/master.zip">'.msg('There\'s a new version : ').$v.'</a>';}}
 ######################################################################
 # Templates
@@ -303,7 +305,7 @@ $hidden=return_if('hidden',!$config['multiple_tag_selection']);
 $multiselect_button_state=return_if('hidden',$config['multiple_tag_selection']);
 $r="\n";
 $template=array();
-$template['bookmarklet']=msg('Drag this link to your shortcut bar')."<a href=\"javascript:javascript:(function(){var url = location.href;window.open('".$config['url']."?bookmarklet=' + encodeURIComponent(url),'_blank','menubar=yes,height=600,width=1000,toolbar=yes,scrollbars=yes,status=yes');})();\" >".msg('Add to SnippetVamp')."</a>";
+$template['bookmarklet']='<strong>Bookmarklet</strong><br/>'.msg('Drag this link to your shortcut bar')."<a href=\"javascript:javascript:(function(){var url = location.href;window.open('".$config['url']."?bookmarklet=' + encodeURIComponent(url),'_blank','menubar=yes,height=600,width=1000,toolbar=yes,scrollbars=yes,status=yes');})();\" >".msg('Add to SnippetVamp')."</a>";
 $template['deconnect_button']='<form action="" method="POST" class="deconnect"><input name="exit" type="hidden" value=""/><input type="submit" value="'.$config['login'].':'.msg('disconnect').'" class="exit"/></form>';
 $template['connect_form']='<form action="" method="POST" class="login"><input name="login" type="text" placeholder="'.msg('login').'"/><input name="pass" type="password" title="'.msg('password').'"/><input type="submit" value="ok"/></form>';
 $template['embed_code']='<iframe width="100%" height="#height" src="'.$config['url'].'?embed=#num" type="text/html"></iframe>';
@@ -385,7 +387,7 @@ if ($_GET){
 	# Users commands (with private filtering)
 	if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags');}
 	if (isset($_GET['search'])){$page=search($_GET['search']);$tag=msg('search').':'.$_GET['search'];}
-	if ($admin&&isset($_GET['txt'])&&isset($snippets[$_GET['txt']])||isset($_GET['txt'])&&isset($snippets[$_GET['txt']])&&is_public($_GET['txt'])){exit('<pre>'.htmlspecialchars($snippets[$_GET['txt']]['#contenu']).'</pre>');}	
+	if ($admin&&isset($_GET['txt'])&&isset($snippets[$_GET['txt']])||isset($_GET['txt'])&&isset($snippets[$_GET['txt']])&&is_public($_GET['txt'])){exit(htmlspecialchars('#'.$snippets[$_GET['txt']]['#titre']."\n".'#'.$snippets[$_GET['txt']]['#adresse']."\n\n".$snippets[$_GET['txt']]['#contenu']."\n\n"));}	
 	if (isset($_GET['embed'])){ 
 		if (isset($snippets[$_GET['embed']])&&is_public($_GET['embed'])){	
 			echo '<link rel="stylesheet" href="styles/'.$config['highlight_embed_theme'].'.css"> 
@@ -412,6 +414,7 @@ if ($_GET){
 	if ($admin&&isset($_GET['suppr'])&&isset($snippets[$_GET['suppr']])){unset($snippets[$_GET['suppr']]);save();reload_page($_GET['vars']);}	
 	if ($admin&&isset($_GET['edit'])&&isset($snippets[$_GET['edit']])){$form=form($_GET['edit']);}
 	if ($admin&&isset($_GET['toggle'])&&isset($snippets[$_GET['toggle']])){toggle_public($_GET['toggle']);save();reload_page($_GET['vars']);}	
+	if ($admin&&isset($_GET['cache_clear'])){cache_clear();reload_page($_GET['vars']);}	
 	if ($admin&&isset($_GET['config'])){$tag=msg('Configuration');$page.=form_config().'<br/><h1 class="titre">'.msg('snippet file').'</h1>'.backup_link().form_import_file().form_replace_file();}	
 }
 
