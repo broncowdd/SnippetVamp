@@ -25,6 +25,8 @@ $msg=array();
 $msg['en']=array();
 $msg['es']=array(
 	'Copy/paste the snippet here (snippetvamp was unable to find a snippet: no code or pre tag)'=>'Pegua el snippet aquí (SnippetVamp no encontró pre o code)',
+	'Create a pack with this snippet'=>'Incluir este snippet en un conjunto',
+	'Pack selected snippets'=>'Packear los snippets seleccionados',
 	'Drag this link to your shortcut bar'=>'Arrastra este botón hasta la barra de tu navegador',
 	'Add to SnippetVamp'=>'Añadir en SnippetVamp',
 	'The public access is locked'=>'El acceso público está desactivado',
@@ -103,6 +105,8 @@ $msg['es']=array(
 	);
 $msg['fr']=array(
 	'Copy/paste the snippet here (snippetvamp was unable to find a snippet: no code or pre tag)'=>'Collez le snippet ici (SnippetVamp n\'a pas trouvé de balise pre ou code)',
+	'Create a pack with this snippet'=>'Inclure ce snippet dans un pack',
+	'Pack selected snippets'=>'Packer les snippets cochés',
 	'Drag this link to your shortcut bar'=>'Glissez ce lien vers votre barre de favoris',
 	'Add to SnippetVamp'=>'Ajouter à SnippetVamp',
 	'The public access is locked'=>'L\'accès public est désactivé',
@@ -206,7 +210,7 @@ if (!file_exists('config.dat')){
 }else{
 	$config=unstore('config.dat');
 }
-$config['version']='beta 1.1';
+$config['version']='beta 1.2';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
 if(!isset($config['new_version_alert'])){$config['new_version_alert']=true;store('config.dat',$config);} 
@@ -435,7 +439,7 @@ $template['deconnect_button']='<form action="" method="POST" class="deconnect"><
 $template['connect_form']='<form action="" method="POST" class="login"><input name="login" type="text" placeholder="'.msg('login').'"/><input name="pass" type="password" title="'.msg('password').'"/><input type="submit" value="ok"/></form>';
 $template['embed_code']='<iframe width="100%" height="#height" src="'.$config['url'].'?embed=#num" type="text/html"></iframe>';
 $template['embeded_snippet']='<h3>#titre</h3><pre><code class="#nolink">#contenu</code></pre><p class="snippetcopyright">#adresse '.msg('embeded with SnippetVamp').'</p>';
-$template['buttons']='<div class="buttons nomobile "><button class="suppr" data="#num&vars=#origine" title="'.msg('Del').'"> </button><button class="#public toggle" data="#num&vars=#origine" title="'.msg('access: ').'#public '.msg('(click to change)').'"> </button><button class="edit" data="#num" title="'.msg('Edit').'"> </button><button class="txt" data="#num" title="'.msg('Text only').'"> </button></div>';
+$template['buttons']='<div class="buttons nomobile "><button class="suppr" data="#num&vars=#origine" title="'.msg('Del').'"> </button><button class="#public toggle" data="#num&vars=#origine" title="'.msg('access: ').'#public '.msg('(click to change)').'"> </button><button class="edit" data="#num" title="'.msg('Edit').'"> </button><button class="txt" data="#num" title="'.msg('Text only').'"> </button><input type="checkbox" id="pack#num" class="pack" value="#num" title="'.msg('Create a pack with this snippet').'"/></div>';
 $template['snippet']=loggedstring($template['buttons']).'<h1 class="snippet_title toggle_next #nolink #public" title="#nolink"> #titre </h1><div class="snippet_content hidden"><pre><code class="#nolink">#contenu</code></pre><hr/><p class="tags">#tags</p><p class="infos">#adresse</p><p class="embed" title="'.msg('embed code').'">#direct_link</p><p class="infos right">Snippet #public '.msg('post date').' #date</p></div>';
 $template['tag_btn']='<a class="button_$1" href="snippetvamp.php?tag=$1">$1</a> ';
 $template['tag_cloud_link']='<a href="snippetvamp.php?tag=#TAG" class="button_#TAG"><input type="checkbox" name="#TAG" class="'.$hidden.' tagcheck" #checked/>#TAG <em>#NB</em></a> ';
@@ -512,9 +516,15 @@ if ($_GET){
 	# Users commands (with private filtering)
 	if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags');}
 	if (isset($_GET['search'])){$page=search($_GET['search']);$tag=msg('search').':'.$_GET['search'];}
-	if ($admin&&isset($_GET['txt'])&&isset($snippets[$_GET['txt']])||isset($_GET['txt'])&&isset($snippets[$_GET['txt']])&&is_public($_GET['txt'])){
+	if (isset($_GET['txt'])){
 		if (isset($_GET['pre'])){$pre1='<pre>';$pre2='</pre>';}else{$pre1=$pre2='';}
-		exit($pre1.htmlspecialchars('#'.$snippets[$_GET['txt']]['#titre']."\n".'#'.$snippets[$_GET['txt']]['#adresse']."\n\n".$snippets[$_GET['txt']]['#contenu'].$pre2."\n\n"));
+		$nbspack=explode('_',$_GET['txt'],-1);$pack='';
+		foreach ($nbspack as $nbpack){
+			if ($admin&&isset($snippets[$nbpack])||isset($snippets[$nbpack])&&is_public($nbpack)){
+				$pack.='#'.$snippets[$nbpack]['#titre']."\n".'#'.$snippets[$nbpack]['#adresse']."\n\n".$snippets[$nbpack]['#contenu']."\n\n";
+			}
+		}
+		exit($pre1.htmlspecialchars($pack).$pre2);
 	}	
 	if (isset($_GET['embed'])){ 
 		if (isset($snippets[$_GET['embed']])&&is_public($_GET['embed'])){	
@@ -551,8 +561,7 @@ if ($_GET){
 # if no tags or search query specified: last snippets
 ######################################################################
 if (!isset($tag)){
-	$tag=msg('last');$counter=0;
-	$s=array_reverse($snippets);
+	$tag=msg('last');$counter=0;$s=array_reverse($snippets);
 	foreach($s as $snippet){
 		if (isset($snippet['#num'])&&$admin||isset($snippet['#num'])&&is_public($snippet['#num'])){
 			$page.=templatise_snippet($snippet);$counter++;
@@ -615,7 +624,13 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 		<hr/>
 		<?php conn_deconn();// please, french reader: don't laugth ! ^^?>
 		<hr/>
-		<div class="recherche" ><form name="cherche" action="snippetvamp.php" method="get"><input type="text" placeholder="<?php echo msg('search');?>" name="search"/></form></div>
+		
+		<div class="recherche" >
+			<button class="hidden pack"><?php echo msg('Pack selected snippets');?></button>
+			<form name="cherche" action="snippetvamp.php" method="get">
+				<input type="text" placeholder="<?php echo msg('search');?>" name="search"/>
+			</form>
+		</div>
 		<div class="tag_cloud">
 			<input type="checkbox" id="multiselect" class="<?php echo $multiselect_button_state; ?>"/>
 			<label for="multiselect" class="multiselect <?php echo $multiselect_button_state; ?>"  title="<?php echo msg('click to enable multi tag selection'); ?>"><?php echo msg('multiselect tag'); ?></label>
@@ -675,6 +690,18 @@ else{echo $contenu;}
 		$("#import_file").change(function(){$('.submit_import').click();});
 		$("#replace_file").change(function(){$('.submit_replace').click();});
 		$(".backup").click(function(){document.location.href="<?php echo $config['data_file'];?>";});
+		$("input.pack").click(function(){ // shows/hide pack button
+			flag=false;
+			$.each($("input.pack"),function(){
+				if ($(this).attr("checked")){flag=true;}
+			});
+			if (flag==true){$("button.pack").show(200);}else{$("button.pack").hide(200);}
+		});
+		$("button.pack").click(function(){ 
+			nbs="";$.each($("input.pack"),function(){if ($(this).attr("checked")){nbs+=$(this).attr("value")+'_';}});
+			document.location.href="snippetvamp.php?txt="+nbs+"&pre";
+		});
+		
 	});
 </script>
 </body>	
