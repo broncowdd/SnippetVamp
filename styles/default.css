@@ -3,7 +3,7 @@
 Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
 
 */
-
+pre{text-shadow:#AAAAAA 0 1px 0;}
 pre code {
   display: block; padding: 0.5em;
  
