@@ -26,8 +26,8 @@ Things already done:
 - embed snippets into a blog
 - private/public status
 - config page
-- english & french: very easy to add a new language 
-- all the app is in one php file (starting configuration, templates, function, core, post & get handling, rss etc.) less than 31ko...
+- english , french & spanish: very easy to add a new language 
+- all the app is in one php file (starting configuration, templates, function, core, post & get handling, rss etc.) less than 50ko...
 - filtered rss feeds: new snippets feeds, one feed for each tag or search rss feed (multiple tags & search allowed)
 - admin space (easily created when you first start the app) 
 - highlight.js included (but not essential)
@@ -37,15 +37,14 @@ Things already done:
 - search for more than one word
 - bookmarklet to get snippets from a web page
 - backup/retore/import from/to a snippet.dat file
-
+- an option to create a snippet package when you start a brand new project
 
 Todo list:
 -------------------------------------------------------------- 
 - help & doc ;-)
-- an option to create a snippet package when you start a brand new project
 - optimize code & css (surely a big pain in the ass final task ^^)
 - crypt the data file ?
-
+- a skin system
 
 
 Bugs:
