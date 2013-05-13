@@ -210,7 +210,7 @@ if (!file_exists('config.dat')){
 }else{
 	$config=unstore('config.dat');
 }
-$config['version']='beta 1.2';
+$config['version']='beta 1.3';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
 if(!isset($config['new_version_alert'])){$config['new_version_alert']=true;store('config.dat',$config);} 
@@ -324,7 +324,7 @@ function id_user(){$id=array();$id['REMOTE_ADDR']=$_SERVER['REMOTE_ADDR'];$id['H
 function is_ok(){global $config;$expired=false;if (!isset($_SESSION['id_user'])){return false;}if ($_SESSION['expire']<time()){$expired=true;}$sid=Decrypte($_SESSION['id_user'],$config['encryption_key']);$id=id_user();if ($sid!=$id || $expired==true){return false;}else{$_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;}	}
 function log_user($login_donne,$pass_donne){global $config;if ($config['login']==$login_donne && $config['pass']==hash('sha512', $config["salt"].$pass_donne)){	$_SESSION['id_user']=Crypte(id_user(),$config['encryption_key']);$_SESSION['login']=$config['login'];	$_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;}else{exit_redirect();return false;}}
 function exit_redirect(){@session_unset();@session_destroy();reload_page(false);}
-function is_public($id_nb,$returnbool=true){global $snippets;if ($snippets[$id_nb]['#public']=='true'||$snippets[$id_nb]['#public']===true){if ($returnbool==true){return true;}else{return ' public ';}}else{if ($returnbool==true){return false;}else{return ' prive ';}} }
+function is_public($id_nb,$returnbool=true){global $snippets;if ($snippets[$id_nb]['#public']=='true'||$snippets[$id_nb]['#public']===true||$snippets[$id_nb]['#public']===1||$snippets[$id_nb]['#public']=='1'){if ($returnbool==true){return true;}else{return ' public ';}}else{if ($returnbool==true){return false;}else{return ' prive ';}} }
 function loggedstring($tpl=''){if (is_ok()){return $tpl;}else{return '';}}
 function conn_deconn(){global $template; if (!is_ok()){echo $template['connect_form'];}else{echo $template['deconnect_button'];}}
 function map_entities($chaine){return stripslashes(htmlentities($chaine, ENT_QUOTES, 'UTF-8'));}
@@ -340,43 +340,31 @@ function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){
 function make_rss($array,$titre){global $template,$config;if(isset($_POST['config'])){return false;}	echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); foreach($array as $a){if (isset($a['#num']) && is_public($a['#num'])){ $a=array_map('map_entities',$a);echo str_replace(array_keys($a),array_values($a),$template['rss_item']);}} echo $template['rss_footer'];}
 function form($num=false){if (!is_ok()){return '';} global $config,$template,$snippets;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');if (!$num){$repl['#uniqid']=uniqid();	$repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value=""';$repl['value="#adresse"']='value=""';$repl['#contenu</textarea>']='</textarea>';$repl['#hidden']='hidden';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{if (isset($snippets[$num])){$repl['#uniqid']=$num;$repl['#formtitre']=msg('Edit a snippet');	$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb'],$snippets[$num]['#tags']);$repl['value="#titre"']='value="'.$snippets[$num]['#titre'].'"';$repl['value="#adresse"']='value="'.$snippets[$num]['#adresse'].'"';$repl['#contenu</textarea>']=$snippets[$num]['#contenu'].'</textarea>';$repl['#hidden']='';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{return false;}}}
 function form_bookmarklet($title='', $url='',$content='',$placeholder='Snippet',$passwordform=''){global $config,$template;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');$repl['#placeholder']=$placeholder;$repl['#passwordform']=$passwordform;$repl['#uniqid']=uniqid();	$repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value="'.$title.'"';$repl['value="#adresse"']='value="'.$url.'"';$repl['#contenu</textarea>']=$content.'</textarea>';$repl['#hidden']='';$repl[' name="from_bookmarklet" value="no"']=' name="from_bookmarklet" value="yes"';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}
-function form_config(){
-	global $msg,$config;
-	$form=  '<form name="config" action="" method="post">';
-	foreach ($config as $cle=>$val){
-		if ($cle!='login'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'&&$cle!='version'){
-			$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';
-			if (is_bool($val)||$val=='true'||$val=='false'){
-			if ($val==true){
-					$val='true';
-				}else{
-					$val='false';
-				}
-				$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.msg($val).'</option><option value="true">'.msg('true').'</option><option value="false">'.msg('false').'</option></select>';
-			}elseif($cle=='highlight_theme'||$cle=='highlight_embed_theme'){
-				$form.='<select  id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.$val.'</option>';
-				$form.= array2options(glob('styles/*.css'),true);
-				$form.='</select>';
-			}elseif($cle=='lang'){
-				$form.='<select  id="'.$cle.'" name="lang"><option value="'.$val.'">'.$val.'</option>';
-				$form.= array2options($msg,false);
-				$form.='</select>';
-			}else{
-				$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';
-			}
-		}
-	}
-
-	$form.='<input type="submit" value="'.msg('Save').'" title="'.msg('save this configuration').'"/></form>';
-	return $form;
-}
+function form_config(){global $msg,$config;$form=  '<form name="config" action="" method="post">';foreach ($config as $cle=>$val){if ($cle!='login'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'&&$cle!='version'){$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';if (is_bool($val)||$val=='true'||$val=='false'){if ($val==true){$val='true';}else{$val='false';}$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.msg($val).'</option><option value="true">'.msg('true').'</option><option value="false">'.msg('false').'</option></select>';}elseif($cle=='highlight_theme'||$cle=='highlight_embed_theme'){$form.='<select  id="'.$cle.'" name="'.$cle.'"><option value="'.$val.'">'.$val.'</option>';$form.= array2options(glob('styles/*.css'),true);$form.='</select>';}elseif($cle=='lang'){$form.='<select  id="'.$cle.'" name="lang"><option value="'.$val.'">'.$val.'</option>';$form.= array2options($msg,false);$form.='</select>';}else{$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';}}}$form.='<input type="submit" value="'.msg('Save').'" title="'.msg('save this configuration').'"/></form>';return $form;}
 function form_import_file(){global $config;$form=  '<form name="import" action="" method="post" id="import"  enctype="multipart/form-data"><input type="file" id="import_file" name="import_file" class="hidden"/><label for="import_file" title="'.msg('import a data file from your computer').'">'.msg('import').' </label><input type="submit" class="ghost submit_import"/></form>';return $form;}
 function form_replace_file(){global $config;$form=  '<form name="replace" action="" method="post" id="replace" enctype="multipart/form-data"><input type="file" name="replace_file" id="replace_file" class="hidden"/><label for="replace_file" title="'.msg('replace all your snippets with a data file from your computer (erase ALL YOUR CURRENT SNIPPETS)').'">'.msg('replace').' </label><input type="submit" class="ghost submit_replace"/></form>';return $form;}
 function backup_link(){return '<input type="button" class="backup" value="'.msg('backup').'" title="'.msg('backup your data file to your computer').'"/>';}
 function feed_link($url_only=false){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&stripos($_SERVER['QUERY_STRING'],'txt=')===false){global $config;$link=$config['url'].'?rss=on&'.$_SERVER['QUERY_STRING']; if ($url_only){echo $link;}else{echo '<p class="rss"><a href="'.$link.'">'.msg("This page's Feed").'</a></p>';}}}
 function config_link(){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&is_ok()){echo'<a class="config" href="?config=true">'.msg('Configuration').'</a> - ';}}
 function are_values_in_string($array,$string,$all=true){$found=0;foreach($array as $val){if (stripos($string, $val)!==false){$found++;}}if ($all && $found==count($array) || !$all && $found>0){return true;}else{return false;}}
-function search($chaine,$cle=false){global $snippets,$template;	$chaine=str_replace(' ','+',$chaine);$chaine=explode('+',$chaine);$nb_words=count($chaine);$list='';$counter=0;$admin=is_ok();foreach($snippets as $snippet){if ($admin || isset($snippet['#num']) && is_public($snippet['#num'])){ if (!$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ $list.= templatise_snippet($snippet);$counter++;}}}if ($list!=''){return $list;}else{return false;}}
+function search($chaine,$cle=false, $from=0){
+	global $snippets,$template,$config;
+	if ($cle=false){$query='search='.$chaine;}else{$query='tag='.$chaine;}
+	$chaine=str_replace(' ','+',$chaine);$chaine=explode('+',$chaine);$nb_words=count($chaine);$list='';$admin=is_ok(); $results=array();
+	foreach($snippets as $snippet){
+		if ($admin && isset($snippet['#num']) || isset($snippet['#num']) && is_public($snippet['#num'])){ 
+			if (!$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ 
+				$results[$snippet['#num']]=$snippet;
+			}
+		}
+	}
+	$nb_results=count($results);
+	$results=array_slice($results,$from,$config['nb_snippets_homepage'],true);
+	$results=array_reverse($results);
+	foreach($results as $snippet){$list.= templatise_snippet($snippet);}
+	$list.='<p class="pagination">'.paginate($from,$nb_results,$query).'</p>';
+	if ($list!=''){return $list;}else{return false;}
+}
 function return_if($return_value,$truefalse){if ($truefalse){return $return_value;}else{return '';}}
 function stripslashes_deep($value){$value = is_array($value) ? array_map('stripslashes_deep', $value):stripslashes($value);return $value;}
 function msg($m){global $msg,$config;if(isset($msg[$config['lang']][$m])){return $msg[$config['lang']][$m];}else{return $m;}}
@@ -400,16 +388,16 @@ function parse_for_snippet($url){
 	}
 	return false;
 }
-function array2options($array,$listvalues=true){
-	if (is_array($array)){
-		$list='';
-		foreach ($array as $key=>$val){
-			$val=str_replace(array('styles/','.css'),'',$val);
-			if ($listvalues===true){$list.='<option value="'.$val.'" >'.$val.'</option>';}
-			else{$list.='<option value="'.$key.'" >'.$key.'</option>';}
-		}
-		return $list;
-	}else{return false;}
+function array2options($array,$listvalues=true){if (is_array($array)){$list='';foreach ($array as $key=>$val){$val=str_replace(array('styles/','.css'),'',$val);if ($listvalues===true){$list.='<option value="'.$val.'" >'.$val.'</option>';}else{$list.='<option value="'.$key.'" >'.$key.'</option>';}}return $list;}else{return false;}}
+function paginate($current, $nb_snippets,$query){
+    global $config;$links='';
+    $nb_pages=intval($nb_snippets/$config['nb_snippets_homepage']);
+   	if ($nb_snippets%$config['nb_snippets_homepage']>0){$nb_pages++;}
+    for ($page=0;$page<$nb_pages;$page++){
+        if ($page*$config['nb_snippets_homepage']==$current){$links.= '<em class="pagination_current">'.($page+1).'</em>';}
+        else{$links.='<a href="'.$config['url'].'?'.$query.'&from='.($page*$config['nb_snippets_homepage']).'" class="pagination_link">'.($page+1).'</a>';}
+    }
+    return $links;
 }
 # Cache
 function cache_temp_folder(){if (!is_dir('temp/')){mkdir ('temp');}}
@@ -492,6 +480,8 @@ if ($admin||strpos($nom_page_cache,'toggle=')||strpos($nom_page_cache,'cache_cle
 ######################################################################
 # GET DATA
 ######################################################################
+
+if (isset($_GET['from'])){$from=$_GET['from'];}else{$from=0;}
 if ($_GET){
 	# RSS feeds
 	if (isset($_GET['tag'])&&isset($_GET['rss'])){
@@ -514,8 +504,9 @@ if ($_GET){
 	}
 
 	# Users commands (with private filtering)
-	if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags');}
-	if (isset($_GET['search'])){$page=search($_GET['search']);$tag=msg('search').':'.$_GET['search'];}
+	if (isset($_GET['from'])){$from=$_GET['from'];}else{$from=0;}
+	if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags',$from);}
+	if (isset($_GET['search'])){$page=search($_GET['search'],false,$from);$tag=msg('search').':'.$_GET['search'];}
 	if (isset($_GET['txt'])){
 		if (isset($_GET['pre'])){$pre1='<pre>';$pre2='</pre>';}else{$pre1=$pre2='';}
 		$nbspack=explode('_',$_GET['txt'],-1);$pack='';
@@ -561,13 +552,11 @@ if ($_GET){
 # if no tags or search query specified: last snippets
 ######################################################################
 if (!isset($tag)){
-	$tag=msg('last');$counter=0;$s=array_reverse($snippets);
-	foreach($s as $snippet){
-		if (isset($snippet['#num'])&&$admin||isset($snippet['#num'])&&is_public($snippet['#num'])){
-			$page.=templatise_snippet($snippet);$counter++;
-		}
-		if ($counter==$config['nb_snippets_homepage']){break;}
-	}
+	$tag=msg('last');$s=array_reverse($snippets);$results=array();
+	if (!$admin){foreach ($s as $snippet){if (isset($snippet['#num']) && is_public($snippet['#num'])){$results[$snippet['#num']]=$snippet;}}}else{$results=$s;}
+	$results=array_slice($results,$from,$config['nb_snippets_homepage'],true);
+	foreach($results as $snippet){if (isset($snippet['#num'])){$page.=templatise_snippet($snippet);}}
+	$page.='<p class="pagination">'.paginate($from,count($snippets),'').'</p>';
 }
 
 ######################################################################
@@ -647,6 +636,7 @@ if (!isset($_GET['config'])){$page=$form.$page;}
 		<div class="corps">
 			<h1 class="titre"><?php echo map_entities($tag); ?></h1>
 			<?php if ($config['allow_public_access']||$admin){echo $page;}else{echo msg('The public access is locked');} ?>
+			
 		</div>
 	</aside>
 	
@@ -671,7 +661,7 @@ else{echo $contenu;}
 <?php if (file_exists('highlight.js')){ ?> <link rel="stylesheet" href="styles/<?php e('highlight_theme'); ?>.css"> <script type="text/javascript" src="highlight.js"></script><script>hljs.initHighlightingOnLoad();</script>  <?php } ?>
 <script>
 	$(function() {
-		//$('.logo').click(function(){$(this).parent().hide();});
+		$('.logo').click(function(){$(this).parent().hide();});
 		$(".toggle_next").click(function(){	$(this).next().toggle();return false;}); 
 		$(".edit").click(function(){document.location.href="snippetvamp.php?edit="+$(this).attr('data');return false;});
 		$(".txt").click(function(){document.location.href="snippetvamp.php?txt="+$(this).attr('data')+"&pre=ok";return false;});
