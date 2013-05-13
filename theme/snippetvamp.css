@@ -85,7 +85,7 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%;top:1
     nav form.login input[type="text"]{padl 20 background-color: couleur_bouton; background-position: 2px -1826px!important; width:45%;}
     nav form.login input[type="password"]{padl 20 background-color: couleur_bouton;background-position: 2px -1422px!important;width:45%;}
     nav form.login input[type="password"]:focus,nav form.login input[type="text"]:focus{background-color:couleur_active!important;}
-    nav form.login input[type="submit"]{width:9%;pad 0;background:image_fond!important;}
+    nav form.login input[type="submit"]{width:9%;pad 0;background:image_fond!important;fs 14}
     nav form.login{mar 5}
     nav form.deconnect {width:100%;disib padl 5 padr 5}
     nav form.deconnect input[type="submit"].exit{fs 12 pad 3 lh 12 width:100%; mart 7 }
@@ -97,6 +97,10 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%;top:1
     nav div.recherche input{width:100%; pad 10 fs 18 ff_georgia  }
 div.margin{width:25%;max-width:350px;min-width:200px;height:50px; flol mar 0 }
 aside{  position : relative; mart 0;width:100%;background-image:image_fond couleur_fond; fs 16  min-height: 87%;height:87%; }
+aside .pagination{txtc mart 15}
+aside .pagination em{curarro disib pad 3 fs 18 mar 3 height:25px;width:25px; lh 16 roundc arrondi background-color:black_25pc;}
+aside .pagination a.pagination_link{disib pad 3 fs 18 mar 3 height:25px;width:25px; lh 16 roundc arrondi}
+aside .pagination a.pagination_link:hover{background-color:black_25pc;}
 footer{txtr  width:100%; height:50px;padr 10}
   footer p.conf{}
 
@@ -108,7 +112,10 @@ footer{txtr  width:100%; height:50px;padr 10}
 .add_snippet{ pad 10 background:image_fond couleur_bouton; insetshadow 1 4 roundbottom arrondi}
 .corps label{mart 15 disib width:100%;txtemboss #eee }
 .corps label:before{content:"▸ ";}
-
+.corps input.pack+label{curhand }
+.corps input.pack+label:hover{color:couleur_foncee_bouton; }
+.buttons input.pack {flor mart 10}
+button.pack{ width:100%;}
 
 /* FORMS & BUTTONS (INCLUDING ALL ELEMENTS WITH BUTTON ASPECT: A H1 etc) */
 #import,#replace{disib }
