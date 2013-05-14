@@ -78,7 +78,7 @@
     With that, it's possible to add a theme path: 
     $auto_css['path_to_css_file']=$config['theme_path'] for example
      */ 
-    $auto_css['path_to_css_file']='theme/'; 
+    $auto_css['path_to_css_file']='theme/default/'; 
     
 
 

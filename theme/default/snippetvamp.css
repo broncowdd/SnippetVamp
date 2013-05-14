@@ -214,6 +214,7 @@ button.pack{ width:100%;}
     button:hover,
     h1.toggle_next:hover
     {background-color: couleur_hover!important;}
+    h1.toggle_next:hover{color: white!important;}
 
 /*  Focus */
     select:focus,
