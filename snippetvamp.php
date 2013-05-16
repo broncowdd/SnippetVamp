@@ -10,6 +10,7 @@
 
 	@Special thanks to Jerrywham for his great debug/enhance contribution and also to Bajazet, Yosko, Knah-Tsaeb... Thanks folks !
 */
+if (!function_exists('json_encode')) {exit('SnippetVamp requires php 5.2 to do its magic... sorry');} 
 
 $start=temps();
 session_start();
@@ -204,13 +205,12 @@ if (!file_exists('config.dat')){
 		'highlight_theme'=>'default',
 		'highlight_embed_theme'=>'shCoreRDark',
 		'snippetvamp_theme'=>'default',
-
+		'login'=>'',
 	);
 	store('config.dat',$config);
 }else{
 	$config=unstore('config.dat');
 }
-
 $config['version']='beta 1.5';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
@@ -647,7 +647,7 @@ else{echo $contenu;}
 <?php if (file_exists('highlight.js')){ ?> <link rel="stylesheet" href="styles/<?php e('highlight_theme'); ?>.css"> <script type="text/javascript" src="highlight.js"></script><script>hljs.initHighlightingOnLoad();</script>  <?php } ?>
 <script>
 	$(function() {
-		$('.logo').click(function(){$(this).parent().hide();});
+		//$('.logo').click(function(){$(this).parent().hide();});
 		$(".toggle_next").click(function(){	$(this).next().toggle();return false;}); 
 		$(".edit").click(function(){document.location.href="snippetvamp.php?edit="+$(this).attr('data');return false;});
 		$(".txt").click(function(){document.location.href="snippetvamp.php?txt="+$(this).attr('data')+"&pre=ok";return false;});
