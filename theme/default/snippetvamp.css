@@ -111,7 +111,7 @@ footer{txtr  width:100%; height:50px;padr 10}
 .tag_cloud a.checked{border:1px solid red;}
 .add_snippet{ pad 10 background:image_fond couleur_bouton; insetshadow 1 4 roundbottom arrondi}
 .corps label{mart 15 disib width:100%;txtemboss #eee }
-.corps label:before{content:"▸ ";}
+.corps #config label:before{content:"▸ ";}
 .corps input.pack+label{curhand }
 .corps input.pack+label:hover{color:couleur_foncee_bouton; }
 .buttons input.pack {flor mart 10}

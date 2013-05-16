@@ -1,0 +1,9 @@
+beta 1.5b
+styles/BRONCO.css
+styles/default.css
+theme/default/computed_snippetvamp.css
+theme/default/snippetvamp.css
+theme/index.html
+readme.txt
+snippet_last_version.txt
+snippetvamp.php

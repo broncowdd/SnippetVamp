@@ -1,4 +1,4 @@
-/*Generated in 0.060003s with auto_css v1.2*/
+/*Generated in 0.019531s with auto_css v1.2*/
 
     /* HTML5 Reset Stylesheet by HTML5Doctor.com */
     html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}
@@ -83,7 +83,7 @@ footer{text-align: right;  width:100%; height:50px;padding-right : 10px ;}
 .tag_cloud a.checked{border:1px solid red;}
 .add_snippet{ padding : 10px ; background:url(noise.png) #888; -moz-box-shadow: inset 0 1px 4px #000000; -webkit-box-shadow: inset 0 1px 4px #000000; box-shadow: inset 0 1px 4px #000000;   -moz-border-radius: 0 0 5px 5px;  -webkit-border-radius: 0 0 5px 5px;  border-radius: 0 0 5px 5px;   }
 .corps label{margin-top : 15px ; display:inline-block; width:100%;text-shadow: 0 1px 0 #eee; }
-.corps label:before{content:"▸ ";}
+.corps #config label:before{content:"▸ ";}
 .corps input.pack+label{cursor: pointer;  }
 .corps input.pack+label:hover{color:#444444; }
 .buttons input.pack {float:right; margin-top : 10px ;}
