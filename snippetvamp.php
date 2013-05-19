@@ -256,7 +256,7 @@ if (!file_exists('config.dat')){
     $config=unstore('config.dat');
 }
 
-$config['version']='beta 1.6';
+$config['version']='beta 1.6b';
 $config['update_url']='http://snippetvamp.warriordudimanche.net/update/';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
