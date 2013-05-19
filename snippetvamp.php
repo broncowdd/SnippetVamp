@@ -309,6 +309,7 @@ if ($admin&&isset($_POST['app_name'])){
     foreach($_POST as $key=>$value){ // change 'true' by true & secure
         if ($value=='true'){$config[$key]=true;}
         else if ($value=='false'){$config[$key]=false;}
+        else if ($key=='home_msg_textarea'){$config[$key]=map_entities($_POST[$key]);}
         else {$config[$key]=htmlentities($_POST[$key]);}
     }
     store('config.dat',$config);
