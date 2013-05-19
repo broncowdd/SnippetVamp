@@ -644,7 +644,7 @@ if ($_GET){
 # if no tags or search query specified: last snippets
 ######################################################################
 if (!isset($tag)){
-    if($config['home_msg_textarea']&&!$admin){$page.='<p class="home_msg">'.nl2br(utf8_encode($config['home_msg_textarea'])).'</p>';}
+    if($config['home_msg_textarea']&&!$admin){$page.='<p class="home_msg">'.nl2br($config['home_msg_textarea']).'</p>';}
     $tag=msg('last');$s=array_reverse($snippets);$results=array();
     if (!$admin){foreach ($s as $snippet){if (isset($snippet['#num']) && is_public($snippet['#num'])){$results[$snippet['#num']]=$snippet;}}}else{$results=$s;}
     $results=array_slice($results,$from,$config['nb_snippets_homepage'],true);
