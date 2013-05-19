@@ -38,13 +38,17 @@ Things already done:
 - bookmarklet to get snippets from a web page
 - backup/retore/import from/to a snippet.dat file
 - an option to create a snippet package when you start a brand new project
+- skin system
+- an automatic update system (and restore)
+- a log file to keep an eye on access & changes
+- a home page customizable message
 
 Todo list:
 -------------------------------------------------------------- 
 - help & doc ;-)
 - optimize code & css (surely a big pain in the ass final task ^^)
 - crypt the data file ?
-- a skin system
+
 
 
 Bugs:

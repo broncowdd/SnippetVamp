@@ -1,4 +1,4 @@
-/*Generated in 0.019531s with auto_css v1.2*/
+/*Generated in 0.020508s with auto_css v1.2*/
 
     /* HTML5 Reset Stylesheet by HTML5Doctor.com */
     html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}
@@ -69,6 +69,7 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%;top:1
     nav div.recherche input{width:100%; padding : 10px ; font-size : 18px; font-family: Georgia, Serif;  }
 div.margin{width:25%;max-width:350px;min-width:200px;height:50px; float:left; margin : 0px ; }
 aside{  position : relative; margin-top : 0px ;;width:100%;background-image:url(noise.png) #aaa; font-size : 16px;  min-height: 87%;height:87%; }
+p.home_msg{font-size : 22px; text-shadow: 0 1px 0 #BBB; padding : 25px ;}
 aside .pagination{text-align: center; margin-top : 15px ;}
 aside .pagination em{cursor: default;  display:inline-block; padding : 3px ; font-size : 18px; margin : 3px ; height:25px;width:25px; line-height : 16px; -moz-border-radius: 5px;  -webkit-border-radius: 5px;  border-radius: 5px;    background-color:rgba(0,0,0,0.25);}
 aside .pagination a.pagination_link{display:inline-block; padding : 3px ; font-size : 18px; margin : 3px ; height:25px;width:25px; line-height : 16px; -moz-border-radius: 5px;  -webkit-border-radius: 5px;  border-radius: 5px;   }
@@ -84,6 +85,7 @@ footer{text-align: right;  width:100%; height:50px;padding-right : 10px ;}
 .add_snippet{ padding : 10px ; background:url(noise.png) #888; -moz-box-shadow: inset 0 1px 4px #000000; -webkit-box-shadow: inset 0 1px 4px #000000; box-shadow: inset 0 1px 4px #000000;   -moz-border-radius: 0 0 5px 5px;  -webkit-border-radius: 0 0 5px 5px;  border-radius: 0 0 5px 5px;   }
 .corps label{margin-top : 15px ; display:inline-block; width:100%;text-shadow: 0 1px 0 #eee; }
 .corps #config label:before{content:"▸ ";}
+.corps #config textarea{height:150px;}
 .corps input.pack+label{cursor: pointer;  }
 .corps input.pack+label:hover{color:#444444; }
 .buttons input.pack {float:right; margin-top : 10px ;}
@@ -117,7 +119,8 @@ button.pack{ width:100%;}
     input[type="submit"],
     .multiselect,
     input[type=file] + label,
-    .bookmarklet_link a
+    .bookmarklet_link a,
+    a.button
     {
          *overflow: visible;  line-height: normal;-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
         margin : 0px ; margin-top : 1px ; font-size : 16px; vertical-align: middle;
@@ -158,7 +161,11 @@ button.pack{ width:100%;}
     #replace_file + label:hover{background-color:rgba(250,30,30,0.9)!important;}
     input[type=button].backup{background-position: 5px -89px!important;background-color:rgba(50,250,50,0.5)!important; padding-left : 25px!important ; }
     input[type=button].backup:hover{background-color:rgba(50,200,100,0.9)!important;}
-    
+    .restore{background:url(favicon.png) right center no-repeat rgba(250,30,30,0.5)!important;padding-right : 30px!important ; }
+    .restore:hover{background-color:rgba(250,30,30,0.9)!important;}
+    .log{background-color:rgba(50,80,250,0.5)!important;}
+    .log:hover{background-color:rgba(50,80,250,0.9)!important;}
+  }
 
  
     select:hover,
