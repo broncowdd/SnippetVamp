@@ -231,7 +231,7 @@ if (!file_exists('config.dat')){
     $config=array(
         'app_name'=>'SnippetVamp',
         'app_description'=>'Because spending time searching snippets sucks.',
-        'app_description'=>'Welcome to my SnippetVamp space ! ',
+        'home_msg_textarea'=>'Welcome to my SnippetVamp space ! ',
         'sort_tags_by_nb'=>false,
         'multiple_tag_selection'=>false,
         'nb_snippets_homepage'=>30,
