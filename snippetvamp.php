@@ -305,7 +305,7 @@ if (isset($_POST['exit'])){inlog('User disconnected');log_user("","");}
 ######################################################################
 if ($admin&&isset($_POST['app_name'])){
     inlog('Configuration changed');
-    if ($config['data_file']!=$_POST['data_file']){rename ($config['data_file'],$_POST['data_file']);} // rename if .dat filename has changed
+    if ($config['data_file']!=$_POST['data_file']&&!is_file($_POST['data_file'])){backup_datafile();rename ($config['data_file'],$_POST['data_file']);} // rename if .dat filename has changed
     foreach($_POST as $key=>$value){ // change 'true' by true & secure
         if ($value=='true'){$config[$key]=true;}
         else if ($value=='false'){$config[$key]=false;}
@@ -396,6 +396,7 @@ function remove_accents($str, $charset='utf-8'){ $str = htmlentities($str, ENT_N
 function save(){inlog('Saving snippet file');cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
 function load(){global $config;return stripslashes_deep(unstore($config['data_file']));}
 function file_curl_contents($url){$ch = curl_init();curl_setopt($ch, CURLOPT_HEADER, 0);curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,  FALSE);curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);curl_setopt($ch, CURLOPT_URL, $url);curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);curl_setopt($ch, CURLOPT_MAXREDIRS, 10);$data = curl_exec($ch);curl_close($ch);if (!$data){return false;}else{return $data;}}
+function backup_datafile(){global $config; $c=file_get_contents($config['data_file']);file_put_contents('BACKUP_'.@date('d-m-Y').'_'.$config['data_file'],$c);}
 function toggle_public($nb){global $snippets;if (!isset($snippets[$nb])){return false;} if ($snippets[$nb]['#public']=='true'||$snippets[$nb]['#public']===true){$snippets[$nb]['#public']=false;}else{$snippets[$nb]['#public']=true;}}
 function templatise_snippet($snippet,$tpl='snippet'){global $template,$config;if (!isset($snippet['#tags'])||!isset($snippet['#num'])||!isset($snippet['#adresse'])){return false;}$snippet['#public']=is_public($snippet['#num'],false);if($snippet['#public']==' public '){$snippet['#direct_link']=str_replace(array('#num','#height'),array($snippet['#num'], embed_height($snippet['#contenu'])),$template['embed_code']);}else{$snippet['#direct_link']=msg('no embed code (private snippet)');}$snippet=secure($snippet);$snippet['#nolink']=$snippet['#tags'];if ($snippet['#adresse']!=''){$snippet['#adresse']='<a class="adr" href="'.$snippet['#adresse'].'" >'.$snippet['#adresse'].'</a>';}$snippet['#tags']=preg_replace('#([^ ]+)#',$template['tag_btn'],$snippet['#tags']);$snippet['#origine']=$_SERVER['QUERY_STRING'];$snippet['#contenu'] = stripslashes(str_replace(array(' ',"\t"), array('&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;'), $snippet['#contenu']));return str_replace(array_keys($snippet),array_values($snippet),$template[$tpl])."\n";}
 function list_tags(){global $snippets;$tags=array();foreach($snippets as $snippet){if (isset($snippet['#tags'])){$t=explode(' ',trim($snippet['#tags']));foreach ($t as $tag){$tag=trim($tag);if(!isset($tags[$tag])){$tags[$tag]=1;}else{$tags[$tag]++;}}}} ksort($tags);unset($tags['']);return $tags;}
