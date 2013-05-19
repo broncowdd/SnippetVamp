@@ -43,6 +43,7 @@ $msg['es']=array(
     'see log file'=>'Ver el contenido del log',
     'clear log file'=>'Borrar el contenido del log',
     'Log file content'=>'Contenido del log',
+    'There\'s no previous version'=>'No existe versión anterior',
     'previous installed version restored, new one deleted'=>'Hemos vuelto a la versión anterior de SnippetVamp',
     'Create a pack with this snippet'=>'Incluir este snippet en un conjunto',
     'Pack selected snippets'=>'Packear los snippets seleccionados',
@@ -135,6 +136,7 @@ $msg['fr']=array(
     'restore SnippetVamp previous version'=>'Restaurer la version précédente de',
     'previous installed version restored, new one deleted'=>'La version précédente de SnippetVamp a été restaurée et la nouvelle effacée',
     'see log file'=>'Voir le contenu du fichier log',
+    'There\'s no previous version'=>'Il n\'y a aucune ancienne version à restaurer',
     'clear log file'=>'Effacer le contenu du fichier log',
     'Log file content'=>'Contenu du fichier log',
     'Pack selected snippets'=>'Packer les snippets cochés',
@@ -626,11 +628,11 @@ if ($_GET){
     # update 
     if ($admin&&isset($_GET['domaj'])){$tag=msg('SnippetVamp Update');$page.=maj_auto();}
     if ($admin&&isset($_GET['restore'])){$tag=msg('Restoring last version');
-        if (is_file('snippetvamp.php')){
+        if (is_file('snippetvamp.php')&&is_file('old_snippetvamp.php')){
             unlink('snippetvamp.php');@unlink('last_version.txt');rename('old_snippetvamp.php','snippetvamp.php');
             $page.=info(msg('previous installed version restored, new one deleted'));inlog('Restoring previous SnippetVamp version');
         }else{
-            $page.=info(msg('previous installed version restored, new one deleted'));
+            $page.=info(msg('There\'s no previous version'));
         }
         
     }
@@ -642,7 +644,7 @@ if ($_GET){
 # if no tags or search query specified: last snippets
 ######################################################################
 if (!isset($tag)){
-    if($config['home_msg_textarea']&&!$admin){$page.='<p class="home_msg">'.$config['home_msg_textarea'].'</p>';}
+    if($config['home_msg_textarea']&&!$admin){$page.='<p class="home_msg">'.nl2br(utf8_encode($config['home_msg_textarea'])).'</p>';}
     $tag=msg('last');$s=array_reverse($snippets);$results=array();
     if (!$admin){foreach ($s as $snippet){if (isset($snippet['#num']) && is_public($snippet['#num'])){$results[$snippet['#num']]=$snippet;}}}else{$results=$s;}
     $results=array_slice($results,$from,$config['nb_snippets_homepage'],true);
