@@ -43,6 +43,7 @@ $msg['es']=array(
     'see log file'=>'Ver el contenido del log',
     'clear log file'=>'Borrar el contenido del log',
     'Log file content'=>'Contenido del log',
+    'There\'s no previous version'=>'No existe versión anterior',
     'previous installed version restored, new one deleted'=>'Hemos vuelto a la versión anterior de SnippetVamp',
     'Create a pack with this snippet'=>'Incluir este snippet en un conjunto',
     'Pack selected snippets'=>'Packear los snippets seleccionados',
@@ -135,6 +136,7 @@ $msg['fr']=array(
     'restore SnippetVamp previous version'=>'Restaurer la version précédente de',
     'previous installed version restored, new one deleted'=>'La version précédente de SnippetVamp a été restaurée et la nouvelle effacée',
     'see log file'=>'Voir le contenu du fichier log',
+    'There\'s no previous version'=>'Il n\'y a aucune ancienne version à restaurer',
     'clear log file'=>'Effacer le contenu du fichier log',
     'Log file content'=>'Contenu du fichier log',
     'Pack selected snippets'=>'Packer les snippets cochés',
@@ -231,7 +233,7 @@ if (!file_exists('config.dat')){
     $config=array(
         'app_name'=>'SnippetVamp',
         'app_description'=>'Because spending time searching snippets sucks.',
-        'app_description'=>'Welcome to my SnippetVamp space ! ',
+        'home_msg_textarea'=>'Welcome to my SnippetVamp space ! ',
         'sort_tags_by_nb'=>false,
         'multiple_tag_selection'=>false,
         'nb_snippets_homepage'=>30,
@@ -254,7 +256,7 @@ if (!file_exists('config.dat')){
     $config=unstore('config.dat');
 }
 
-$config['version']='beta 1.6';
+$config['version']='beta 1.6b';
 $config['update_url']='http://snippetvamp.warriordudimanche.net/update/';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
@@ -303,10 +305,11 @@ if (isset($_POST['exit'])){inlog('User disconnected');log_user("","");}
 ######################################################################
 if ($admin&&isset($_POST['app_name'])){
     inlog('Configuration changed');
-    if ($config['data_file']!=$_POST['data_file']){rename ($config['data_file'],$_POST['data_file']);} // rename if .dat filename has changed
+    if ($config['data_file']!=$_POST['data_file']&&!is_file($_POST['data_file'])){backup_datafile();rename ($config['data_file'],$_POST['data_file']);} // rename if .dat filename has changed
     foreach($_POST as $key=>$value){ // change 'true' by true & secure
         if ($value=='true'){$config[$key]=true;}
         else if ($value=='false'){$config[$key]=false;}
+        else if ($key=='home_msg_textarea'){$config[$key]=map_entities($_POST[$key]);}
         else {$config[$key]=htmlentities($_POST[$key]);}
     }
     store('config.dat',$config);
@@ -393,6 +396,7 @@ function remove_accents($str, $charset='utf-8'){ $str = htmlentities($str, ENT_N
 function save(){inlog('Saving snippet file');cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
 function load(){global $config;return stripslashes_deep(unstore($config['data_file']));}
 function file_curl_contents($url){$ch = curl_init();curl_setopt($ch, CURLOPT_HEADER, 0);curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,  FALSE);curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);curl_setopt($ch, CURLOPT_URL, $url);curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);curl_setopt($ch, CURLOPT_MAXREDIRS, 10);$data = curl_exec($ch);curl_close($ch);if (!$data){return false;}else{return $data;}}
+function backup_datafile(){global $config; $c=file_get_contents($config['data_file']);file_put_contents('BACKUP_'.@date('d-m-Y').'_'.$config['data_file'],$c);}
 function toggle_public($nb){global $snippets;if (!isset($snippets[$nb])){return false;} if ($snippets[$nb]['#public']=='true'||$snippets[$nb]['#public']===true){$snippets[$nb]['#public']=false;}else{$snippets[$nb]['#public']=true;}}
 function templatise_snippet($snippet,$tpl='snippet'){global $template,$config;if (!isset($snippet['#tags'])||!isset($snippet['#num'])||!isset($snippet['#adresse'])){return false;}$snippet['#public']=is_public($snippet['#num'],false);if($snippet['#public']==' public '){$snippet['#direct_link']=str_replace(array('#num','#height'),array($snippet['#num'], embed_height($snippet['#contenu'])),$template['embed_code']);}else{$snippet['#direct_link']=msg('no embed code (private snippet)');}$snippet=secure($snippet);$snippet['#nolink']=$snippet['#tags'];if ($snippet['#adresse']!=''){$snippet['#adresse']='<a class="adr" href="'.$snippet['#adresse'].'" >'.$snippet['#adresse'].'</a>';}$snippet['#tags']=preg_replace('#([^ ]+)#',$template['tag_btn'],$snippet['#tags']);$snippet['#origine']=$_SERVER['QUERY_STRING'];$snippet['#contenu'] = stripslashes(str_replace(array(' ',"\t"), array('&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;'), $snippet['#contenu']));return str_replace(array_keys($snippet),array_values($snippet),$template[$tpl])."\n";}
 function list_tags(){global $snippets;$tags=array();foreach($snippets as $snippet){if (isset($snippet['#tags'])){$t=explode(' ',trim($snippet['#tags']));foreach ($t as $tag){$tag=trim($tag);if(!isset($tags[$tag])){$tags[$tag]=1;}else{$tags[$tag]++;}}}} ksort($tags);unset($tags['']);return $tags;}
@@ -626,11 +630,11 @@ if ($_GET){
     # update 
     if ($admin&&isset($_GET['domaj'])){$tag=msg('SnippetVamp Update');$page.=maj_auto();}
     if ($admin&&isset($_GET['restore'])){$tag=msg('Restoring last version');
-        if (is_file('snippetvamp.php')){
+        if (is_file('snippetvamp.php')&&is_file('old_snippetvamp.php')){
             unlink('snippetvamp.php');@unlink('last_version.txt');rename('old_snippetvamp.php','snippetvamp.php');
             $page.=info(msg('previous installed version restored, new one deleted'));inlog('Restoring previous SnippetVamp version');
         }else{
-            $page.=info(msg('previous installed version restored, new one deleted'));
+            $page.=info(msg('There\'s no previous version'));
         }
         
     }
@@ -642,7 +646,7 @@ if ($_GET){
 # if no tags or search query specified: last snippets
 ######################################################################
 if (!isset($tag)){
-    if($config['home_msg_textarea']&&!$admin){$page.='<p class="home_msg">'.$config['home_msg_textarea'].'</p>';}
+    if($config['home_msg_textarea']&&!$admin){$page.='<p class="home_msg">'.nl2br($config['home_msg_textarea']).'</p>';}
     $tag=msg('last');$s=array_reverse($snippets);$results=array();
     if (!$admin){foreach ($s as $snippet){if (isset($snippet['#num']) && is_public($snippet['#num'])){$results[$snippet['#num']]=$snippet;}}}else{$results=$s;}
     $results=array_slice($results,$from,$config['nb_snippets_homepage'],true);
