@@ -596,7 +596,7 @@ if ($_GET){
                 $pack.='#'.$snippets[$nbpack]['#titre']."\n".'#'.$snippets[$nbpack]['#adresse']."\n\n".$snippets[$nbpack]['#contenu']."\n\n";
             }
         }
-        exit($pre1.htmlspecialchars($pack).$pre2);
+        exit('<html><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"></head><body>'.$pre1.htmlspecialchars($pack).$pre2.'</body></html>');
     }   
     if (isset($_GET['embed'])){ 
         if (isset($snippets[$_GET['embed']])&&is_public($_GET['embed'])){   
