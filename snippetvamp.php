@@ -256,7 +256,7 @@ if (!file_exists('config.dat')){
     $config=unstore('config.dat');
 }
 
-$config['version']='beta 1.7';
+$config['version']='1.7b';
 $config['update_url']='http://snippetvamp.warriordudimanche.net/update/';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
@@ -327,7 +327,7 @@ if ($admin&&isset($_POST['#num'])){
     $snippets[$_POST['#num']]['#date']=@date('d/m/Y');// human friendly date format ^^
     save();
     if ($_POST['from_bookmarklet']=='no'){
-        inlog('Create/edit snippet N°<a href="?txt='.$_POST['#num'].'">'.$_POST['#num'].'</a>');
+        inlog('Create/edit snippet N°<a href="?snippet='.$_POST['#num'].'">'.$_POST['#num'].'</a>');
         $page.= success('saved');
     }else{
         inlog('New snippet from bookmarklet (N°<a href="?txt='.$_POST['#num'].'">'.$_POST['#num'].'</a>)');
@@ -354,8 +354,8 @@ if ($admin&&isset($_FILES['import_file'])){
             $snippets=array_merge($snippets,$new_snippets);
             save();
             $page= success('import successfull');
-        }else{$page.=alert(msg('Error in the file format'));inlog('snippet file format incorrect');}
-    }else{$page.=alert(msg('wrong filetype'));inlog('snippet file format incorrect');}
+        }else{$page.=alert(msg('Error in the file format'));inlog('<em class="warning">snippet file format incorrect</em>');}
+    }else{$page.=alert(msg('wrong filetype'));inlog('<em class="warning">snippet file format incorrect</em>');}
     
 }
 # replace snippets
@@ -368,9 +368,9 @@ if ($admin&&isset($_FILES['replace_file'])){
             if(rename($_FILES['replace_file']['tmp_name'], $config['data_file'])){
                 $page.= success(msg('Snippets successfully replaced'));
                 $snippets=load();
-            }else{$page.=alert(msg('Error loading file'));inlog('Error uploading snippet file');}
-        }else{$page.=alert(msg('Error in the file format'));inlog('snippet file format incorrect');}
-    }else{$page.=alert(msg('wrong filetype'));inlog('snippet file format incorrect');}
+            }else{$page.=alert(msg('Error loading file'));inlog('<em class="warning">Error uploading snippet file</em>');}
+        }else{$page.=alert(msg('Error in the file format'));inlog('<em class="warning">snippet file format incorrect</em>');}
+    }else{$page.=alert(msg('wrong filetype'));inlog('<em class="warning">snippet file format incorrect</em>');}
 }
 ######################################################################
 # core functions
@@ -384,7 +384,7 @@ function Crypte($Texte,$Cle) { srand((double)microtime()*1000000); $CleDEncrypta
 function Decrypte($Texte,$Cle){$Texte = GenerationCle(base64_decode($Texte),$Cle);$VariableTemp = "";for ($Ctr=0;$Ctr<strlen($Texte);$Ctr++){$md5 = substr($Texte,$Ctr,1);$Ctr++;$VariableTemp.= (substr($Texte,$Ctr,1) ^ $md5);} return $VariableTemp;}      
 function id_user(){$id=array();$id['REMOTE_ADDR']=$_SERVER['REMOTE_ADDR'];$id['HTTP_USER_AGENT']=$_SERVER['HTTP_USER_AGENT'];$id['session_id']=session_id();$id=serialize($id);return $id;}
 function is_ok(){global $config;$expired=false;if (!isset($_SESSION['id_user'])){return false;}if ($_SESSION['expire']<time()){$expired=true;}$sid=Decrypte($_SESSION['id_user'],$config['encryption_key']);$id=id_user();if ($sid!=$id || $expired==true){return false;}else{$_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;} }
-function log_user($login_donne,$pass_donne){global $config;if ($config['login']==$login_donne && $config['pass']==hash('sha512', $config["salt"].$pass_donne)){ inlog('User '.$login_donne .' logged successfully');$_SESSION['id_user']=Crypte(id_user(),$config['encryption_key']);$_SESSION['login']=$config['login'];   $_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;}else{if($login_donne!=''&&$pass_donne!=''){inlog('User '.$login_donne .' tried to log with '.$pass_donne);}exit_redirect();return false;}}
+function log_user($login_donne,$pass_donne){global $config;if ($config['login']==$login_donne && $config['pass']==hash('sha512', $config["salt"].$pass_donne)){ inlog('<em class="ok">User '.$login_donne .' logged successfully</em>');$_SESSION['id_user']=Crypte(id_user(),$config['encryption_key']);$_SESSION['login']=$config['login'];   $_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;}else{if($login_donne!=''&&$pass_donne!=''){inlog('<em class="warning">User '.$login_donne .' tried to log with '.$pass_donne.'</em>');}exit_redirect();return false;}}
 function exit_redirect(){@session_unset();@session_destroy();reload_page(false);}
 function is_public($id_nb,$returnbool=true){global $snippets;if ($snippets[$id_nb]['#public']=='true'||$snippets[$id_nb]['#public']===true||$snippets[$id_nb]['#public']===1||$snippets[$id_nb]['#public']=='1'){if ($returnbool==true){return true;}else{return ' public ';}}else{if ($returnbool==true){return false;}else{return ' prive ';}} }
 function loggedstring($tpl=''){if (is_ok()){return $tpl;}else{return '';}}
@@ -447,8 +447,8 @@ function maj_auto(){
     inlog('Starting update process');
     global $config,$admin;
     $filesToUpdate='files_to_update.txt';
-    if (!$admin){inlog('!! User not logged as admin');return alert(msg('You must be logged for that'));}
-    if (!$list=file_curl_contents($config['update_url'].$filesToUpdate)){inlog('!! remote file is unavailable');return alert(msg('Error : remote file is unavailable'));}else{$list=explode("\n",$list);}
+    if (!$admin){inlog('<em class="warning">!! User not logged as admin</em>');return alert(msg('You must be logged for that'));}
+    if (!$list=file_curl_contents($config['update_url'].$filesToUpdate)){inlog('<em class="warning">!! remote file is unavailable</em>');return alert(msg('Error : remote file is unavailable'));}else{$list=explode("\n",$list);}
     $destination = str_replace('snippetvamp.php','', realpath('snippetvamp.php')); 
     if(is_array($list)) {
         if($list[0] == $config['version']){inlog('!! SnippetVamp already up to date');return info(msg('Application is already updated'));}
@@ -482,15 +482,15 @@ function maj_auto(){
 }
 function download_and_check_integrity($file,$destination,$counter=5){
     global $config;
-    if (!$content=file_curl_contents($config['update_url'].'maj.php?f='.$file)){inlog('!! file unreachable '.$file);return false;}
+    if (!$content=file_curl_contents($config['update_url'].'maj.php?f='.$file)){inlog('<em class="warning">!! file unreachable </em>'.$file);return false;}
     file_put_contents($destination.$file,$content);
     while(!md5_file($file)==$config['update_url'].'maj.php?f='.$file.'&md5'&& $counter<=0){
-        inlog('!!Integrity failure, retry '.$dir.' (n°'.$counter.')');
+        inlog('<em class="warning">!!Integrity failure, retry </em>'.$dir.' (n°'.$counter.')');
         $counter--;
         $content=file_curl_contents($config['update_url'].'maj.php?f='.$file);
         file_put_contents($destination.$file,$content);
     }
-    if (!md5_file($file)==$config['update_url'].'maj.php?f='.$file.'&md5'){inlog('!!Integrity failure ');return false;}else{return $content;}
+    if (!md5_file($file)==$config['update_url'].'maj.php?f='.$file.'&md5'){inlog('<em class="warning">!!Integrity failure </em>');return false;}else{return $content;}
 }
 
 ######################################################################
@@ -506,7 +506,7 @@ $template['connect_form']='<form action="" method="POST" class="login"><input na
 $template['embed_code']='<iframe width="100%" height="#height" src="'.$config['url'].'?embed=#num" type="text/html"></iframe>';
 $template['embeded_snippet']='<h3>#titre</h3><pre><code class="#nolink">#contenu</code></pre><p class="snippetcopyright">#adresse '.msg('embeded with SnippetVamp').'</p>';
 $template['buttons']='<div class="buttons nomobile "><button class="suppr" data="#num&vars=#origine" title="'.msg('Del').'"> </button><button class="#public toggle" data="#num&vars=#origine" title="'.msg('access: ').'#public '.msg('(click to change)').'"> </button><button class="edit" data="#num" title="'.msg('Edit').'"> </button><button class="txt" data="#num" title="'.msg('Text only').'"> </button><input type="checkbox" id="pack#num" class="pack" value="#num" title="'.msg('Create a pack with this snippet').'"/></div>';
-$template['snippet']=loggedstring($template['buttons']).'<h1 class="snippet_title toggle_next #nolink #public" title="#nolink"> #titre </h1><div class="snippet_content #hidden"><pre><code class="#nolink">#contenu</code></pre><hr/><p class="tags">#tags</p><p class="infos">#adresse</p><p class="embed" title="'.msg('embed code').'">#direct_link</p><p class="infos right"><a href="'.$config['url'].'?snippet=#num">Permalink</a> - Snippet #public '.msg('post date').' #date</p></div>';
+$template['snippet']=loggedstring($template['buttons']).'<h1 class="snippet_title toggle_next #nolink #public" title="#nolink"> #titre </h1><div class="snippet_content #hidden"><pre><code class="#nolink">#contenu</code></pre><hr/><p class="tags">#tags</p><p class="infos">#adresse</p><p class="embed" title="'.msg('embed code').'">#direct_link</p><p class="infos right"><a href="'.$config['url'].'?txt=#num">'.msg('Text only').'</a> - <a href="'.$config['url'].'?snippet=#num">Permalink</a> - Snippet #public '.msg('post date').' #date</p></div>';
 $template['tag_btn']='<a class="button_$1" href="snippetvamp.php?tag=$1">$1</a> ';
 $template['tag_cloud_link']='<a href="snippetvamp.php?tag=#TAG" class="button_#TAG"><input type="checkbox" name="#TAG" class="'.$hidden.' tagcheck" #checked/>#TAG <em>#NB</em></a> ';
 $template['tag_cloud_checkbox']='<input type="checkbox" id="ID_#TAG" name="check#TAG" value="#TAG" #checked/><label class="button_#TAG" for="ID_#TAG">#TAG</label>  ';
@@ -596,7 +596,8 @@ if ($_GET){
                 $pack.='#'.$snippets[$nbpack]['#titre']."\n".'#'.$snippets[$nbpack]['#adresse']."\n\n".$snippets[$nbpack]['#contenu']."\n\n";
             }
         }
-        exit($pre1.htmlspecialchars($pack).$pre2);
+
+        exit('<html><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"></head><body>'.$pre1.htmlspecialchars($pack).$pre2.'</body></html>');
     }   
     if (isset($_GET['embed'])){ 
         if (isset($snippets[$_GET['embed']])&&is_public($_GET['embed'])){   
@@ -623,10 +624,10 @@ if ($_GET){
     # Admin commands
     if ($admin&&isset($_GET['suppr'])&&isset($snippets[$_GET['suppr']])){inlog('Delete snippet N°'.$_GET['suppr']);unset($snippets[$_GET['suppr']]);save();reload_page($_GET['vars']);}   
     if ($admin&&isset($_GET['edit'])&&isset($snippets[$_GET['edit']])){$form=form($_GET['edit']);}
-    if ($admin&&isset($_GET['toggle'])&&isset($snippets[$_GET['toggle']])){inlog('Change status of snippet N°'.$_GET['suppr']);toggle_public($_GET['toggle']);save();reload_page($_GET['vars']);}   
+    if ($admin&&isset($_GET['toggle'])&&isset($snippets[$_GET['toggle']])){inlog('Change status of snippet N° <a href="?snippet='.$_GET['toggle'].'">'.$_GET['toggle'].'</a>');toggle_public($_GET['toggle']);save();reload_page($_GET['vars']);}   
     if ($admin&&isset($_GET['cache_clear'])){cache_clear();reload_page($_GET['vars']);} 
     if ($admin&&isset($_GET['config'])){$tag=msg('Configuration');$page.=form_config().'<br/><h1 class="titre">'.msg('snippetvamp files').'</h1>'.backup_link().form_import_file().form_replace_file().log_link().restore_sv_link();} 
-    if ($admin&&isset($_GET['log'])){$tag=msg('Log file content');$page.='<a class="button" href="?clearlog">'.msg('clear log file').'</a><pre>'.@file_get_contents('log.txt').'</pre>';} 
+    if ($admin&&isset($_GET['log'])){$tag=msg('Log file content');$page.='<a class="button" href="?clearlog">'.msg('clear log file').'</a><pre class="logfile">'.@file_get_contents('log.txt').'</pre>';} 
     if ($admin&&isset($_GET['clearlog'])){@unlink('log.txt');inlog('log cleared...');reload_page('');} 
     # update 
     if ($admin&&isset($_GET['domaj'])){$tag=msg('SnippetVamp Update');$page.=maj_auto();}
@@ -673,28 +674,7 @@ if (!isset($_GET['config'])&&!isset($_GET['log'])){$page=$form.$page;}
     <link rel="shortcut icon" href="theme/<?php echo $config['snippetvamp_theme'];?>/favicon.png" />
     <link rel="stylesheet" type="text/css" href="theme/<?php echo $config['snippetvamp_theme'];?>/computed_snippetvamp.css?lastupdate=1365701915"  media="screen" />
     <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?php feed_link(true); ?>" />
-    <style>
-        /* tags styles here */
-        /* H1.tag / .button_tag{style};*/
-        h1.php,.button_php{background-color:rgba(150,0,200,0.5)!important;}
-        h1.php:hover,.button_php:hover{background-color:rgba(150,0,200,0.9)!important;}
-        h1.cpp,.button_cpp{background-color:rgba(30,30,90,0.5)!important;}
-        h1.cpp:hover,.button_cpp:hover{background-color:rgba(30,30,90,0.8)!important;}
-        h1.csharp,.button_csharp{background-color:rgba(30,90,30,0.5)!important;}
-        h1.csharp:hover,.button_csharp:hover{background-color:rgba(30,90,30,0.9)!important;}
-        h1.python,.button_python{background-color:rgba(200,100,0,0.5)!important;}
-        h1.python:hover,.button_python:hover{background-color:rgba(200,100,0,1)!important;}
-        h1.jquery, .button_jquery{background-color:rgba(0,130,200,0.5)!important;}
-        h1.jquery:hover, .button_jquery:hover{background-color:rgba(0,130,200,0.9)!important;}
-        h1.css,h1.css3, h1.html, h1.html5,.button_css,.button_css3,.button_html,.button_html5{background-color:rgba(0,150,0,0.5)!important;}
-        h1.css:hover,h1.css3:hover, h1.html:hover,h1.html5:hover, .button_css:hover,.button_css3:hover,.button_html:hover,.button_html5:hover{background-color:rgba(0,120,0,0.9)!important;}
-        h1.js, h1.javascript,.button_js,.button_javascript{background-color:rgba(0,50,250,0.5)!important;}
-        h1.js:hover, h1.javascript:hover,.button_js:hover,.button_javascript:hover{background-color:rgba(0,50,250,0.9)!important;}
-        h1.shell,.button_shell{background-color:rgba(0,193,145,0.5)!important;}
-        h1.shell:hover,.button_shell:hover{background-color:rgba(0,193,145,1)!important;}
-        h1.batch,.button_batch{background-color:rgba(102,150,173,0.5)!important;}
-        h1.batch:hover,.button_batch:hover{background-color:rgba(102,150,173,1)!important;}
-    </style>
+
     <!--[if IE]><script> document.createElement("article");document.createElement("aside");document.createElement("section");document.createElement("footer");</script> <![endif]-->
 </head>
 

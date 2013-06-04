@@ -289,28 +289,6 @@ p.rss{disib background-position: 4px -1624px!important; padl 22 roundc arrondi}
 .bookmarklet_link a {padding:0 2px 0 2px;}
 
 
-
-/* tags styles here */
-        /* H1.tag / .button_tag{style};*/
-        h1.php,.button_php{background-color:rgba(150,0,200,0.5)!important;}
-        h1.php:hover,.button_php:hover{background-color:rgba(150,0,200,0.9)!important;}
-        h1.cpp,.button_cpp{background-color:rgba(30,30,90,0.5)!important;}
-        h1.cpp:hover,.button_cpp:hover{background-color:rgba(30,30,90,0.8)!important;}
-        h1.csharp,.button_csharp{background-color:rgba(30,90,30,0.5)!important;}
-        h1.csharp:hover,.button_csharp:hover{background-color:rgba(30,90,30,0.9)!important;}
-        h1.python,.button_python{background-color:rgba(200,100,0,0.5)!important;}
-        h1.python:hover,.button_python:hover{background-color:rgba(200,100,0,1)!important;}
-        h1.jquery, .button_jquery{background-color:rgba(0,130,200,0.5)!important;}
-        h1.jquery:hover, .button_jquery:hover{background-color:rgba(0,130,200,0.9)!important;}
-        h1.css,h1.css3, h1.html, h1.html5,.button_css,.button_css3,.button_html,.button_html5{background-color:rgba(0,150,0,0.5)!important;}
-        h1.css:hover,h1.css3:hover, h1.html:hover,h1.html5:hover, .button_css:hover,.button_css3:hover,.button_html:hover,.button_html5:hover{background-color:rgba(0,120,0,0.9)!important;}
-        h1.js, h1.javascript,.button_js,.button_javascript{background-color:rgba(0,50,250,0.5)!important;}
-        h1.js:hover, h1.javascript:hover,.button_js:hover,.button_javascript:hover{background-color:rgba(0,50,250,0.9)!important;}
-        h1.shell,.button_shell{background-color:rgba(0,193,145,0.5)!important;}
-        h1.shell:hover,.button_shell:hover{background-color:rgba(0,193,145,1)!important;}
-        h1.batch,.button_batch{background-color:rgba(102,150,173,0.5)!important;}
-        h1.batch:hover,.button_batch:hover{background-color:rgba(102,150,173,1)!important;}
-
 /* TRANSITIONS */
 /* fixed in one shot */
     button,label, input, textarea, a,h1{transitall delai}
