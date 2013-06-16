@@ -279,6 +279,7 @@ if(!file_exists('pass.php')){
         if ($_POST['pass']==$_POST['pass2']&&$_POST["login"]){
             $salt = md5(uniqid('', true));
             file_put_contents('pass.php', '<?php $config["login"] = "'.$_POST["login"].'"; $config["salt"] = '.var_export($salt,true).'; $config["pass"] = '.var_export(hash('sha512', $salt.$_POST['pass']),true).'; ?>');
+            include('pass.php');
         }else{ exit(msg('error'));}
     }
     else{ //pass creation form
