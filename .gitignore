@@ -1,4 +1,14 @@
 #################
+## SnippetVamp
+#################
+
+config.dat
+last_version.txt
+log.txt
+pass.php
+snippetvamp.dat
+
+#################
 ## Eclipse
 #################
 
