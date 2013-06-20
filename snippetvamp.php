@@ -6,8 +6,7 @@
     @License: open source, free to download & fork ^^
     @languages: French/Spanish and English 
     @apoligizes: please forget about my english (learned from american & british series ;-) 
-    @status: usable
-
+    @status: alphausable
     @Special thanks to Jerrywham for his great debug/enhance contribution and also to Bajazet, Yosko, Knah-Tsaeb... Thanks folks !
 */
 if (!function_exists('json_encode')) {exit('SnippetVamp requires php 5.2 to do its magic... sorry');} 
@@ -633,8 +632,8 @@ if ($_GET){
     if ($admin&&isset($_GET['toggle'])&&isset($snippets[$_GET['toggle']])){inlog('Change status of snippet N° <a href="?snippet='.$_GET['toggle'].'">'.$_GET['toggle'].'</a>');toggle_public($_GET['toggle']);save();reload_page($_GET['vars']);}   
     if ($admin&&isset($_GET['cache_clear'])){cache_clear();reload_page($_GET['vars']);} 
     if ($admin&&isset($_GET['config'])){$tag=msg('Configuration');$page.=form_config().'<br/><h1 class="titre">'.msg('snippetvamp files').'</h1>'.backup_link().form_import_file().form_replace_file().log_link().restore_sv_link();} 
-    if ($admin&&isset($_GET['log'])){$tag=msg('Log file content');$page.='<a class="button" href="?clearlog">'.msg('clear log file').'</a><pre class="logfile">'.@file_get_contents('log.txt').'</pre>';} 
-    if ($admin&&isset($_GET['clearlog'])){@unlink('log.txt');inlog('log cleared...');reload_page('');} 
+    if ($admin&&isset($_GET['log'])){$tag=msg('Log file content');$page.='<a class="button" href="?clearlog">'.msg('clear log file').'</a><pre class="logfile">'.@file_get_contents($config['log_filename']).'</pre>';} 
+    if ($admin&&isset($_GET['clearlog'])){@unlink($config['log_filename']);inlog('log cleared...');reload_page('');} 
     # update 
     if ($admin&&isset($_GET['domaj'])){$tag=msg('SnippetVamp Update');$page.=maj_auto();}
     if ($admin&&isset($_GET['restore'])){$tag=msg('Restoring last version');
