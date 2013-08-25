@@ -261,7 +261,7 @@ if (!file_exists('config.dat')){
     $config=unstore('config.dat');
 }
 
-$config['version']='1.82';
+$config['version']='1.82b';
 $config['update_url']='http://snippetvamp.warriordudimanche.net/update/';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
@@ -413,14 +413,39 @@ function map_entities($chaine){return stripslashes(htmlentities($chaine, ENT_QUO
 function tag_normalise($chaine){$chaine=remove_accents($chaine);$chaine=preg_replace('/[^\w#+. ]/','',$chaine);return str_ireplace(array('+','#','.'),array('p','sharp','dot'),$chaine);}
 function remove_accents($str, $charset='utf-8'){ $str = htmlentities($str, ENT_NOQUOTES, $charset); $str = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str); $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str); $str = preg_replace('#&[^;]+;#', '', $str); return $str;} // via weirdog.com 
 # Content
-function save(){inlog('Saving snippet file');cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
+function save(){inlog('Saving snippet file');cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();$snippets['tag_private_list']=list_tags(false);if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
 function load(){global $config;return stripslashes_deep(unstore($config['data_file']));}
 function file_curl_contents($url){$ch = curl_init();curl_setopt($ch, CURLOPT_HEADER, 0);curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);curl_setopt($ch, CURLOPT_URL, $url);(ini_get('open_basedir') ? curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true) : '');curl_setopt($ch, CURLOPT_MAXREDIRS, 10);$data = curl_exec($ch);curl_close($ch);if (!$data){return false;}else{return $data;}}
 function backup_datafile(){global $config; $c=file_get_contents($config['data_file']);file_put_contents('BACKUP_'.@date('d-m-Y').'_'.$config['data_file'],$c);}
 function toggle_public($nb){global $snippets;if (!isset($snippets[$nb])){return false;} if ($snippets[$nb]['#public']=='true'||$snippets[$nb]['#public']===true){$snippets[$nb]['#public']=false;}else{$snippets[$nb]['#public']=true;}}
 function templatise_snippet($snippet,$tpl='snippet',$hidden='hidden'){global $template,$config;if (!isset($snippet['#tags'])||!isset($snippet['#num'])||!isset($snippet['#adresse'])){return false;}$snippet['#public']=is_public($snippet['#num'],false);if($snippet['#public']==' public '){$snippet['#direct_link']=str_replace(array('#num','#height'),array($snippet['#num'], embed_height($snippet['#contenu'])),$template['embed_code']);}else{$snippet['#direct_link']=msg('no embed code (private snippet)');}$snippet=secure($snippet);$snippet['#nolink']=$snippet['#tags'];$snippet['#hidden']=$hidden;if ($snippet['#adresse']!=''){$snippet['#adresse']='<a class="adr" href="'.$snippet['#adresse'].'" >'.$snippet['#adresse'].'</a>';}$snippet['#tags']=preg_replace('#([^ ]+)#',$template['tag_btn'],$snippet['#tags']);$snippet['#origine']=$_SERVER['QUERY_STRING'];$snippet['#contenu'] = stripslashes(str_replace(array(' ',"\t"), array('&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;'), $snippet['#contenu']));return str_replace(array_keys($snippet),array_values($snippet),$template[$tpl])."\n";}
-function list_tags(){global $snippets;$tags=array();foreach($snippets as $snippet){if (isset($snippet['#tags'])){$t=explode(' ',trim($snippet['#tags']));foreach ($t as $tag){$tag=trim($tag);if(!isset($tags[$tag])){$tags[$tag]=1;}else{$tags[$tag]++;}}}} ksort($tags);unset($tags['']);return $tags;}
-function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){global $snippets,$template;$tag_cloud='';if (!isset($snippets['tag_list'])){return false;} if ($sortbynb){arsort($snippets['tag_list']);} foreach($snippets['tag_list'] as $tag=>$nb){  $t=str_replace('#TAG',$tag,$template[$templ]);  $t=str_replace('#NB',$nb,$t);   if ($tags_checked && stripos($tags_checked,$tag)!==false || !$tags_checked && stripos($_SERVER['QUERY_STRING'],$tag) ){     $t=str_replace('#checked','checked',$t); }else{ $t=str_replace('#checked','',$t);}$tag_cloud.= $t;}return $tag_cloud;}
+function list_tags($all=true){
+    global $snippets;
+    $tags=array();
+    foreach($snippets as $snippet){
+        if (isset($snippet['#tags'])){
+            $t=explode(' ',trim($snippet['#tags']));
+            if (isset($snippet['#num'])){$ispublic=is_public($snippet['#num']);}else{$ispublic=true;}
+            
+            foreach ($t as $tag){
+                if (!$all&&$ispublic||$all){
+                    $tag=trim($tag);
+                    if(!isset($tags[$tag])){
+                        $tags[$tag]=1;
+                    }else{
+                        $tags[$tag]++;
+                    }
+                }
+                
+            }
+
+        }
+    } 
+    ksort($tags);
+    unset($tags['']);
+    return $tags;
+}
+function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){global $snippets,$template,$admin;if (!$admin||!isset($snippets['tag_private_list'])){$tags=$snippets['tag_private_list'];}else{$tags=$snippets['tag_list'];}$tag_cloud='';if (!isset($snippets['tag_list'])){return false;} if ($sortbynb){arsort($snippets['tag_list']);} foreach($tags as $tag=>$nb){  $t=str_replace('#TAG',$tag,$template[$templ]);  $t=str_replace('#NB',$nb,$t);   if ($tags_checked && stripos($tags_checked,$tag)!==false || !$tags_checked && stripos($_SERVER['QUERY_STRING'],$tag) ){     $t=str_replace('#checked','checked',$t); }else{ $t=str_replace('#checked','',$t);}$tag_cloud.= $t;}return $tag_cloud;}
 function make_rss($array,$titre){global $template,$config;if(isset($_POST['config'])){return false;}$array=array_reverse($array);    echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); foreach($array as $a){if (isset($a['#num']) && is_public($a['#num'])){ $a=array_map('map_entities',$a);echo str_replace(array_keys($a),array_values($a),$template['rss_item']);}} echo $template['rss_footer'];}
 function form($num=false,$placeholder='Snippet'){if (!is_ok()){return '';} global $config,$template,$snippets;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#placeholder']=$placeholder;$repl['#labeltitre']=msg('Title');$repl['#passwordform']='';$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');if (!$num){$repl['#uniqid']=uniqid();    $repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value=""';$repl['value="#adresse"']='value=""';$repl['#contenu</textarea>']='</textarea>';$repl['#hidden']='hidden';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{if (isset($snippets[$num])){$repl['#uniqid']=$num;$repl['#formtitre']=msg('Edit a snippet');   $repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb'],$snippets[$num]['#tags']);$repl['value="#titre"']='value="'.$snippets[$num]['#titre'].'"';$repl['value="#adresse"']='value="'.$snippets[$num]['#adresse'].'"';$repl['#contenu</textarea>']=$snippets[$num]['#contenu'].'</textarea>';$repl['#hidden']='';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{return false;}}}
 function form_bookmarklet($title='', $url='',$content='',$placeholder='Snippet',$passwordform=''){global $config,$template;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');$repl['#placeholder']=$placeholder;$repl['#passwordform']=$passwordform;$repl['#uniqid']=uniqid();   $repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value="'.$title.'"';$repl['value="#adresse"']='value="'.$url.'"';$repl['#contenu</textarea>']=$content.'</textarea>';$repl['#hidden']='';$repl[' name="from_bookmarklet" value="no"']=' name="from_bookmarklet" value="yes"';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}
@@ -432,8 +457,8 @@ function backup_link(){return '<input type="button" class="backup" value="'.msg(
 function feed_link($url_only=false){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&stripos($_SERVER['QUERY_STRING'],'txt=')===false){global $config;$link=$config['url'].'?rss=on&'.$_SERVER['QUERY_STRING']; if ($url_only){echo $link;}else{echo '<p class="rss"><a href="'.$link.'">'.msg("This page's Feed").'</a></p>';}}}
 function log_link(){return '<a class="button log" href="?log">'.msg('see log file').'</a>';}
 function config_link(){if (stripos($_SERVER['QUERY_STRING'],'config=')===false&&is_ok()){echo'<a class="config" href="?config=true">'.msg('Configuration').'</a> - ';}}
-function are_values_in_string($array,$string,$all=true){$found=0;foreach($array as $val){if (stripos($string, $val)!==false){$found++;}}if ($all && $found==count($array) || !$all && $found>0){return true;}else{return false;}}
-function search($chaine,$cle=false, $from=0){global $snippets,$template,$config;if ($cle=false){$query='search='.$chaine;}else{$query='tag='.$chaine;} $chaine=str_replace(' ','+',$chaine);$chaine=explode('+',$chaine);$nb_words=count($chaine);$list='';$admin=is_ok(); $results=array(); foreach($snippets as $snippet){if ($admin && isset($snippet['#num']) || isset($snippet['#num']) && is_public($snippet['#num'])){ if (!$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle!==false && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){ $results[$snippet['#num']]=$snippet;}}}$nb_results=count($results);$results=array_slice($results,$from,$config['nb_snippets_homepage'],true);$results=array_reverse($results);foreach($results as $snippet){$list.= templatise_snippet($snippet);}$list.='<p class="pagination">'.paginate($from,$nb_results,$query).'</p>';if ($list!=''){return $list;}else{return false;}}
+function are_values_in_string($array,$string,$all=true){$found=0;foreach($array as $val){if (stripos(' '.$string.' ', ' '.$val.' ')!==false){$found++;}}if ($all && $found==count($array) || !$all && $found>0){return true;}else{return false;}}
+function search($chaine,$cle=false, $from=0){global $snippets,$template,$config;if ($cle==false){$query='search='.$chaine;}else{$query='tag='.$chaine;} $chaine=str_replace(' ','+',$chaine);$chaine=explode('+',$chaine);$nb_words=count($chaine);$list='';$admin=is_ok(); $results=array(); foreach($snippets as $snippet){if ($admin && isset($snippet['#num']) || isset($snippet['#num']) && is_public($snippet['#num'])){ if (!$cle && are_values_in_string($chaine,implode(' ',$snippet))!==false || $cle && isset($snippet[$cle]) && are_values_in_string($chaine,$snippet[$cle])!==false){$results[$snippet['#num']]=$snippet;}}}$nb_results=count($results);$results=array_slice($results,$from,$config['nb_snippets_homepage'],true);$results=array_reverse($results);foreach($results as $snippet){$list.= templatise_snippet($snippet);}$list.='<p class="pagination">'.paginate($from,$nb_results,$query).'</p>';if ($list!=''){return $list;}else{return false;}}
 function return_if($return_value,$truefalse){if ($truefalse){return $return_value;}else{return '';}}
 function stripslashes_deep($value){$value = is_array($value) ? array_map('stripslashes_deep', $value):stripslashes($value);return $value;}
 function msg($m){global $msg,$config;if(isset($msg[$config['lang']][$m])){return $msg[$config['lang']][$m];}else{return $m;}}
@@ -532,8 +557,8 @@ $template['tag_cloud_link']='<a href="snippetvamp.php?tag=#TAG" class="button_#T
 $template['tag_cloud_checkbox']='<input type="checkbox" id="ID_#TAG" name="check#TAG" value="#TAG" #checked/><label class="button_#TAG" for="ID_#TAG">#TAG</label>  ';
 //set the private/public button status
 if (isset($_GET['edit'])){
-    if($snippets[$_GET['edit']]['#public']=='true'||$snippets[$_GET['edit']]['#public']===true){$checkpublic='checked';$checkprivate='';}
-    if($snippets[$_GET['edit']]['#public']=='false'||$snippets[$_GET['edit']]['#public']===false){$checkpublic='';$checkprivate='checked';}
+    if($snippets[$_GET['edit']]['#public']=='true'||$snippets[$_GET['edit']]['#public']==true){$checkpublic='checked';$checkprivate='';}
+    if($snippets[$_GET['edit']]['#public']=='false'||$snippets[$_GET['edit']]['#public']==false){$checkpublic='';$checkprivate='checked';}
 }else{ 
     if($config['default_status_private']=='false'||$config['default_status_private']==false){$checkpublic='checked';$checkprivate='';}
     if($config['default_status_private']=='true'||$config['default_status_private']==true){$checkpublic='';$checkprivate='checked';}
