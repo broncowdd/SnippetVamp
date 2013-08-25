@@ -131,6 +131,7 @@ $msg['es']=array(
     'SnippetVamp Update'=>'Actualización de SnippetVamp',
     'SnippetVamp updated successfully'=>'SnippetVamp logró actualizarse (¡ qué bien !)',
     'log_filename'=>'Nombre del fichiero log',
+    'Password (leave blank if you don\'t want to change)'=>'Contraseña (dejar vacío para no cambiar)',
 );
 $msg['fr']=array(
     'Copy/paste the snippet here (snippetvamp was unable to find a snippet: no code or pre tag)'=>'Collez le snippet ici (SnippetVamp n\'a pas trouvé de balise pre ou code)',
@@ -224,6 +225,7 @@ $msg['fr']=array(
     'SnippetVamp Update'=>'Mise à jour de SnippetVamp',
     'SnippetVamp updated successfully'=>'Mise à jour réussie',
     'log_filename'=>'Nom du fichier log',
+    'Password (leave blank if you don\'t want to change)'=>'Mot de passe (laisser vide pour ne pas changer)',
     );
 
 
@@ -259,7 +261,7 @@ if (!file_exists('config.dat')){
     $config=unstore('config.dat');
 }
 
-$config['version']='1.81';
+$config['version']='1.82';
 $config['update_url']='http://snippetvamp.warriordudimanche.net/update/';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
@@ -313,12 +315,18 @@ if ($admin&&isset($_POST['app_name'])){
     if ($config['data_file']!=$_POST['data_file']&&!is_file($_POST['data_file'])){backup_datafile();rename ($config['data_file'],$_POST['data_file']);} // rename if .dat filename has changed
     if ($config['log_filename']!=$_POST['log_filename']&&!is_file($_POST['log_filename'])){rename ($config['log_filename'],$_POST['log_filename']);} // renaming log file
     foreach($_POST as $key=>$value){ // change 'true' by true & secure
+        if($key == 'login' || $key == 'password') continue;
         if ($value=='true'){$config[$key]=true;}
         else if ($value=='false'){$config[$key]=false;}
         else if ($key=='home_msg_textarea'){$config[$key]=map_entities($_POST[$key]);}
         else {$config[$key]=htmlentities($_POST[$key]);}
     }
     store('config.dat',$config);
+    if($_POST['login'] != $config['login']) {$config['login']=htmlentities($_POST['login']); $update_pass=true;}
+    if(!empty($_POST['password'])) {$config['pass']=var_export(hash('sha512', $config['salt'].$_POST['password']),true); $update_pass=true;}
+    if(!empty($update_pass)) {
+        file_put_contents('pass.php', '<?php $config["login"] = "'.$config["login"].'"; $config["salt"] = '.var_export($config['salt'],true).'; $config["pass"] = '.$config['pass'].'; ?>');
+    }
     cache_clear();
 }
 
@@ -382,7 +390,7 @@ if ($admin&&isset($_FILES['replace_file'])){
 # core functions
 ######################################################################
 # 2 functions from IdleMan http://blog.idleman.fr/?p=1722 (Thx bro' )
-function store($file,$datas){file_put_contents($file,gzdeflate(json_encode($datas)));}
+function store($file,$datas){$store = $datas; unset($store['login'], $store['password'], $store['salt']); file_put_contents($file,gzdeflate(json_encode($store))); unset($store);}
 function unstore($file){return json_decode(gzinflate(file_get_contents($file)),true);}
 # Security
 function GenerationCle($Texte,$CleDEncryptage){ $CleDEncryptage = md5($CleDEncryptage); $Compteur=0; $VariableTemp = ""; for ($Ctr=0;$Ctr<strlen($Texte);$Ctr++) {if ($Compteur==strlen($CleDEncryptage)){ $Compteur=0; }$VariableTemp.= substr($Texte,$Ctr,1) ^ substr($CleDEncryptage,$Compteur,1); $Compteur++; } return $VariableTemp; }
@@ -410,7 +418,7 @@ function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){
 function make_rss($array,$titre){global $template,$config;if(isset($_POST['config'])){return false;}$array=array_reverse($array);    echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); foreach($array as $a){if (isset($a['#num']) && is_public($a['#num'])){ $a=array_map('map_entities',$a);echo str_replace(array_keys($a),array_values($a),$template['rss_item']);}} echo $template['rss_footer'];}
 function form($num=false,$placeholder='Snippet'){if (!is_ok()){return '';} global $config,$template,$snippets;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#placeholder']=$placeholder;$repl['#labeltitre']=msg('Title');$repl['#passwordform']='';$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');if (!$num){$repl['#uniqid']=uniqid();    $repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value=""';$repl['value="#adresse"']='value=""';$repl['#contenu</textarea>']='</textarea>';$repl['#hidden']='hidden';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{if (isset($snippets[$num])){$repl['#uniqid']=$num;$repl['#formtitre']=msg('Edit a snippet');   $repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb'],$snippets[$num]['#tags']);$repl['value="#titre"']='value="'.$snippets[$num]['#titre'].'"';$repl['value="#adresse"']='value="'.$snippets[$num]['#adresse'].'"';$repl['#contenu</textarea>']=$snippets[$num]['#contenu'].'</textarea>';$repl['#hidden']='';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{return false;}}}
 function form_bookmarklet($title='', $url='',$content='',$placeholder='Snippet',$passwordform=''){global $config,$template;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');$repl['#placeholder']=$placeholder;$repl['#passwordform']=$passwordform;$repl['#uniqid']=uniqid();   $repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value="'.$title.'"';$repl['value="#adresse"']='value="'.$url.'"';$repl['#contenu</textarea>']=$content.'</textarea>';$repl['#hidden']='';$repl[' name="from_bookmarklet" value="no"']=' name="from_bookmarklet" value="yes"';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}
-function form_config(){global $msg,$config;$selecttrue=$selectfalse='';$form=  '<form name="config" action="" method="post" id="config">';foreach ($config as $cle=>$val){  if ($cle!='login'&&$cle!='update_url'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'&&$cle!='version'){$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';if (is_bool($val)||$val=='true'||$val=='false'){  if ($val==true||$val=='true'){$val='true';$selecttrue=' selected="selected" ';$selectfalse='';}else{$val='false';$selectfalse=' selected="selected" ';$selecttrue='';}$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="true" '.$selecttrue.'>'.msg('true').'</option><option value="false"'.$selectfalse.'>'.msg('false').'</option></select>';}elseif(stripos($cle,'_textarea')){$form.= '<textarea name="'.$cle.'" id="'.$cle.'" >'.$val.'</textarea>';}elseif($cle=='highlight_theme'||$cle=='highlight_embed_theme'){$form.='<select  id="'.$cle.'" name="'.$cle.'">';$form.= array2options(glob('styles/*.css'),true,$val);$form.='</select>';}elseif($cle=='snippetvamp_theme'){$form.='<select  id="'.$cle.'" name="snippetvamp_theme">';$form.= array2options(glob('theme/*'),true,$val); $form.='</select>';}elseif($cle=='lang'){$form.='<select  id="'.$cle.'" name="lang">';$form.= array2options($msg,false,$val);$form.='</select>';}else{$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';}}}$form.='<input type="submit" value="'.msg('Save').'" title="'.msg('save this configuration').'"/></form>';return $form;}
+function form_config(){global $msg,$config;$selecttrue=$selectfalse='';$form=  '<form name="config" action="" method="post" id="config">';foreach ($config as $cle=>$val){  if ($cle!='login'&&$cle!='update_url'&&$cle!='pass'&&$cle!='salt'&&$cle!='encryption_key'&&$cle!='version'){$form.= '<label for="'.$cle.'">'.msg($cle).'</label>';if (is_bool($val)||$val=='true'||$val=='false'){  if ($val==true||$val=='true'){$val='true';$selecttrue=' selected="selected" ';$selectfalse='';}else{$val='false';$selectfalse=' selected="selected" ';$selecttrue='';}$form.='<select id="'.$cle.'" name="'.$cle.'"><option value="true" '.$selecttrue.'>'.msg('true').'</option><option value="false"'.$selectfalse.'>'.msg('false').'</option></select>';}elseif(stripos($cle,'_textarea')){$form.= '<textarea name="'.$cle.'" id="'.$cle.'" >'.$val.'</textarea>';}elseif($cle=='highlight_theme'||$cle=='highlight_embed_theme'){$form.='<select  id="'.$cle.'" name="'.$cle.'">';$form.= array2options(glob('styles/*.css'),true,$val);$form.='</select>';}elseif($cle=='snippetvamp_theme'){$form.='<select  id="'.$cle.'" name="snippetvamp_theme">';$form.= array2options(glob('theme/*'),true,$val); $form.='</select>';}elseif($cle=='lang'){$form.='<select  id="'.$cle.'" name="lang">';$form.= array2options($msg,false,$val);$form.='</select>';}else{$form.= '<input type="text" name="'.$cle.'" value="'.$val.'"/>';}}}$form.='<label for="login">Login</label><input type="text" name="login" value="'.$config['login'].'"/><label for="password">'.msg('Password (leave blank if you don\'t want to change)').'</label><input type="password" name="password"/>';$form.='<input type="submit" value="'.msg('Save').'" title="'.msg('save this configuration').'"/></form>';return $form;}
 function form_import_file(){global $config;$form=  '<form name="import" action="" method="post" id="import"  enctype="multipart/form-data"><input type="file" id="import_file" name="import_file" class="hidden"/><label for="import_file" title="'.msg('import a data file from your computer').'">'.msg('import').' </label><input type="submit" class="ghost submit_import"/></form>';return $form;}
 function form_replace_file(){global $config;$form=  '<form name="replace" action="" method="post" id="replace" enctype="multipart/form-data"><input type="file" name="replace_file" id="replace_file" class="hidden"/><label for="replace_file" title="'.msg('replace all your snippets with a data file from your computer (erase ALL YOUR CURRENT SNIPPETS)').'">'.msg('replace').' </label><input type="submit" class="ghost submit_replace"/></form>';return $form;}
 function restore_sv_link(){return'<a class="button restore" href="?restore">'.msg('restore SnippetVamp previous version').'</a>';}
@@ -591,13 +599,12 @@ if ($_GET){
     if (isset($_GET['from'])){$from=$_GET['from'];}else{$from=0;}
     if (isset($_GET['tag'])){$tag=$_GET['tag'];$page=search($tag,'#tags',$from);}
     if (isset($_GET['search'])){$page=search($_GET['search'],false,$from);$tag=msg('search').':'.$_GET['search'];}
-    if (isset($_GET['snippet'])&&isset($snippets[$_GET['snippet']])){$page=templatise_snippet($snippets[$_GET['snippet']],'snippet','');$tag=$snippets[$_GET['snippet']]['#titre'];}
-    if (isset($_GET['txt'])){
+    if (isset($_GET['snippet'])&&is_public($_GET['snippet'])||isset($_GET['snippet'])&&$admin){$page=templatise_snippet($snippets[$_GET['snippet']],'snippet','');$tag=$snippets[$_GET['snippet']]['#titre'];}
+    if (isset($_GET['txt'])&&is_public($_GET['txt'])||isset($_GET['txt'])&&$admin){
         if (isset($_GET['pre'])){$pre1='<pre>';$pre2='</pre>';}else{$pre1=$pre2='';}
         if (strstr($_GET['txt'],'_')){$nbspack=explode('_',$_GET['txt'],-1);}else{$nbspack=array($_GET['txt']);}
         $pack='';
         foreach ($nbspack as $nbpack){
-
             if ($admin&&isset($snippets[$nbpack])||isset($snippets[$nbpack])&&is_public($nbpack)){
                 $pack.='#'.$snippets[$nbpack]['#titre']."\n".'#'.$snippets[$nbpack]['#adresse']."\n\n".$snippets[$nbpack]['#contenu']."\n\n";
             }
