@@ -293,6 +293,12 @@ if(!file_exists('pass.php')){
     }
 }else{include('pass.php');}
 
+# .htaccess file
+######################################################################
+if(!file_exists('.htaccess')){
+    file_put_contents('.htaccess', "<Files ".$config['log_filename'].">\n\tOrder deny,allow\n\tDeny from all\n</Files>");
+}
+
 # misc vars
 ######################################################################
 $contenu='';
@@ -313,7 +319,7 @@ if (isset($_POST['exit'])){inlog('User disconnected');log_user("","");}
 if ($admin&&isset($_POST['app_name'])){
     inlog('Configuration changed');
     if ($config['data_file']!=$_POST['data_file']&&!is_file($_POST['data_file'])){backup_datafile();rename ($config['data_file'],$_POST['data_file']);} // rename if .dat filename has changed
-    if ($config['log_filename']!=$_POST['log_filename']&&!is_file($_POST['log_filename'])){rename ($config['log_filename'],$_POST['log_filename']);} // renaming log file
+    if ($config['log_filename']!=$_POST['log_filename']&&!is_file($_POST['log_filename'])){rename ($config['log_filename'],$_POST['log_filename']); file_put_contents('.htaccess', "<Files ".$_POST['log_filename'].">\n\tOrder deny,allow\n\tDeny from all\n</Files>");} // renaming log file
     foreach($_POST as $key=>$value){ // change 'true' by true & secure
         if($key == 'login' || $key == 'password') continue;
         if ($value=='true'){$config[$key]=true;}
