@@ -293,6 +293,12 @@ if(!file_exists('pass.php')){
     }
 }else{include('pass.php');}
 
+# .htaccess file
+######################################################################
+if(!file_exists('.htaccess')){
+    file_put_contents('.htaccess', "<Files ".$config['log_filename'].">\n\tOrder deny,allow\n\tDeny from all\n</Files>");
+}
+
 # misc vars
 ######################################################################
 $contenu='';
@@ -313,7 +319,7 @@ if (isset($_POST['exit'])){inlog('User disconnected');log_user("","");}
 if ($admin&&isset($_POST['app_name'])){
     inlog('Configuration changed');
     if ($config['data_file']!=$_POST['data_file']&&!is_file($_POST['data_file'])){backup_datafile();rename ($config['data_file'],$_POST['data_file']);} // rename if .dat filename has changed
-    if ($config['log_filename']!=$_POST['log_filename']&&!is_file($_POST['log_filename'])){rename ($config['log_filename'],$_POST['log_filename']);} // renaming log file
+    if ($config['log_filename']!=$_POST['log_filename']&&!is_file($_POST['log_filename'])){rename ($config['log_filename'],$_POST['log_filename']); file_put_contents('.htaccess', "<Files ".$_POST['log_filename'].">\n\tOrder deny,allow\n\tDeny from all\n</Files>");} // renaming log file
     foreach($_POST as $key=>$value){ // change 'true' by true & secure
         if($key == 'login' || $key == 'password') continue;
         if ($value=='true'){$config[$key]=true;}
@@ -439,7 +445,7 @@ function list_tags($all=true){
     unset($tags['']);
     return $tags;
 }
-function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){global $snippets,$template,$admin;if (!$admin||!isset($snippets['tag_private_list'])){$tags=$snippets['tag_private_list'];}else{$tags=$snippets['tag_list'];}$tag_cloud='';if (!isset($snippets['tag_list'])){return false;} if ($sortbynb){arsort($snippets['tag_list']);} foreach($tags as $tag=>$nb){  $t=str_replace('#TAG',$tag,$template[$templ]);  $t=str_replace('#NB',$nb,$t);   if ($tags_checked && stripos($tags_checked,$tag)!==false || !$tags_checked && stripos($_SERVER['QUERY_STRING'],$tag) ){     $t=str_replace('#checked','checked',$t); }else{ $t=str_replace('#checked','',$t);}$tag_cloud.= $t;}return $tag_cloud;}
+function tag_cloud($templ='tag_cloud_link',$sortbynb=false,$tags_checked=false){global $snippets,$template,$admin;if (!isset($snippets['tag_list'])){return false;}if (!$admin||!isset($snippets['tag_private_list'])){$tags=$snippets['tag_private_list'];}else{$tags=$snippets['tag_list'];}$tag_cloud=''; if ($sortbynb){arsort($snippets['tag_list']);} foreach($tags as $tag=>$nb){  $t=str_replace('#TAG',$tag,$template[$templ]);  $t=str_replace('#NB',$nb,$t);   if ($tags_checked && stripos($tags_checked,$tag)!==false || !$tags_checked && stripos($_SERVER['QUERY_STRING'],$tag) ){     $t=str_replace('#checked','checked',$t); }else{ $t=str_replace('#checked','',$t);}$tag_cloud.= $t;}return $tag_cloud;}
 function make_rss($array,$titre){global $template,$config;if(isset($_POST['config'])){return false;}$array=array_reverse($array);    echo str_replace('#titre',$config['app_name'].' '.$config['login'].': '.$titre,$template['rss_header']); foreach($array as $a){if (isset($a['#num']) && is_public($a['#num'])){ $a=array_map('map_entities',$a);echo str_replace(array_keys($a),array_values($a),$template['rss_item']);}} echo $template['rss_footer'];}
 function form($num=false,$placeholder='Snippet'){if (!is_ok()){return '';} global $config,$template,$snippets;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#placeholder']=$placeholder;$repl['#labeltitre']=msg('Title');$repl['#passwordform']='';$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');if (!$num){$repl['#uniqid']=uniqid();    $repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value=""';$repl['value="#adresse"']='value=""';$repl['#contenu</textarea>']='</textarea>';$repl['#hidden']='hidden';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{if (isset($snippets[$num])){$repl['#uniqid']=$num;$repl['#formtitre']=msg('Edit a snippet');   $repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb'],$snippets[$num]['#tags']);$repl['value="#titre"']='value="'.$snippets[$num]['#titre'].'"';$repl['value="#adresse"']='value="'.$snippets[$num]['#adresse'].'"';$repl['#contenu</textarea>']=$snippets[$num]['#contenu'].'</textarea>';$repl['#hidden']='';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}else{return false;}}}
 function form_bookmarklet($title='', $url='',$content='',$placeholder='Snippet',$passwordform=''){global $config,$template;$repl=array();$repl['#labeltags']=msg('Tags');$repl['#labeltitre']=msg('Title');$repl['#labeladr']=msg('Website');$repl['#labelcontent']=msg('Content');$repl['#placeholder']=$placeholder;$repl['#passwordform']=$passwordform;$repl['#uniqid']=uniqid();   $repl['#formtitre']=msg('Add a snippet');$repl['#tagcloud']=tag_cloud('tag_cloud_checkbox',$config['sort_tags_by_nb']);$repl['value="#titre"']='value="'.$title.'"';$repl['value="#adresse"']='value="'.$url.'"';$repl['#contenu</textarea>']=$content.'</textarea>';$repl['#hidden']='';$repl[' name="from_bookmarklet" value="no"']=' name="from_bookmarklet" value="yes"';return str_replace(array_keys($repl),array_values($repl),$template['snippet_frm']);}
