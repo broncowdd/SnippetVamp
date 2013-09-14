@@ -261,7 +261,7 @@ if (!file_exists('config.dat')){
     $config=unstore('config.dat');
 }
 
-$config['version']='1.83';
+$config['version']='1.84';
 $config['update_url']='http://snippetvamp.warriordudimanche.net/update/';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
