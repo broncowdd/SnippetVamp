@@ -285,7 +285,7 @@ if(!file_exists('pass.php')){
         if ($_POST['pass']==$_POST['pass2']&&$_POST["login"]){
             $salt = md5(uniqid('', true));
             file_put_contents('pass.php', '<?php $config["login"] = "'.$_POST["login"].'"; $config["salt"] = '.var_export($salt,true).'; $config["pass"] = '.var_export(hash('sha512', $salt.$_POST['pass']),true).'; ?>');
-            include('pass.php');
+            header('location: snippetvamp.php');
         }else{ exit(msg('error'));}
     }
     else{ //pass creation form
@@ -334,6 +334,7 @@ if ($admin&&isset($_POST['app_name'])){
         file_put_contents('pass.php', '<?php $config["login"] = "'.$config["login"].'"; $config["salt"] = '.var_export($config['salt'],true).'; $config["pass"] = '.$config['pass'].'; ?>');
     }
     cache_clear();
+    header('location: snippetvamp.php');
 }
 
 # add/edit snippets
@@ -353,6 +354,7 @@ if ($admin&&isset($_POST['#num'])){
         inlog('New snippet from bookmarklet (N°<a href="?txt='.$_POST['#num'].'">'.$_POST['#num'].'</a>)');
         echo '<script>window.close("_blank");</script>';
     }
+    header('location: snippetvamp.php');
 
 }
 # import snippets
