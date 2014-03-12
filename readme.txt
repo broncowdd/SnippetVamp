@@ -12,7 +12,7 @@ This is an app to easily store, manage & share your snippets.
 
 How to install ?
 -------------------------------------------------------------- 
-Just put the files on a server and access to snippetvamp.php.
+Just put the files on a server and access to index.php.
 When you first run it, the app ask you a login&pass, creates the pass.php file & the config.dat file.
 Thats'all !
 
