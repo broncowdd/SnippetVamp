@@ -234,42 +234,57 @@ $msg['fr']=array(
 ######################################################################
 # configuration de base par défaut
 ######################################################################
-if (!file_exists('config.dat')){
-    $config=array(
-        'app_name'=>'SnippetVamp',
-        'app_description'=>'Because spending time searching snippets sucks.',
-        'home_msg_textarea'=>'Welcome to my SnippetVamp space ! ',
-        'sort_tags_by_nb'=>false,
-        'multiple_tag_selection'=>false,
-        'nb_snippets_homepage'=>30,
-        'nb_snippets_rss'=>30,
-        'url'=>'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'],
-        'lang'=>'en', 
-        'default_status_private'=>true, // by default, every snippet private status is 'on'
-        'data_file'=>'snippetvamp.dat', // data filename: change it to secure
-        'encryption_key'=>'warriordudimanche.net',// The key to encrypt password
-        'session_expiration_delay'=>30,//minutes
-        'highlight_theme'=>'default',
-        'highlight_embed_theme'=>'shCoreRDark',
-        'snippetvamp_theme'=>'default',
-        'login'=>'',
-        'new_version_alert'=>true,
-        'allow_public_access'=>true,
-    );
-    store('config.dat',$config);
+define('DATA_DIR', 'data/');
+define('CONFIG_FILE', DATA_DIR . 'config.dat');
+define('PASS_FILE', DATA_DIR . 'pass.php');
+if (!file_exists(CONFIG_FILE)){
+    if (file_exists('config.dat')) {
+        if(!file_exists(DATA_DIR)) {
+            mkdir(DATA_DIR);
+        }
+        move_to_datadir('config.dat');
+        move_to_datadir('pass.php');
+        $config = unstore(CONFIG_FILE);
+        move_to_datadir($config['data_file']);
+        $config['data_file'] = DATA_DIR . $config['data_file'];
+    }
+    else {
+        $config = array(
+            'app_name' => 'SnippetVamp',
+            'app_description' => 'Because spending time searching snippets sucks.',
+            'home_msg_textarea' => 'Welcome to my SnippetVamp space ! ',
+            'sort_tags_by_nb' => false,
+            'multiple_tag_selection' => false,
+            'nb_snippets_homepage' => 30,
+            'nb_snippets_rss' => 30,
+            'url' => 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'],
+            'lang' => 'en',
+            'default_status_private' => true, // by default, every snippet private status is 'on'
+            'data_file' => DATA_DIR . 'snippetvamp.dat', // data filename: change it to secure
+            'encryption_key' => 'warriordudimanche.net',// The key to encrypt password
+            'session_expiration_delay' => 30,//minutes
+            'highlight_theme' => 'default',
+            'highlight_embed_theme' => 'shCoreRDark',
+            'snippetvamp_theme' => 'default',
+            'login' => '',
+            'new_version_alert' => true,
+            'allow_public_access' => true,
+        );
+    }
+    store(CONFIG_FILE, $config);
 }else{
-    $config=unstore('config.dat');
+    $config=unstore(CONFIG_FILE);
 }
 
 $config['version']='1.84';
 $config['update_url']='http://snippetvamp.warriordudimanche.net/update/';
 
 //I'LL REMOVE THOSE LINES LATER: here we keep compatibility with previous versions (adding the key) 
-if(!isset($config['new_version_alert'])){$config['new_version_alert']=true;store('config.dat',$config);} 
-if(!isset($config['log_filename'])){$config['log_filename']='log.txt';store('config.dat',$config);} 
-if(!isset($config['allow_public_access'])){$config['allow_public_access']=true;store('config.dat',$config);} 
-if(!isset($config['snippetvamp_theme'])){$config['snippetvamp_theme']='default';store('config.dat',$config);} 
-if(!isset($config['home_msg_textarea'])){$config['home_msg_textarea']='Welcome to my SnippetVamp space !';store('config.dat',$config);} 
+if(!isset($config['new_version_alert'])){$config['new_version_alert']=true;store(CONFIG_FILE,$config);}
+if(!isset($config['log_filename'])){$config['log_filename']='log.txt';store(CONFIG_FILE,$config);}
+if(!isset($config['allow_public_access'])){$config['allow_public_access']=true;store(CONFIG_FILE,$config);}
+if(!isset($config['snippetvamp_theme'])){$config['snippetvamp_theme']='default';store(CONFIG_FILE,$config);}
+if(!isset($config['home_msg_textarea'])){$config['home_msg_textarea']='Welcome to my SnippetVamp space !';store(CONFIG_FILE,$config);}
 # use auto_css if present
 ######################################################################
 if (file_exists('theme/'.$config['snippetvamp_theme'].'/auto_css.php')){include('theme/'.$config['snippetvamp_theme'].'/auto_css.php'); } //  
@@ -280,18 +295,18 @@ if (!file_exists($config['data_file'])){$snippets=array();store($config['data_fi
 $snippets=load();$page='';
 # pass file
 ######################################################################
-if(!file_exists('pass.php')){
+if(!file_exists(PASS_FILE)){
     if(isset($_POST['pass'])){ // handle pass creation
         if ($_POST['pass']==$_POST['pass2']&&$_POST["login"]){
             $salt = md5(uniqid('', true));
-            file_put_contents('pass.php', '<?php $config["login"] = "'.$_POST["login"].'"; $config["salt"] = '.var_export($salt,true).'; $config["pass"] = '.var_export(hash('sha512', $salt.$_POST['pass']),true).'; ?>');
+            file_put_contents(PASS_FILE, '<?php $config["login"] = "'.$_POST["login"].'"; $config["salt"] = '.var_export($salt,true).'; $config["pass"] = '.var_export(hash('sha512', $salt.$_POST['pass']),true).'; ?>');
             header('location: index.php');
         }else{ exit(msg('error'));}
     }
     else{ //pass creation form
         exit ('<form style="border-radius:4px; margin:10px; padding:10px;display:block;margin:auto;width:200px;background-color:#DDD;border:1px solid black; box-shadow:0 1px 2px black; text-shadow:0 1px -1px white;" action="#" method="POST">'.$config['app_name'].'<hr/>'.msg('choose your id & pass').'<input type="text" name="login" placeholder="'.msg('login').'"/><input type="password" name="pass" placeholder="'.msg('password').'"/><input type="password" name="pass2" placeholder="'.msg('confirm').'"/><input type="submit" value="Ok"/></form>');
     }
-}else{include('pass.php');}
+}else{include(PASS_FILE);}
 
 # .htaccess file
 ######################################################################
@@ -327,11 +342,11 @@ if ($admin&&isset($_POST['app_name'])){
         else if ($key=='home_msg_textarea'){$config[$key]=map_entities($_POST[$key]);}
         else {$config[$key]=htmlentities($_POST[$key]);}
     }
-    store('config.dat',$config);
+    store(CONFIG_FILE,$config);
     if($_POST['login'] != $config['login']) {$config['login']=htmlentities($_POST['login']); $update_pass=true;}
     if(!empty($_POST['password'])) {$config['pass']=var_export(hash('sha512', $config['salt'].$_POST['password']),true); $update_pass=true;}
     if(!empty($update_pass)) {
-        file_put_contents('pass.php', '<?php $config["login"] = "'.$config["login"].'"; $config["salt"] = '.var_export($config['salt'],true).'; $config["pass"] = '.$config['pass'].'; ?>');
+        file_put_contents(PASS_FILE, '<?php $config["login"] = "'.$config["login"].'"; $config["salt"] = '.var_export($config['salt'],true).'; $config["pass"] = '.$config['pass'].'; ?>');
     }
     cache_clear();
     header('location: index.php');
@@ -403,7 +418,7 @@ function unstore($file){return json_decode(gzinflate(file_get_contents($file)),t
 # Security
 function GenerationCle($Texte,$CleDEncryptage){ $CleDEncryptage = md5($CleDEncryptage); $Compteur=0; $VariableTemp = ""; for ($Ctr=0;$Ctr<strlen($Texte);$Ctr++) {if ($Compteur==strlen($CleDEncryptage)){ $Compteur=0; }$VariableTemp.= substr($Texte,$Ctr,1) ^ substr($CleDEncryptage,$Compteur,1); $Compteur++; } return $VariableTemp; }
 function Crypte($Texte,$Cle) { srand((double)microtime()*1000000); $CleDEncryptage = md5(rand(0,32000) ); $Compteur=0; $VariableTemp = ""; for ($Ctr=0;$Ctr<strlen($Texte);$Ctr++) { if ($Compteur==strlen($CleDEncryptage)) $Compteur=0; $VariableTemp.= substr($CleDEncryptage,$Compteur,1).(substr($Texte,$Ctr,1) ^ substr($CleDEncryptage,$Compteur,1) ); $Compteur++;} return base64_encode(GenerationCle($VariableTemp,$Cle) );}
-function Decrypte($Texte,$Cle){$Texte = GenerationCle(base64_decode($Texte),$Cle);$VariableTemp = "";for ($Ctr=0;$Ctr<strlen($Texte);$Ctr++){$md5 = substr($Texte,$Ctr,1);$Ctr++;$VariableTemp.= (substr($Texte,$Ctr,1) ^ $md5);} return $VariableTemp;}      
+function Decrypte($Texte,$Cle){$Texte = GenerationCle(base64_decode($Texte),$Cle);$VariableTemp = "";for ($Ctr=0;$Ctr<strlen($Texte);$Ctr++){$md5 = substr($Texte,$Ctr,1);$Ctr++;$VariableTemp.= (substr($Texte,$Ctr,1) ^ $md5);} return $VariableTemp;}
 function id_user(){$id=array();$id['REMOTE_ADDR']=$_SERVER['REMOTE_ADDR'];$id['HTTP_USER_AGENT']=$_SERVER['HTTP_USER_AGENT'];$id['session_id']=session_id();$id=serialize($id);return $id;}
 function is_ok(){global $config;$expired=false;if (!isset($_SESSION['id_user'])){return false;}if ($_SESSION['expire']<time()){$expired=true;}$sid=Decrypte($_SESSION['id_user'],$config['encryption_key']);$id=id_user();if ($sid!=$id || $expired==true){return false;}else{$_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;} }
 function log_user($login_donne,$pass_donne){global $config;if ($config['login']==$login_donne && $config['pass']==hash('sha512', $config["salt"].$pass_donne)){ inlog('<em class="ok">User '.$login_donne .' logged successfully</em>');$_SESSION['id_user']=Crypte(id_user(),$config['encryption_key']);$_SESSION['login']=$config['login'];   $_SESSION['expire']=time()+(60*$config['session_expiration_delay']);return true;}else{if($login_donne!=''&&$pass_donne!=''){inlog('<em class="warning">User tried to log</em>');}exit_redirect();return false;}}
@@ -413,10 +428,16 @@ function loggedstring($tpl=''){if (is_ok()){return $tpl;}else{return '';}}
 function conn_deconn(){global $template; if (!is_ok()){echo $template['connect_form'];}else{echo $template['deconnect_button'];}}
 function map_entities($chaine){return htmlentities($chaine, ENT_QUOTES, 'UTF-8');}
 function tag_normalise($chaine){$chaine=remove_accents($chaine);$chaine=preg_replace('/[^\w#+. ]/','',$chaine);return str_ireplace(array('+','#','.'),array('p','sharp','dot'),$chaine);}
-function remove_accents($str, $charset='utf-8'){ $str = htmlentities($str, ENT_NOQUOTES, $charset); $str = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str); $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str); $str = preg_replace('#&[^;]+;#', '', $str); return $str;} // via weirdog.com 
+function remove_accents($str, $charset='utf-8'){ $str = htmlentities($str, ENT_NOQUOTES, $charset); $str = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str); $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str); $str = preg_replace('#&[^;]+;#', '', $str); return $str;} // via weirdog.com
 # Content
 function save(){inlog('Saving snippet file');cache_clear();global $config,$snippets;$snippets['tag_list']=list_tags();$snippets['tag_private_list']=list_tags(false);if (!store($config['data_file'],$snippets)){return alert('Error');}else{return success('saved');}}
 function load(){global $config;return unstore($config['data_file']);}
+function move_to_datadir($file) {
+    if (!file_exists($file)) {
+        return false;
+    }
+    return rename($file, DATA_DIR . $file);
+}
 function file_curl_contents($url){$ch = curl_init();curl_setopt($ch, CURLOPT_HEADER, 0);curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);curl_setopt($ch, CURLOPT_URL, $url);(ini_get('open_basedir') ? curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true) : '');curl_setopt($ch, CURLOPT_MAXREDIRS, 10);$data = curl_exec($ch);curl_close($ch);if (!$data){return false;}else{return $data;}}
 function backup_datafile(){global $config; $c=file_get_contents($config['data_file']);file_put_contents('BACKUP_'.@date('d-m-Y').'_'.$config['data_file'],$c);}
 function toggle_public($nb){global $snippets;if (!isset($snippets[$nb])){return false;} if ($snippets[$nb]['#public']=='true'||$snippets[$nb]['#public']===true){$snippets[$nb]['#public']=false;}else{$snippets[$nb]['#public']=true;}}

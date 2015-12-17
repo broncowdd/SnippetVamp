@@ -3,11 +3,10 @@
 #################
 
 .htaccess
-config.dat
 last_version.txt
 log.txt
 pass.php
-snippetvamp.dat
+data
 
 #################
 ## Eclipse
