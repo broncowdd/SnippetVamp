@@ -1,0 +1,737 @@
+/*
+  ######################## tailles / effets
+  hauteur="48px" 
+  delai="100ms"
+  largeur="100%"
+  arrondi="5"
+  effet_bouton=""
+  effet_txt="txtemboss"
+  effet_box="boxemboss"
+
+  ########################  couleurs 
+  couleur_dominante_sombre="#888"
+  couleur_dominante_moyenne="#ececec"
+  couleur_texte="#999"
+  couleur_lien="#999"
+  couleur_hover="#333"
+  couleur_focus="#FF0"
+  couleur_active="#ddd"
+  couleur_alert="#F00"
+  couleur_text_alert=lighten(couleur_alert,50)
+  couleur_info="#F90"
+  couleur_text_info=lighten(couleur_info,50)
+  couleur_success="#0F0"
+  couleur_text_success=lighten(couleur_info,50)
+  couleur_warning="#00F"
+  couleur_text_warning=lighten(couleur_warning,50)
+  couleur_selection="#90F"
+  couleur_text_selection=lighten(couleur_selection,50)
+  couleur_bouton="#f2f2"
+  couleur_foncee_bouton=darken(couleur_bouton,50)
+
+  ########################  custo
+  couleur_lien="#679b95"
+  couleur_background="#44837c"
+*/
+
+
+
+
+/* MISC ELEMENTS */
+* {borbox}
+*::selection { background: couleur_selection;color:couleur_text_selection!important;}  
+html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;overflow-y:scroll;height: 100%;}
+hr{ mar 0 padt 15; border-top: 1px solid #eee;}
+pre{lh 15 color:#EDD; antioverflow }
+pre code {padding: 15px !important; font-family: monospace, 'courier new'; background-color: #fff !important;}
+
+/* ICON ELEMENTS */ 
+/* set background */
+    h1.add,
+    p.embed,
+    nav .logo[type="text"],
+    button.suppr, 
+    button.txt, 
+    button.edit,
+    button.public, 
+    button.prive,
+    nav .logo,
+    input[type=file] + label,
+    input[type=button].backup,
+    p.rss  
+    {background:url(sprite.png) no-repeat;}
+
+/* FONT */
+@font-face {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 100;
+    src: url(static/fonts/roboto/Roboto-Thin.ttf) format('truetype')
+}
+@font-face {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 200;
+    src: url(static/fonts/roboto/Roboto-Light.ttf) format('truetype')
+}
+@font-face {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 400;
+    src: url(static/fonts/roboto/Roboto-Regular.ttf) format('truetype')
+}
+@font-face {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    src: url(static/fonts/roboto/Roboto-Medium.ttf) format('truetype')
+}
+@font-face {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 700;
+    src: url(static/fonts/roboto/Roboto-Bold.ttf) format('truetype')
+}
+@font-face {
+    font-family: 'Roboto Condensed';
+    font-style: normal;
+    font-weight: 400;
+    src: url(static/fonts/roboto/RobotoCondensed-Regular.ttf) format('truetype')
+}
+
+/* LAYOUT */
+body{min-height:100%;height: 100%; position:relative;background-color:couleur_dominante_moyenne; borbox min-width:320px;fs 14 marauto color: couleur_texte;
+    font-family: Roboto,sans-serif; lh 20;}
+header, nav{noselect z-index:1;position:fixed;}
+header{}
+
+nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%; left:0;background: couleur_background;height:100%;
+    box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);}
+    nav hr{hideme}
+    nav .logo{disbl marauto background-position: 0 -1111px!important;width:149px;height:128px;marb 20 hideme}
+    nav .description{lh 12 fs 12 txtc curarro noselect; color: #c5c5c5; hideme}
+    nav form.login input[type="text"]{
+      background-color: rgba(255,255,255,0);
+      border: 1px solid couleur_lien;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      box-shadow: none;
+      padding: 6px 0px 6px 4px;
+      margin-bottom: 1px;
+      margin-right: 5px;
+      width: 43%;
+      color: #eee;
+      border-radius: 2px;
+      height: 30px;
+    }
+    nav form.login input[type="password"]{
+      background-color: rgba(255,255,255,0);
+      border: 1px solid couleur_lien;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      box-shadow: none;
+      padding: 6px 0px 6px 4px;
+      margin-bottom: 1px;
+      width: 43%;
+      color: #eee;
+      border-radius: 2px;
+      height: 30px;
+    }
+    nav form.login input[type="password"]:focus,
+    nav form.login input[type="text"]:focus,
+    nav div.recherche input[type="text"]:focus {background-color:rgba(255,255,255,0.1)!important;}
+    nav form.login input[type="submit"]{width:10%;pad 0;fs 14; margin-left: 5px; height: 30px; margin-bottom: 1px;}
+    nav form.login{mar 5}
+    nav form.deconnect {width:100%;disib padl 5 padr 5}
+    nav form.deconnect input[type="submit"].exit{fs 12 pad 3 lh 12 width:100%; mart 7; height: 30px; margin-top: 5px; margin-bottom: 6px; font-weight: 200; color:#eaeaea;}
+    nav form.hidden { pad 10 }
+    input[type="submit"].exit {txtb fs 12 pad 3 lh 12 width:100%; height: 25px;}
+    nav form label{ disib mart 15 width:100%;  fs 14 txti }
+    nav h1 { txtc }
+    nav h1 a {
+          display: inline-block;
+          padding: 0 15px;
+          font-weight: 200;
+          font-size: 20px;
+          color: #eaeaea !important;
+          text-decoration: none;
+          line-height: 56px;
+          height: 56px;
+    }
+    nav div.recherche {pad 5}
+    nav div.recherche input {width:100%; pad 5; border-radius: 2px;}
+div.margin{width:25%;max-width:350px;min-width:200px;height:50px; flol mar 0 }
+aside{  position : relative; mart 0;width:100%;background: couleur_dominante_moyenne; min-height: 87%;height:87%; }
+p.home_msg{fs 22 #BBB pad 25px}
+aside .pagination{txtc mart 15}
+aside .pagination em{curarro disib pad 3 fs 18 mar 3 height:25px;width:25px; color: #666; font-style: normal;}
+aside .pagination a.pagination_link{disib pad 3 fs 18 mar 3 height:25px;width:25px; lh 16 roundc arrondi}
+aside .pagination a.pagination_link:hover{ color:couleur_lien;}
+aside .pagination a.pagination_link:active{ color: #333;}
+footer{txtr  width:100%; height:50px;padr 15}
+  footer p.conf{}
+
+.corps{flol width:74%; mar 0 min-width:580px;  marb 30  min-height: 100%; 
+  padding: 0 50px;
+  max-width: 1170px;
+}
+.snippet_content{padb 10 width:100%;}
+.snippet_content .origine,.snippet_content p {marl 5 padl 10 padb 5;}
+.tag_cloud {padl 5 padr 5 padb 60 padt 20 txtc}
+.tag_cloud a.checked{border:1px solid red;}
+.add_snippet{ 
+    pad 10 roundbottom arrondi
+    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+    background: #fff;
+    border-radius: 0 0 2px 2px;
+}
+.corps label{
+  mart 15 disib width:100%; color:#666; 
+  font-size: 90%;
+  font-weight: 400;
+ }
+.corps #config label:before{content:"▸ ";}
+.corps #config textarea{height:150px;}
+.corps input.pack+label{curhand }
+.corps input.pack+label:hover{color:couleur_foncee_bouton; }
+.corps input[type="password"] { margin-bottom: 30px; }
+.buttons input.pack {flor mart 29}
+button.pack{ width:100%;}
+pre.logfile{txtshadow color:white;background-color: #888;roundc 5 insetshadow 1 1 }
+pre.logfile em.warning{color:#f00;}
+pre.logfile em.ok{color:#0f0;}
+
+/* FORMS & BUTTONS (INCLUDING ALL ELEMENTS WITH BUTTON ASPECT: A H1 etc) */
+#import,#replace{disib }
+#add_snippet_form { margin: 5px; }
+
+/*  Normal */
+
+    input[type=checkbox]+label,input[type=radio]+label{disib width:auto;}
+    #multiselect{hideme}
+    #multiselect+label{ width:100%;hideme}
+    .multiselect{background-color:rgba(100,100,100,0.5)!important;}
+    .multiselect:hover{background-color:rgba(100,100,100,0.9)!important;}
+
+    .filter{disbl width:100%;}
+    select{curhand}
+    textarea{disib height: 500px; noresiz}
+    .bookmarklet textarea{height:200px;}
+
+    select, 
+    textarea,
+    input[type=text],
+    input[type=password],
+    nav div.recherche input[type="text"]
+    {
+      border: 1px solid #ccc;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      box-shadow: none;
+      padding: 6px 1px 6px 4px;
+      background: rgba(255,255,255,0);
+      margin-bottom: 1px;
+      width: 100%;
+      background-color: rgba(255,255,255,0.1) !important;
+      height: 30px;
+    }
+
+    nav div.recherche input[type="text"] {
+      border: 1px solid couleur_lien;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      color: #eee;
+    }
+
+    li.tags a,
+    li.tags label,
+    div.snippet_content p.tags a
+    {
+        *overflow: visible;  line-height: normal; vertical-align: middle;
+        white-space:nowrap;
+        /* tmp */
+        text-decoration: none;
+        padding: 3px 10px;
+        border: 1px solid #ccc;
+        font-size: 90%;
+        font-weight: 400;
+        text-transform: none;
+        border-radius: 20px;
+        margin: 2px;
+
+        background-color: #ddd;
+        color: #888;
+        box-shadow: none;
+    }
+    p.tags a,
+    p.tags label
+    {
+      border: none;
+      outline: 0;
+      margin-top: 0;
+      background-color: none;
+      height:36px;
+      border-radius: 2px;
+      padding: 8px 16px;
+      font-weight: 200;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-right: 10px;
+      color:#666;
+    }
+
+    button,
+    a.button.add_snippet .tags label,
+    .bookmarklet_link a,
+    input[type=file],
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    .multiselect
+    {
+        height: 36px;
+        padding: 8px 16px;
+        border: none;
+        background-color: rgba(255,255,255,0);
+        outline: 0;
+        font-weight: 400;
+        text-transform: uppercase;
+        border-radius: 2px;
+        color: #333;
+    }
+    .bookmarklet_link a {
+        color: couleur_lien;
+    }
+    input[type="submit"]
+    {
+        background-color: #4997AD;
+        color: #eaeaea;
+        box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+        /*float:right;
+        clear:both;*/
+    }
+
+    nav .tag_cloud a {
+      color:#f2f2f2;
+      white-space: nowrap;
+      font-weight: 200;
+      /* line-height: 1;*/
+    }
+    nav .tag_cloud a em {
+      font-style: normal;
+      color:#333;
+      padding-right: 10px;
+    }
+
+    h1.toggle_next{
+      mar 0 mart 15 fs 18 disbl pad 10
+      background-color:#fff;
+      box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+      vertical-align: middle;
+      color:inherit;
+      font:inherit; 
+      white-space:normal;
+      color:couleur_lien;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 12pt;
+      border-radius: 2px;
+      curhand 
+    }
+    h1.add{background-position: 7px 12px!important; padl 25}
+
+    button.suppr, 
+    button.txt, 
+    button.edit,
+    button.public, 
+    button.prive
+    {flor mart 24 height:22px;width:22px;pad 2 border:none; box-shadow: none; curhand}
+    button.suppr{background-position: 3px -502px!important;marr 5}
+    button.edit{background-position: 2px -704px!important;}
+    button.txt{background-position: 2px -1321px!important;}
+    button.public{background-position: 2px -1523px!important;}
+    button.prive{background-position: 2px -1422px!important;}
+    .tag_cloud a.filter{width:100%;}
+
+    input[type=file] + label{width:auto;}
+    #import_file + label{
+      background-position: 5px 12px!important;background-color:rgba(50,200,100,0.9)!important;
+      padding-left: 25px !important;
+      height:40px;
+      box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+      border-radius: 2px;
+      padding: 8px 16px;
+      font-weight: 200;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-right: 10px;
+      color:#eaeaea;
+    }
+    #import_file + label:hover{
+      background-color:rgba(44, 170, 86, 0.9)!important;
+      box-shadow: 0 0 4px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.36);
+      color:#eaeaea;
+    }
+    #import_file + label:active{
+      background-color: rgba(53, 213, 107, 0.9)!important;
+      color: #eaeaea;
+      box-shadow: none;
+    }
+    #replace_file + label{
+      background-position: 5px -392px!important;background-color:#F44336!important;
+      padding-left: 25px !important;
+      height:40px;
+      box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+      border-radius: 2px;
+      padding: 8px 16px;
+      font-weight: 200;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-right: 10px;
+      color:#eaeaea;
+    }
+    #replace_file + label:hover{
+      background-color:#FB5448!important;
+      box-shadow: 0 0 4px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.36);
+      color:#eaeaea;
+    }
+    #replace_file + label:active{
+      background-color: #F55145 !important;
+      color: #eaeaea;
+      box-shadow: none;
+    }
+    input[type=button].backup{
+      background-position: 5px -89px!important; background-color:rgba(50,200,100,0.9)!important; 
+      padl 25px!important; 
+      /*margin-top: 17px;*/
+      height:40px;
+      box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+      border-radius: 2px;
+      padding: 8px 16px;
+      font-weight: 200;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-right: 10px;
+      color:#eaeaea;
+    }
+    input[type=button].backup:hover{
+      background-color:rgba(44, 170, 86, 0.9)!important;
+      box-shadow: 0 0 4px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.36);
+      color:#eaeaea;
+    }
+    input[type=button].backup:active{
+      background-color: rgba(53, 213, 107, 0.9)!important;
+      color: #eaeaea;
+      box-shadow: none;
+    }
+    .restore{
+      display:inline-block;
+      background:url(favicon.png) right center no-repeat #F44336!important;padr 30px!important;
+      height:40px;
+      box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+      border-radius: 2px;
+      padding: 8px 16px;
+      margin-top: 10px;
+      font-weight: 200;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-right: 10px;
+      color:#eaeaea;
+    }
+    .restore:hover{
+      background-color:#E53935!important;
+      box-shadow: 0 0 4px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.36);
+      color:#eaeaea;
+    }
+    .restore:active{
+      background-color: #FB5448!important;
+      color: #eaeaea;
+      box-shadow: none;
+    }
+    .log{
+      display:inline-block;
+      background-color:#4997AD!important;
+      height:40px;
+      box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+      border-radius: 2px;
+      padding: 8px 16px;
+      margin-top: 10px;
+      font-weight: 200;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-right: 10px;
+      color:#eaeaea;
+    }
+    .log:hover{
+      background-color:#1E88E5!important;
+      box-shadow: 0 0 4px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.36);
+      color:#eaeaea;
+    }
+    .log:active{
+      background-color: #56a6ec!important;
+      color: #eaeaea;
+      box-shadow: none;
+    }
+
+/*  Hover */
+
+    select:hover,
+    input[type=text]:hover,
+    input[type=password]:hover,
+    textarea:hover,
+    nav div.recherche input[type="text"]:hover,
+    nav form.login input[type="text"],
+    nav form.login input[type="password"] {} 
+
+    .tags a:hover, 
+    div.snippet_content p.tags a:hover,
+    .add_snippet .tags label:hover, 
+    input[type="button"]:hover,
+    input[type="reset"]:hover,
+    .button:hover,
+    .multiselect:hover {
+      background-color:#ccc;
+      curhand
+    }
+    .bookmarklet_link a:hover {
+        color: #c5c5c5;
+    }
+    input[type="submit"]:hover {
+        background-color: #1E88E5;
+        color: #fff;
+        box-shadow: 0 0 4px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.36);
+        curhand
+    }
+
+    nav .tag_cloud a:hover {}
+
+    button.edit:hover,
+    footer a:hover,
+    button.prive:hover,
+    button.public:hover{}
+    .suppr:hover{}
+    .txt:hover{}
+
+    button:hover {/*background-color: #ddd!important;*/}
+    h1.toggle_next:hover{color: #999!important;}
+
+/*  Focus */
+
+    select:focus,
+    input[type=text]:focus,
+    input[type=password]:focus, 
+    textarea:focus,
+    nav div.recherche input[type="text"]:focus,
+    nav form.login input[type="text"]:focus,
+    nav form.login input[type="password"]:focus
+    {
+      border-bottom: 2px solid couleur_lien;
+      box-shadow: none;
+      outline: 0;
+      /*margin-bottom: 0;*/
+    }
+
+/*  Clicked */
+
+    .tags a:active, 
+    button:active ,
+    .add_snippet .tags label:active,
+    input[type="button"]:active,
+    input[type="reset"]:active,
+    .button:active,
+    .multiselect:active,
+    input[type=file] + label:active {
+        /*background-color: couleur_foncee_bouton!important;*/
+        noselect
+    }
+    .bookmarklet_link a:active {
+        color: #c5c5c5;
+    }
+
+    input[type="submit"]:active {
+        background-color: #56a6ec;
+        color: #fff;
+        box-shadow: none;
+    }
+    select:active,
+    input[type=text]:active,
+    input[type=password]:active, 
+    textarea:active,
+    nav div.recherche input[type="text"]:active,
+    nav form.login input[type="text"]:active,
+    nav form.login input[type="password"]:active
+    {
+      border-bottom: 2px solid couleur_lien;
+      box-shadow: none;
+      outline: 0;
+      /*margin-bottom: 0;*/
+    }
+
+    nav .tag_cloud a:active {
+
+    }
+
+
+.snippet_content p a { }
+.snippet_content p a:hover {color:#666;}
+.snippet_content p a.adr:hover {color:#bbb;}
+.snippet_content p.infos{ txtl fs 12 pad 0 mar 0 padr 10}
+
+
+h1.titre{fs 20 txtc; font-weight: 200; line-height: 56px;
+height: 56px;}
+
+
+
+.snippet_content{
+    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+    background: #f2f2f2;
+    border-radius: 0 0 2px 2px;
+    marr 10}
+.add_snippet li{list-style: none;}
+.add_snippet .tags{ marb 15 }
+.add_snippet .tags label{ curhand }
+.add_snippet .tags input[type=checkbox],.add_snippet .tags input[type=radio]{hideme}
+.add_snippet .tags input[type=checkbox]:hover, .add_snippet .tags input[type=radio]:hover{border-color:couleur_hover; }
+.add_snippet .tags input:checked + label{
+  background-color: #888;
+  border: 1px solid #888;
+  color: #eee;
+}
+
+
+
+
+ 
+
+/* LINKS */
+a{color:#999; underoff }
+a:focus { }
+a:hover { outline: 0; color:couleur_lien;}
+a:active { outline: 0; color:#333;}
+a.warning {disib roundc arrondi padl 3 padr 3 color: couleur_text_warning;}
+a.error {disib roundc arrondi padl 3 padr 3 color: couleur_text_alert;}
+a.info {disib roundc arrondi padl 3 padr 3 color: couleur_text_info;}
+a.success {disib roundc arrondi padl 3 padr 3 color: couleur_text_success;}
+a.adr { marl 20; color:#ccc;}
+p.embed{background-position: 9px -605px!important; padl 30px!important mart 5 marr 20 marl 20px!important fs 84%;display:none;}
+
+/* MISC CLASSES */
+.hidden,.tag_cloud a.hidden,.tag_cloud label.hidden {hideme}
+.ghost{hideme!important width:0;height:0;}
+p.alert,p.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 couleur_alert roundc arrondi txtshadow}
+p.success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 couleur_success roundc arrondi txtshadow}
+p.info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 couleur_info roundc arrondi txtshadow}
+p.warning{background-color:couleur_warning;color:couleur_text_warning;mart 10 pad 10 couleur_warning roundc arrondi txtshadow}
+.toggle_next{ txtb curhand noselect}
+.toggle_next:before{content:" ▾";lh 20}
+.right{txtr!important}
+p.rss{disib background-position: 4px -1624px!important; padl 22 roundc arrondi}
+
+.button_prive{background-color: transparent;!important; color:#666; box-shadow: none;}
+.button_prive:hover{background-color: rgba(153,153,153,.2)!important; color:#666; box-shadow: none;}
+.add_snippet .tags input:checked + label.button_prive{
+  border:none;
+  background-color:#F44336!important; 
+  box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+  border-radius: 2px;
+  font-weight: 200;
+  font-size: 14px;
+  text-transform: uppercase;
+  color:#eaeaea;
+}
+.add_snippet .tags input:checked + label.button_prive:hover{
+  border:none;
+  background-color:#FB5448!important;
+  box-shadow: 0 0 4px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.36);
+  color:#eaeaea;
+}
+
+.button_public{background-color: transparent;!important; color:#666; box-shadow: none;}
+.button_public:hover{background-color: rgba(153,153,153,.2)!important; color:#666; box-shadow: none;}
+.add_snippet .tags input:checked + label.button_public{
+  border:none;
+  background-color:rgba(50,200,100,0.9)!important; 
+  box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+  border-radius: 2px;
+  font-weight: 200;
+  font-size: 14px;
+  text-transform: uppercase;
+  color:#eaeaea;
+}
+.add_snippet .tags input:checked + label.button_public:hover{
+  border:none;
+  background-color:rgba(44, 170, 86, 0.9)!important;
+  box-shadow: 0 0 4px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.36);
+  color:#eaeaea;
+}
+
+.bookmarklet_link{txtc fs 12; color:couleur_lien;}
+.bookmarklet_link a {padding:0 2px 0 2px;}
+
+form#config {
+  background: #fff;
+  box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+  margin: 15px 0;
+  border-radius: 2px;
+  padding: 15px;
+}
+
+/* TRANSITIONS */
+/* fixed in one shot */
+    button,label, input, textarea, a,h1{transitall delai}
+    button:hover,label:hover, input:hover, textarea:hover,a:hover, h1:hover{transitall delai}
+    label:focus, input:focus, textarea:focus,a:focus{transitall delai}
+    button:active,label:active, input:active, textarea:active,a:active, h1:active{transitall delai}
+
+
+
+/* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+    RESPONSIVE MEDIAQUERIES 
+    changer les tailles de polices et virer les floats sur les col
+    changer les formats des first et last of type pour supprimer les coins spéciaux toolbar 
+    small tablet landscape */
+@all  max 800 {
+  html{fs 50%}
+  .nomobile, .margin{hideme}
+  nav{width:100%!important; position:relative!important;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
+  aside{ clear:both; width:100%;mar 0 min-width:320px;}
+  .corps{width:100%;min-width:320px;}
+  nav .description{padb 15}
+  .tag_cloud {padb 25}
+}
+@all  max 320 {
+  html{fs 50%}
+  .nomobile, .margin{hideme}
+  nav{width:100%!important; position:relative!important;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
+  nav a{fs 20px}
+  aside{ clear:both; width:100%;mar 0 min-width:320px;}
+  .corps{width:100%;min-width:320px; padding: 0 10px;}
+  nav .description{padb 15}
+  .tag_cloud {padb 25}
+}
+@all  dmax 800 {
+  html{fs 50%}
+  .nomobile, .margin{hideme}
+  nav{width:100%!important; position:relative!important;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
+  aside{ clear:both; width:100%;mar 0 min-width:320px;}
+  .corps{width:100%;min-width:320px;}
+  nav .description{padb 15}
+  .tag_cloud {padb 25}
+}
+@all  dmax 320 {
+  html{fs 50%}
+  .nomobile, .margin{hideme}
+  nav{width:100%!important; position:relative!important;height:auto;txtc clear:both;overflow:hidden;max-width:100%;padb 10}
+  nav a{fs 20px}
+  aside{ clear:both; width:100%;mar 0 min-width:320px;}
+  .corps{width:100%;min-width:320px; padding: 0 10px;}
+  nav .description{padb 15}
+  .tag_cloud {padb 25}
+}
+/* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+*/
