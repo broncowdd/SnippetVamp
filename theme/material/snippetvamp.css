@@ -164,7 +164,7 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%; left
     nav div.recherche input {width:100%; pad 5; border-radius: 2px;}
 div.margin{width:25%;max-width:350px;min-width:200px;height:50px; flol mar 0 }
 aside{  position : relative; mart 0;width:100%;background: couleur_dominante_moyenne; min-height: 87%;height:87%; }
-p.home_msg{fs 22 #BBB pad 25px}
+p.home_msg{fs 14 #BBB pad 25px}
 aside .pagination{txtc mart 15}
 aside .pagination em{curarro disib pad 3 fs 18 mar 3 height:25px;width:25px; color: #666; font-style: normal;}
 aside .pagination a.pagination_link{disib pad 3 fs 18 mar 3 height:25px;width:25px; lh 16 roundc arrondi}
