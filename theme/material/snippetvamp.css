@@ -5,8 +5,8 @@
   largeur="100%"
   arrondi="5"
   effet_bouton=""
-  effet_txt="txtemboss"
-  effet_box="boxemboss"
+  effet_txt=""
+  effet_box=""
 
   ########################  couleurs 
   couleur_dominante_sombre="#888"
@@ -164,7 +164,7 @@ nav{overflow-y:auto;width:25%;max-width:350px;min-width:200px; height:100%; left
     nav div.recherche input {width:100%; pad 5; border-radius: 2px;}
 div.margin{width:25%;max-width:350px;min-width:200px;height:50px; flol mar 0 }
 aside{  position : relative; mart 0;width:100%;background: couleur_dominante_moyenne; min-height: 87%;height:87%; }
-p.home_msg{fs 22 #BBB pad 25px}
+p.home_msg{fs 14 #BBB pad 25px}
 aside .pagination{txtc mart 15}
 aside .pagination em{curarro disib pad 3 fs 18 mar 3 height:25px;width:25px; color: #666; font-style: normal;}
 aside .pagination a.pagination_link{disib pad 3 fs 18 mar 3 height:25px;width:25px; lh 16 roundc arrondi}
@@ -199,7 +199,7 @@ footer{txtr  width:100%; height:50px;padr 15}
 .corps input[type="password"] { margin-bottom: 30px; }
 .buttons input.pack {flor mart 29}
 button.pack{ width:100%;}
-pre.logfile{txtshadow color:white;background-color: #888;roundc 5 insetshadow 1 1 }
+pre.logfile{color:white;background-color: #888;roundc 5 insetshadow 1 1 }
 pre.logfile em.warning{color:#f00;}
 pre.logfile em.ok{color:#0f0;}
 
@@ -623,10 +623,10 @@ p.embed{background-position: 9px -605px!important; padl 30px!important mart 5 ma
 /* MISC CLASSES */
 .hidden,.tag_cloud a.hidden,.tag_cloud label.hidden {hideme}
 .ghost{hideme!important width:0;height:0;}
-p.alert,p.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 couleur_alert roundc arrondi txtshadow}
-p.success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 couleur_success roundc arrondi txtshadow}
-p.info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 couleur_info roundc arrondi txtshadow}
-p.warning{background-color:couleur_warning;color:couleur_text_warning;mart 10 pad 10 couleur_warning roundc arrondi txtshadow}
+p.alert,p.error{background-color:couleur_alert;color:couleur_text_alert;mart 10 pad 10 couleur_alert roundc arrondi}
+p.success{background-color:couleur_success;color:couleur_text_success;mart 10 pad 10 couleur_success roundc arrondi}
+p.info{background-color:couleur_info;color:couleur_text_info;mart 10 pad 10 couleur_info roundc arrondi}
+p.warning{background-color:couleur_warning;color:couleur_text_warning;mart 10 pad 10 couleur_warning roundc arrondi}
 .toggle_next{ txtb curhand noselect}
 .toggle_next:before{content:" ▾";lh 20}
 .right{txtr!important}
