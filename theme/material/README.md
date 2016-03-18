@@ -2,7 +2,7 @@
 SnippetVamp Material is a theme based on Google's Material Design for [SnippetVamp](https://github.com/broncowdd/SnippetVamp).
 
 ## Screenshots
-![SnippetVamp Material Screenshot](https://raw.githubusercontent.com/yamajo/SnippetVamp-Material/master/screenshot.png)
+![SnippetVamp Material Screenshot](https://raw.githubusercontent.com/yamajo/SnippetVamp/master/theme/material/screenshot.png)
 
 ## Requirements
 You need to have SnippetVamp **1.84** installed.
