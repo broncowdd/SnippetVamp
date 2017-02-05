@@ -284,7 +284,7 @@ if(!file_exists('pass.php')){
     if(isset($_POST['pass'])){ // handle pass creation
         if ($_POST['pass']==$_POST['pass2']&&$_POST["login"]){
             $salt = md5(uniqid('', true));
-            file_put_contents('pass.php', '<?php $config["login"] = "'.$_POST["login"].'"; $config["salt"] = '.var_export($salt,true).'; $config["pass"] = '.var_export(hash('sha512', $salt.$_POST['pass']),true).'; ?>');
+            file_put_contents('pass.php', '<?php $config["login"] = "'.$_POST["login"].'"; $config["salt"] = "'.var_export($salt,true).'"; $config["pass"] = "'.var_export(hash('sha512', $salt.$_POST['pass']),true).'"; ?>');
             header('location: index.php');
         }else{ exit(msg('error'));}
     }
@@ -331,7 +331,7 @@ if ($admin&&isset($_POST['app_name'])){
     if($_POST['login'] != $config['login']) {$config['login']=htmlentities($_POST['login']); $update_pass=true;}
     if(!empty($_POST['password'])) {$config['pass']=var_export(hash('sha512', $config['salt'].$_POST['password']),true); $update_pass=true;}
     if(!empty($update_pass)) {
-        file_put_contents('pass.php', '<?php $config["login"] = "'.$config["login"].'"; $config["salt"] = '.var_export($config['salt'],true).'; $config["pass"] = '.$config['pass'].'; ?>');
+        file_put_contents('pass.php', '<?php $config["login"] = "'.$config["login"].'"; $config["salt"] = '.var_export($config['salt'],true).'; $config["pass"] = "'.$config['pass'].'"; ?>');
     }
     cache_clear();
     header('location: index.php');
