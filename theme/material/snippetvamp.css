@@ -30,8 +30,8 @@
   couleur_foncee_bouton=darken(couleur_bouton,50)
 
   ########################  custo
-  couleur_lien="#679b95"
-  couleur_background="#44837c"
+  couleur_lien="#5b7480"
+  couleur_background="#304250"
 */
 
 
@@ -199,9 +199,9 @@ footer{txtr  width:100%; height:50px;padr 15}
 .corps input[type="password"] { margin-bottom: 30px; }
 .buttons input.pack {flor mart 29}
 button.pack{ width:100%;}
-pre.logfile{color:white;background-color: #888;roundc 5 insetshadow 1 1 }
+pre.logfile{color:#666;background-color: #fff;roundc 5 insetshadow 1 1 }
 pre.logfile em.warning{color:#f00;}
-pre.logfile em.ok{color:#0f0;}
+pre.logfile em.ok{color:#00bf00;}
 
 /* FORMS & BUTTONS (INCLUDING ALL ELEMENTS WITH BUTTON ASPECT: A H1 etc) */
 #import,#replace{disib }
@@ -308,7 +308,7 @@ pre.logfile em.ok{color:#0f0;}
     }
     input[type="submit"]
     {
-        background-color: #4997AD;
+        background-color: #446a7b;
         color: #eaeaea;
         box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
         /*float:right;
@@ -323,7 +323,7 @@ pre.logfile em.ok{color:#0f0;}
     }
     nav .tag_cloud a em {
       font-style: normal;
-      color:#333;
+      color:#8a8a8a;
       padding-right: 10px;
     }
 
@@ -454,7 +454,7 @@ pre.logfile em.ok{color:#0f0;}
     }
     .log{
       display:inline-block;
-      background-color:#4997AD!important;
+      background-color:#466a7b!important;
       height:40px;
       box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
       border-radius: 2px;
